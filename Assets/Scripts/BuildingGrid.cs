@@ -1,12 +1,19 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.UIElements;
 
 public class BuildingGrid : MonoBehaviour
 {
     public static BuildingGrid instance;
 
-    public const int GRID_SIZE = 200;
-    private Building[,] grid = new Building[GRID_SIZE, GRID_SIZE];
+    
+    [SerializeField] GameObject placementIndicatorPrefab;
+    [SerializeField] Transform placementIndicatorsParent;
+
+    [SerializeField] int GRID_SIZE = 20;
+    const float BASE_PLANE_SIZE = 10f;
+    private Building[,] grid;
 
     void Awake()
     {
@@ -18,6 +25,21 @@ public class BuildingGrid : MonoBehaviour
         }
 
         instance = this;
+
+        grid = new Building[GRID_SIZE, GRID_SIZE];
+        transform.localScale = new Vector3(GRID_SIZE / BASE_PLANE_SIZE, 1, GRID_SIZE / BASE_PLANE_SIZE);
+        // move indicators parent to the center of the grid
+        placementIndicatorsParent.transform.position = transform.position;
+    }
+
+    void Start()
+    {
+        FrameCameraIsoTopBottom();
+    }
+    
+    public int GetGridSize()
+    {
+        return GRID_SIZE;
     }
 
     public bool CanPlace(int x_start, int y_start, Building building)
@@ -54,8 +76,83 @@ public class BuildingGrid : MonoBehaviour
             for (int y = y_start; y < y_end; y++)
             {
                 grid[x, y] = building;
+                //TODO: actually instantiate prefab from buildingutils call most likely
             }
         }
     }
+
+    // don't worry about how this works, it works
+    public void FrameCameraIsoTopBottom()
+    {
+        var cam = Camera.main;
+        Assert.IsNotNull(cam, "Camera.main not found!");
+        cam.orthographic = true;
+
+        Vector3 center = transform.position;
+        cam.transform.rotation = Quaternion.Euler(30f, 45f, 0f);
+        float dist = GRID_SIZE * 2f;
+        cam.transform.position = center - cam.transform.forward * dist;
+        cam.transform.LookAt(center);
+
+        float half = GRID_SIZE * 0.5f;
+        Vector3[] corners =
+        {
+            center + new Vector3(-half, 0f, -half),
+            center + new Vector3( half, 0f, -half),
+            center + new Vector3( half, 0f,  half),
+            center + new Vector3(-half, 0f,  half),
+        };
+
+        Vector3 up = cam.transform.up;
+        float minV = float.PositiveInfinity, maxV = float.NegativeInfinity;
+        foreach (var p in corners)
+        {
+            float v = Vector3.Dot(up, p - center);
+            if (v < minV) minV = v;
+            if (v > maxV) maxV = v;
+        }
+
+        // 1.4f just makes it look better trust
+        cam.orthographicSize = ((maxV - minV) * 0.5f + 0.25f) * 1.4f;
+    }
+
+    //NOT optimal, use sliding window or smth
+    private bool AreaFree(int x0, int y0, int w, int h)
+    {
+        if (x0 < 0 || y0 < 0 || x0 + w > GRID_SIZE || y0 + h > GRID_SIZE) return false;
+
+        for (int x = x0; x < x0 + w; x++)
+            for (int y = y0; y < y0 + h; y++)
+                if (grid[x, y] is not null) return false;
+
+        return true;
+    }
+
+    public void SpawnBuildingPlacementIndicators(BuildingDimensions dimensions)
+    {
+        Assert.IsNotNull(placementIndicatorPrefab, "Assign a placementIndicatorPrefab in the Inspector!");
+        Assert.IsTrue(placementIndicatorsParent.childCount == 0, "There are existing children of the indicators parent!");
+
+        int w = dimensions.width;
+        int h = dimensions.height;
+
+        for (int x = 0; x <= GRID_SIZE - w; x++)
+        {
+            for (int y = 0; y <= GRID_SIZE - h; y++)
+            {
+                if (!AreaFree(x, y, w, h)) continue;
+                
+                // annoyingly, y iz z, grid_size / 2 is because 0, 0 is the bottom left not the middle
+                Vector3 pos = new Vector3(x - (GRID_SIZE / 2), 0, y - (GRID_SIZE / 2));
+                GameObject ind = Instantiate(placementIndicatorPrefab, pos, Quaternion.identity, placementIndicatorsParent);
+            }
+        }
+    }
+    
+    public void DestroyBuildingPlacementIndicators()
+    {
+        foreach (Transform child in placementIndicatorsParent) Destroy(child.gameObject);
+    }
 }
+
 
