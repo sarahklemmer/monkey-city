@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class Grid : MonoBehaviour
+public class BuildingGrid : MonoBehaviour
 {
-    public static Grid instance;
+    public static BuildingGrid instance;
 
     public const int GRID_SIZE = 200;
     private Building[,] grid = new Building[GRID_SIZE, GRID_SIZE];
