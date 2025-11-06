@@ -1159,7 +1159,71 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20fab6d81b87d44dca380b739e10f667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingScrollbar: {fileID: 1446137884}
+  buildingScrollbar: {fileID: 1488814034}
+  scrollableList: {fileID: 852803635}
+  bananaBuildings:
+  - buildingName: Banana Tree
+    icon: {fileID: 66986238, guid: dbb2a13e1ff47413e895d22bbbba7fe3, type: 3}
+    cost: 0
+    description: 
+  - buildingName: University
+    icon: {fileID: -244932501, guid: 5e4c261113c7544ef9f7924d4c8d900e, type: 3}
+    cost: 5
+    description: 
+  - buildingName: Naval Base
+    icon: {fileID: 1296318283, guid: 1bb7e4dc2874440d2abfe810172d968b, type: 3}
+    cost: 10
+    description: 
+  defenseBuildings:
+  - buildingName: tree
+    icon: {fileID: 1296318283, guid: 1bb7e4dc2874440d2abfe810172d968b, type: 3}
+    cost: 0
+    description: 
+  - buildingName: tree
+    icon: {fileID: 1296318283, guid: 1bb7e4dc2874440d2abfe810172d968b, type: 3}
+    cost: 0
+    description: 
+  - buildingName: tree
+    icon: {fileID: 1296318283, guid: 1bb7e4dc2874440d2abfe810172d968b, type: 3}
+    cost: 0
+    description: 
+  - buildingName: tree
+    icon: {fileID: 1296318283, guid: 1bb7e4dc2874440d2abfe810172d968b, type: 3}
+    cost: 0
+    description: 
+  - buildingName: tree
+    icon: {fileID: 1296318283, guid: 1bb7e4dc2874440d2abfe810172d968b, type: 3}
+    cost: 0
+    description: 
+  - buildingName: tree
+    icon: {fileID: 1296318283, guid: 1bb7e4dc2874440d2abfe810172d968b, type: 3}
+    cost: 0
+    description: 
+  - buildingName: tree
+    icon: {fileID: 1296318283, guid: 1bb7e4dc2874440d2abfe810172d968b, type: 3}
+    cost: 0
+    description: 
+  happyBuildings:
+  - buildingName: happy buidling
+    icon: {fileID: -244932501, guid: 5e4c261113c7544ef9f7924d4c8d900e, type: 3}
+    cost: 4567
+    description: 
+  - buildingName: happy buidling
+    icon: {fileID: -244932501, guid: 5e4c261113c7544ef9f7924d4c8d900e, type: 3}
+    cost: 4567
+    description: 
+  - buildingName: happy buidling
+    icon: {fileID: -244932501, guid: 5e4c261113c7544ef9f7924d4c8d900e, type: 3}
+    cost: 4567
+    description: 
+  - buildingName: happy buidling
+    icon: {fileID: -244932501, guid: 5e4c261113c7544ef9f7924d4c8d900e, type: 3}
+    cost: 4567
+    description: 
+  - buildingName: happy buidling
+    icon: {fileID: -244932501, guid: 5e4c261113c7544ef9f7924d4c8d900e, type: 3}
+    cost: 4567
+    description: 
   bananaToggle: {fileID: 181409075}
   defenseToggle: {fileID: 61893275}
   happyToggle: {fileID: 247797214}
@@ -1199,9 +1263,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 658202895}
-  - {fileID: 1446137885}
   - {fileID: 259004006}
   - {fileID: 1488814035}
+  - {fileID: 852803634}
   m_Father: {fileID: 92686679}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2831,6 +2895,58 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 837956206}
   m_CullTransparentMesh: 1
+--- !u!1 &852803633
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 852803634}
+  - component: {fileID: 852803635}
+  m_Layer: 0
+  m_Name: ScrollBarManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &852803634
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 852803633}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 479.07022, y: 246.35838, z: -2.7651706}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 259389912}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &852803635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 852803633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acefdda9726714fc5a1990bbea57cbae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contentParent: {fileID: 1186360185}
+  itemPrefab: {fileID: 90366397795089193, guid: 0bb0d049fbe134e76bef1cc7b76517af, type: 3}
+  scrollViewRect: {fileID: 1488814035}
+  spacing: 0
+  itemWidth: 100
+  itemHeight: 140
+  minScrollViewSize: 100
+  maxScrollViewSize: 500
 --- !u!1 &860611574
 GameObject:
   m_ObjectHideFlags: 0
@@ -3089,7 +3205,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 300}
+  m_SizeDelta: {x: 300, y: 150}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1250895134
 GameObject:
@@ -3234,7 +3350,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -17, y: 20}
+  m_SizeDelta: {x: 0, y: 10}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1421077437
 MonoBehaviour:
@@ -3280,7 +3396,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1884390370}
   m_Direction: 0
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.625
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3323,81 +3439,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1421077435}
   m_CullTransparentMesh: 1
---- !u!1 &1446137884
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1446137885}
-  - component: {fileID: 1446137887}
-  - component: {fileID: 1446137886}
-  m_Layer: 5
-  m_Name: BuildingScrollBar
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1446137885
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1446137884}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 259389912}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 75}
-  m_SizeDelta: {x: 300, y: 75}
-  m_Pivot: {x: 0, y: 0}
---- !u!114 &1446137886
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1446137884}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1446137887
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1446137884}
-  m_CullTransparentMesh: 1
 --- !u!1 &1488814034
 GameObject:
   m_ObjectHideFlags: 0
@@ -3436,7 +3477,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 74}
-  m_SizeDelta: {x: 300, y: 75}
+  m_SizeDelta: {x: 500, y: 150}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1488814036
 MonoBehaviour:
