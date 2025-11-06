@@ -21,23 +21,30 @@ public class PlacementIndicatorOnClick : MonoBehaviour
     void OnMouseDown()
     {
         Building placedBuilding = new Building(buildingType);
-        
+
         BuildingGrid.instance.Place(grid_x, grid_y, placedBuilding);
 
+        GameObject prefab = BuildingToPrefab.GetPrefab(buildingType);
+
+        // calculate position for building model
         Vector3 pos = new Vector3(
-            BuildingGrid.instance.GridXToWorldX(grid_x),
-            1,
-            BuildingGrid.instance.GridYToWorldZ(grid_y)
+            BuildingGrid.instance.GridXToWorldX(grid_x) + prefab.transform.position.x,
+            prefab.transform.position.y,
+            BuildingGrid.instance.GridYToWorldZ(grid_y) + prefab.transform.position.z
         );
 
         BuildingDimensions dim = BuildingUtils.TypeToDimensions(buildingType);
+
+        // center the model (translating from lower-left based coordinate system to center based)
         pos.x += (dim.width - 1) * 0.5f;
         pos.z += (dim.height - 1) * 0.5f;
 
-        GameObject buildingObj = Instantiate(BuildingToPrefab.GetPrefab(buildingType), pos, Quaternion.identity);
-        
+        // instantiate prefab
+        GameObject buildingObj = Instantiate(prefab, pos, prefab.transform.rotation);
+
         placedBuilding.SetInstance(buildingObj);
         
+        //TODO: incorporate BuildingHealth into BuildingBase, this is here for now
         if (buildingObj.GetComponent<BuildingHealth>() == null)
         {
             buildingObj.AddComponent<BuildingHealth>();
