@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class BuildingBase : MonoBehaviour
 {
-    protected float health;
+    Building building;
     public abstract void OnDayCycle();
     public abstract void OnDestroy();
 }
