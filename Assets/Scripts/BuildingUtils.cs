@@ -32,18 +32,14 @@ public class BuildingUtils
     {
         return typeToDimensions[type];
     }
-
-    //TODO: building to prefab
 }
 
 public class Building
 {
-    public readonly BuildingDimensions dimensions;
     public readonly BuildingType type;
 
     public Building(BuildingType in_type)
     {
         type = in_type;
-        dimensions = BuildingUtils.TypeToDimensions(type);
     }
 }

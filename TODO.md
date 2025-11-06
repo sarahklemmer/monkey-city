@@ -1,0 +1,1 @@
+1. make it so that buildings become invisible in "placement" mode so you can place buildings next to each other
