@@ -3,19 +3,14 @@ using System.Collections;
 
 public class WaveSpawner : MonoBehaviour
 {
-    [Header("Enemy Settings")]
     [SerializeField] private GameObject enemyPrefab;
-    
-    [Header("Wave Settings")]
     [SerializeField] private float timeBetweenWaves = 30f;
     [SerializeField] private float baseEnemiesPerWave = 3f;
     [SerializeField] private float waveScalingFactor = 1.2f;
-    
-    [Header("Banana Scaling")]
-    [SerializeField] private int bananaThreshold1 = 200;
-    [SerializeField] private int bananaThreshold2 = 500;
-    [SerializeField] private int bananaThreshold3 = 1000;
-    [SerializeField] private float bananaDifficultyMultiplier = 1.5f;
+    private int bananaThreshold1 = 200;
+    private int bananaThreshold2 = 500;
+    private int bananaThreshold3 = 1000;
+    private float bananaDifficultyMultiplier = 1.5f;
     
     private int currentWave = 0;
     private int enemiesAlive = 0;
@@ -25,17 +20,23 @@ public class WaveSpawner : MonoBehaviour
     {
         if (enemyPrefab == null)
         {
-            Debug.LogError("No enemy prefab assigned to WaveSpawner!");
             return;
         }
 
         if (BuildingGrid.instance == null)
         {
-            Debug.LogError("BuildingGrid.instance not found! Make sure BuildingGrid exists in scene.");
             return;
         }
 
         StartCoroutine(WaveLoop());
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            ForceNextWave();
+        }
     }
 
     private IEnumerator WaveLoop()
@@ -53,7 +54,17 @@ public class WaveSpawner : MonoBehaviour
             }
             
             waveActive = false;
-            Debug.Log($"Wave {currentWave} completed!");
+        }
+    }
+
+    private void ForceNextWave()
+    {
+        if (!waveActive)
+        {
+            StopAllCoroutines();
+            currentWave++;
+            StartWave();
+            StartCoroutine(WaveLoop());
         }
     }
 
@@ -61,9 +72,6 @@ public class WaveSpawner : MonoBehaviour
     {
         waveActive = true;
         int enemiesToSpawn = CalculateWaveSize();
-        
-        Debug.Log($"Starting Wave {currentWave} with {enemiesToSpawn} enemies!");
-        
         StartCoroutine(SpawnEnemies(enemiesToSpawn));
     }
 
@@ -166,7 +174,6 @@ public class WaveSpawner : MonoBehaviour
 public class EnemyDeathTracker : MonoBehaviour
 {
     private WaveSpawner spawner;
-
     public void Initialize(WaveSpawner waveSpawner)
     {
         spawner = waveSpawner;
