@@ -4,6 +4,7 @@ public class TimeController : MonoBehaviour
 {
     private float secondsPassedSinceLastDay = 0;
     private bool ticking = true;
+    private bool night = false;
     public int currentDay { get; private set; }
     [SerializeField] float minutesPerDay = 8f;
     float secondsToDay;
@@ -15,7 +16,14 @@ public class TimeController : MonoBehaviour
 
     void Update()
     {
-        if(ticking) secondsPassedSinceLastDay += Time.deltaTime;
+        if (ticking) secondsPassedSinceLastDay += Time.deltaTime;
+        else return;
+
+        if (secondsPassedSinceLastDay >= (secondsToDay / 2f) && !night)
+        {
+            night = true;
+            DayNightToggle.instance.SetNight(true);
+        }
         if (secondsPassedSinceLastDay >= secondsToDay)
         {
             PassDay();
@@ -36,6 +44,8 @@ public class TimeController : MonoBehaviour
     {
         ++currentDay;
         secondsPassedSinceLastDay %= secondsToDay;
+        night = false;
+        DayNightToggle.instance.SetNight(false);
         BuildingManager.instance.PassDay();
     }
 }
