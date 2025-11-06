@@ -1,1 +1,2 @@
 1. make it so that buildings become invisible in "placement" mode so you can place buildings next to each other
+2. make raycast based movement detection in monkeySelector only hit the ground using layer masks rather than buildings
