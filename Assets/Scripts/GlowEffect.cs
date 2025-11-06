@@ -1,16 +1,13 @@
 using UnityEngine;
 
-public class MonkeyOnClick : MonoBehaviour
+public class GlowEffect : MonoBehaviour
 {
     
-    // this is from chat, it's for the outline effect
-    [SerializeField] private Material outlineMaterial;
     private Renderer r;
     private Material[] baseMaterials;
     private Material[] outlinedMaterials;
-    private bool glowing = false;
-
-    void Awake()
+    
+    public void Initialize(Material outlineMaterial)
     {
         r = GetComponent<Renderer>();
 
@@ -22,15 +19,9 @@ public class MonkeyOnClick : MonoBehaviour
         baseMaterials.CopyTo(outlinedMaterials, 0);
         outlinedMaterials[^1] = outlineMaterial;
     }
-    
-    public void ToggleHighlight()
-    {
-        glowing = !glowing;
-        r.materials = glowing ? outlinedMaterials : baseMaterials;
-    }
 
-    void OnMouseDown()
+    public void SetGlow(bool on)
     {
-        ToggleHighlight();
+        r.materials = on ? outlinedMaterials : baseMaterials;
     }
 }
