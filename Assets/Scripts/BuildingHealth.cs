@@ -23,6 +23,11 @@ public class BuildingHealth : MonoBehaviour
         
         if (buildingRenderer == null)
             buildingRenderer = GetComponent<Renderer>();
+            
+        if (buildingRenderer == null)
+        {
+            buildingRenderer = GetComponentInChildren<Renderer>();
+        }
     }
 
     void Start()
@@ -36,7 +41,7 @@ public class BuildingHealth : MonoBehaviour
 
         currentHealth = Mathf.Max(0, currentHealth - damage);
         lastDamageTime = Time.time;
-
+        
         if (regenCoroutine != null)
         {
             StopCoroutine(regenCoroutine);
@@ -66,7 +71,9 @@ public class BuildingHealth : MonoBehaviour
         
         while (currentHealth < maxHealth && isRegenerating)
         {
+            float oldHealth = currentHealth;
             currentHealth = Mathf.Min(maxHealth, currentHealth + regenRate * Time.deltaTime);
+
             UpdateVisuals();
             yield return null;
         }
@@ -77,25 +84,28 @@ public class BuildingHealth : MonoBehaviour
 
     private void UpdateVisuals()
     {
-        if (buildingRenderer == null) return;
+        if (buildingRenderer == null)
+        {
+            return;
+        }
 
         float healthPercent = currentHealth / maxHealth;
         Color targetColor = Color.Lerp(lowHealthColor, fullHealthColor, healthPercent);
         
         foreach (Material mat in buildingRenderer.materials)
         {
+            if (mat.HasProperty("_Color"))
+            {
+                mat.SetColor("_Color", targetColor);
+            }
+            
             mat.color = targetColor;
         }
     }
 
     private void OnDestroyed()
     {
-        Debug.Log($"{gameObject.name} has been destroyed!");
-        
         // TODO: Handle building destruction
-        // - Remove from BuildingGrid
-        // - Play destruction effects
-        // - Award points/resources to attacker
         
         Destroy(gameObject);
     }

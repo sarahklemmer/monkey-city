@@ -2,19 +2,25 @@ using UnityEngine;
 
 public class EnemyAttacker : MonoBehaviour
 {
-    [SerializeField] private float attackDamage = 10f;
-    [SerializeField] private float attackCooldown = 1f;
-    [SerializeField] private float attackRange = 2f;
-    [SerializeField] private float moveSpeed = 2f;
-    [SerializeField] private float recoilDistance = 1f;
-    [SerializeField] private float recoilDuration = 0.2f;
-    
+    private float attackDamage = 10f;
+    private float attackCooldown = 1f;
+    private float attackRange = 2f;
+    private float moveSpeed = 2f;
+    private float recoilDistance = 1f;
+    private float recoilDuration = 0.2f;
+    private float maxHealth = 40f;
     private BuildingHealth targetBuilding;
     private float lastAttackTime;
     private bool isRecoiling = false;
     private Vector3 recoilStartPos;
     private Vector3 recoilTargetPos;
     private float recoilTimer;
+    private float currentHealth;
+
+    void Awake()
+    {
+        currentHealth = maxHealth;
+    }
 
     void Update()
     {
@@ -97,7 +103,6 @@ public class EnemyAttacker : MonoBehaviour
         if (targetBuilding != null)
         {
             targetBuilding.TakeDamage(attackDamage);
-            Debug.Log($"{gameObject.name} dealt {attackDamage} damage to {targetBuilding.gameObject.name}");
             
             Vector3 directionAwayFromTarget = (transform.position - targetBuilding.transform.position).normalized;
             recoilStartPos = transform.position;
@@ -105,6 +110,37 @@ public class EnemyAttacker : MonoBehaviour
             recoilTimer = 0f;
             isRecoiling = true;
         }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+        Debug.Log($"{gameObject.name} took {damage} damage. Health: {currentHealth}/{maxHealth}");
+        
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
+    }
+
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public float GetMaxHealth()
+    {
+        return maxHealth;
+    }
+
+    public float GetHealthPercentage()
+    {
+        return currentHealth / maxHealth;
     }
 
     void OnDrawGizmos()
