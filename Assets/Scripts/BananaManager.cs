@@ -3,9 +3,23 @@ using TMPro;
 
 public class BananaManager : MonoBehaviour
 {
+    public static BananaManager instance;
+
     [SerializeField] private GameObject bananaPrefab;
     [SerializeField] private TextMeshProUGUI bananaCountText;
     [SerializeField] private int bananaCount = 0;
+
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Debug.LogError("Duplicate BananaManager on " + gameObject.name + " destroying.");
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+    }
+
     void Start()
     {
         bananaCount = 0;
@@ -28,6 +42,8 @@ public class BananaManager : MonoBehaviour
             Debug.Log("Not enough bananas to spend!");
         }
     }
+
+    public int GetBananas() => bananaCount;
 
     private void UpdateBananaCountText()
     {
