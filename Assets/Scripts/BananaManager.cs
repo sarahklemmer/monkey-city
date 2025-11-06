@@ -21,18 +21,6 @@ public class BananaManager : MonoBehaviour
         instance = this;
     }
 
-
-    void Awake()
-    {
-        if (instance != null && instance != this)
-        {
-            Debug.LogError("Duplicate BananaManager on " + gameObject.name + " destroying.");
-            Destroy(gameObject);
-            return;
-        }
-        instance = this;
-    }
-
     void Start()
     {
         bananaCount = 0;
