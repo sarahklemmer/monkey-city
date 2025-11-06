@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 [System.Serializable]
 public struct BuildingData
@@ -9,6 +8,7 @@ public struct BuildingData
     public Sprite icon;
     public int cost;
     public string description;
+    public BuildingType type;
 }
 
 public class BuildingMenuManager : MonoBehaviour

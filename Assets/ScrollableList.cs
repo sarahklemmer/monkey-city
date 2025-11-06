@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 public class ScrollableList : MonoBehaviour
@@ -57,26 +58,32 @@ public class ScrollableList : MonoBehaviour
         {
             // Create the item from prefab
             GameObject item = Instantiate(itemPrefab, contentParent.transform);
-            
-            // Get the BuildingListItem script
+
+            // initialize the placebuildingbutton script
+            PlaceBuildingButton pb = item.AddComponent<PlaceBuildingButton>();
+            pb.Initialize(buildingData.type);
+
+            Button button = item.GetComponent<Button>();
+            Assert.IsNotNull(button, "itemPrefab missing Button");
+            button.onClick.RemoveAllListeners();
+            // add script to button
+            button.onClick.AddListener(pb.OnClick);
+
             BuildingListItem listItem = item.GetComponent<BuildingListItem>();
-            
+
             // Fill it with data
-            if (listItem != null)
-            {
-                listItem.Setup(buildingData);
-            }
-            
+            Assert.IsNotNull(listItem, "itemPrefab missing BuildingListItem");
+            listItem.Setup(buildingData);
+
             RectTransform itemRect = item.GetComponent<RectTransform>();
-            if (itemRect != null)
-            {
-                // For horizontal: set width, height stretches
-                LayoutElement layoutElement = item.GetComponent<LayoutElement>();
-                if (layoutElement == null)
-                    layoutElement = item.AddComponent<LayoutElement>();
-                
-                layoutElement.preferredWidth = itemWidth;
-            }
+            Assert.IsNotNull(itemRect, "itemPrefab missing RectTransform");
+
+            // For horizontal: set width, height stretches
+            LayoutElement layoutElement = item.GetComponent<LayoutElement>();
+            if (layoutElement == null)
+                layoutElement = item.AddComponent<LayoutElement>();
+            
+            layoutElement.preferredWidth = itemWidth;
         }
         
         // Adjust Content size based on number of items

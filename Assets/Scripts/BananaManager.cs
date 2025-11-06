@@ -6,6 +6,21 @@ public class BananaManager : MonoBehaviour
     [SerializeField] private GameObject bananaPrefab;
     [SerializeField] private TextMeshProUGUI bananaCountText;
     [SerializeField] private int bananaCount = 0;
+
+    public static BananaManager instance;
+
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Debug.LogError("duplicate BananaManager on " + gameObject.name + " destroying.");
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+    }
+
     void Start()
     {
         bananaCount = 0;
