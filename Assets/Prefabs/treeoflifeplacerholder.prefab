@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8178653000169542698}
   - component: {fileID: 6507246858913716491}
   - component: {fileID: 7055519982910459545}
+  - component: {fileID: 5001734891217287967}
   m_Layer: 0
   m_Name: treeoflifeplacerholder
   m_TagString: Untagged
@@ -108,3 +109,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5001734891217287967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8345615188445516739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 887ef5d1c9cbd4dbc86611c4a93cc8d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 500
+  regenDelay: 60
+  regenRate: 5
+  buildingRenderer: {fileID: 0}
+  fullHealthColor: {r: 1, g: 1, b: 1, a: 1}
+  lowHealthColor: {r: 1, g: 0, b: 0, a: 1}
