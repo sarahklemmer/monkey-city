@@ -1,7 +1,5 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.UIElements;
 
 public class BuildingGrid : MonoBehaviour
 {
@@ -36,16 +34,28 @@ public class BuildingGrid : MonoBehaviour
     {
         FrameCameraIsoTopBottom();
     }
-    
+
     public int GetGridSize()
     {
         return GRID_SIZE;
     }
 
+    public float GridXToWorldX(int grid_x)
+    {
+        return grid_x - (GRID_SIZE / 2);
+    }
+    
+    public float GridYToWorldZ(int grid_y)
+    {
+        return grid_y - (GRID_SIZE / 2);
+    }
+
+
+    // starts at lower left corner of building
     public bool CanPlace(int x_start, int y_start, Building building)
     {
-        int x_end = building.dimensions.width + x_start;
-        int y_end = building.dimensions.height + y_start;
+        int x_end = BuildingUtils.TypeToDimensions(building.type).width + x_start;
+        int y_end = BuildingUtils.TypeToDimensions(building.type).height + y_start;
 
         Assert.IsFalse(x_end > GRID_SIZE, "placing building out of bounds");
         Assert.IsTrue(x_start >= 0, "placing building out of bounds");
@@ -64,19 +74,19 @@ public class BuildingGrid : MonoBehaviour
         return true;
     }
 
+    // starts at lower left corner of building
     public void Place(int x_start, int y_start, Building building)
     {
         Assert.IsTrue(CanPlace(x_start, y_start, building), "Trying to place building that can't be placed!");
 
-        int x_end = building.dimensions.width + x_start;
-        int y_end = building.dimensions.height + y_start;
+        int x_end = BuildingUtils.TypeToDimensions(building.type).width + x_start;
+        int y_end = BuildingUtils.TypeToDimensions(building.type).height + y_start;
 
         for (int x = x_start; x < x_end; x++)
         {
             for (int y = y_start; y < y_end; y++)
             {
                 grid[x, y] = building;
-                //TODO: actually instantiate prefab from buildingutils call most likely
             }
         }
     }
@@ -128,10 +138,16 @@ public class BuildingGrid : MonoBehaviour
         return true;
     }
 
-    public void SpawnBuildingPlacementIndicators(BuildingDimensions dimensions)
+    public void SpawnBuildingPlacementIndicators(Building building)
     {
         Assert.IsNotNull(placementIndicatorPrefab, "Assign a placementIndicatorPrefab in the Inspector!");
-        Assert.IsTrue(placementIndicatorsParent.childCount == 0, "There are existing children of the indicators parent!");
+
+        if (placementIndicatorsParent.childCount != 0)
+        {
+            DestroyBuildingPlacementIndicators();
+        }
+
+        BuildingDimensions dimensions = BuildingUtils.TypeToDimensions(building.type);
 
         int w = dimensions.width;
         int h = dimensions.height;
@@ -143,8 +159,10 @@ public class BuildingGrid : MonoBehaviour
                 if (!AreaFree(x, y, w, h)) continue;
                 
                 // annoyingly, y iz z, grid_size / 2 is because 0, 0 is the bottom left not the middle
-                Vector3 pos = new Vector3(x - (GRID_SIZE / 2), 0, y - (GRID_SIZE / 2));
+                Vector3 pos = new Vector3(GridXToWorldX(x), 0, GridYToWorldZ(y));
                 GameObject ind = Instantiate(placementIndicatorPrefab, pos, Quaternion.identity, placementIndicatorsParent);
+                // set the building to be spawned when the indicator is clicked
+                ind.GetComponent<PlacementIndicatorOnClick>().Initialize(building, x, y);
             }
         }
     }
