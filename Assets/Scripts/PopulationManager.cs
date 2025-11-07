@@ -1,39 +1,41 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.Assertions;
 
 public class PopulationManager : MonoBehaviour
 {
+    public static PopulationManager instance;
+    
     [SerializeField] private GameObject monkeyPrefab;
     [SerializeField] private TextMeshProUGUI monkeyCountText;
     [SerializeField] private int monkeyCount = 0;
+    
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Debug.LogError("duplicate PopulationManager on " + gameObject.name + " destroying.");
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+    }
+    
     void Start()
     {
         monkeyCount = 0;
-        UpdateMonkeyCountText();
+        AddToPopulation(0);
     }
-
-    public void AddBananas(int num)
+    public void AddToPopulation(int num)
     {
-        monkeyCount += num;
-        Debug.Log("Banana(s) added! Total monkeys: " + monkeyCount);
-        UpdateMonkeyCountText();
-    }
+        Assert.IsNotNull(monkeyCountText, "Assign a monkeyCountText in the Inspector!");
 
-    public void SpendBananas(int num){
-        if(monkeyCount >= num){
-            monkeyCount -= num;
-            Debug.Log("Monkey(s) died! Total monkeys: " + monkeyCount);
-            UpdateMonkeyCountText();
-        } else {
-            Debug.Log("ERROR: NOT ENOUGH MONKEYS TO DIE!");
-        }
-    }
-
-    private void UpdateMonkeyCountText()
-    {
-        if (monkeyCountText != null)
+        if (monkeyCount + num < 0)
         {
-            monkeyCountText.text = monkeyCount.ToString();
+            //Call end game function
         }
+        
+        monkeyCount += num;
+        monkeyCountText.text = monkeyCount.ToString();
     }
 }

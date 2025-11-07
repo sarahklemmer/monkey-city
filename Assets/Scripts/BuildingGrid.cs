@@ -171,6 +171,32 @@ public class BuildingGrid : MonoBehaviour
     {
         foreach (Transform child in placementIndicatorsParent) Destroy(child.gameObject);
     }
+
+    public void SpawnSingleBuildingPlacementIndicators(Building building)
+    {
+        BuildingDimensions dimensions = BuildingUtils.TypeToDimensions(building.type);
+
+        int w = dimensions.width;
+        int h = dimensions.height;
+
+        int x = GRID_SIZE / 2 - w/2;
+        int y = GRID_SIZE / 2 - h/2;
+
+        Assert.IsNotNull(placementIndicatorPrefab, "Assign a placementIndicatorPrefab in the Inspector!");
+
+        if (placementIndicatorsParent.childCount != 0)
+        {
+            DestroyBuildingPlacementIndicators();
+        }
+
+        if (!AreaFree(x, y, w, h)) return;
+
+        Vector3 pos = new Vector3(GridXToWorldX(x), 0, GridYToWorldZ(y));
+
+        GameObject ind = Instantiate(placementIndicatorPrefab, pos, Quaternion.identity, placementIndicatorsParent);
+        // set the building to be spawned when the indicator is clicked
+        ind.GetComponent<PlacementIndicatorOnClick>().Initialize(building, x, y);
+    }
 }
 
 

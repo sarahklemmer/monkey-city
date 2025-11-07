@@ -50,6 +50,14 @@ public class PlacementIndicatorOnClick : MonoBehaviour
             buildingObj.AddComponent<BuildingHealth>();
         }
 
+        if (buildingType == BuildingType.TreeOfLife)
+        {
+            if (PopulationManager.instance != null)
+            {
+                PopulationManager.instance.AddToPopulation(1);
+            }
+        }
+
         BuildingGrid.instance.DestroyBuildingPlacementIndicators();
     }
 }
