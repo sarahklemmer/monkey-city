@@ -6,10 +6,10 @@ public class GlowEffect : MonoBehaviour
     private Renderer r;
     private Material[] baseMaterials;
     private Material[] outlinedMaterials;
-    
-    public void Initialize(Material outlineMaterial)
+
+    public void Initialize(Material outlineMaterial, Renderer target = null)
     {
-        r = GetComponent<Renderer>();
+        r = target == null ? GetComponent<Renderer>() : target;
 
         // Save base materials once
         baseMaterials = r.sharedMaterials;

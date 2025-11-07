@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class ArcherTower : BuildingBase
 {
@@ -13,6 +12,7 @@ public class ArcherTower : BuildingBase
 
     void Awake()
     {
+        base.SharedAwakeBehavior();
         building = new(BuildingType.ArcherTower);
     }
 

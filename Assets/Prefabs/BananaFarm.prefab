@@ -62,7 +62,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4c50df8e9a84a4a33aa74cc9bf062c30, type: 3}
       propertyPath: m_Name
-      value: tree with bananas
+      value: BananaFarm
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -74,6 +74,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4c50df8e9a84a4a33aa74cc9bf062c30, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2597630291742618197}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4c50df8e9a84a4a33aa74cc9bf062c30, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5628161589357543536}
   m_SourcePrefab: {fileID: 100100000, guid: 4c50df8e9a84a4a33aa74cc9bf062c30, type: 3}
 --- !u!23 &1040639374665117630 stripped
 MeshRenderer:
@@ -115,3 +118,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69afca2c98db44fc0a345277e80d0706, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  outlineMaterial: {fileID: 2100000, guid: f5ea81a833a1649e2a382c6e66bdeaba, type: 2}
+  targetRenderer: {fileID: 7172548887642230123}
+--- !u!136 &5628161589357543536
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545275148131454571}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.08854031
+  m_Height: 0.1770806
+  m_Direction: 1
+  m_Center: {x: 0.0027439476, y: -0.00078132754, z: 0.03190058}
+--- !u!23 &7172548887642230123 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -415877729240891823, guid: 4c50df8e9a84a4a33aa74cc9bf062c30, type: 3}
+  m_PrefabInstance: {fileID: 1851122790184284986}
+  m_PrefabAsset: {fileID: 0}
