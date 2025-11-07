@@ -5,7 +5,7 @@ using UnityEngine;
 public class BuildingManager : MonoBehaviour
 {
     public static BuildingManager instance;
-    List<BuildingBase> buildings;
+    [SerializeField] List<BuildingBase> buildings;
 
     void Awake()
     {
@@ -32,5 +32,18 @@ public class BuildingManager : MonoBehaviour
         {
             b.OnDayCycle();
         }
+    }
+
+    public int CountBuildingType(BuildingType type)
+    {
+        int count = 0;
+        foreach (BuildingBase b in buildings)
+        {
+            if (b.BuildingType == type)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 }
