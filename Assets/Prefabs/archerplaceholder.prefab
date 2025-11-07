@@ -140,4 +140,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3fa92ef51450495a84897ee7560a93b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  outlineMaterial: {fileID: 2100000, guid: f5ea81a833a1649e2a382c6e66bdeaba, type: 2}
   arrowPrefab: {fileID: 5185233238152244382, guid: 6a724de8cbe77454d8e1f79e84ba5cd6, type: 3}
