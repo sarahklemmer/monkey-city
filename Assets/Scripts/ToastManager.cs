@@ -1,12 +1,7 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 using System.Collections;
-using UnityEngine.Rendering;
-using Unity.VisualScripting;
-using NUnit.Framework;
 using System.Collections.Generic;
-using UnityEngine.WSA;
 
 public struct ToastData
 {
