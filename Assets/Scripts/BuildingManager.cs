@@ -33,17 +33,4 @@ public class BuildingManager : MonoBehaviour
             b.OnDayCycle();
         }
     }
-
-    public int CountBuildingType(BuildingType type)
-    {
-        int count = 0;
-        foreach (BuildingBase b in buildings)
-        {
-            if (b.BuildingType == type)
-            {
-                count++;
-            }
-        }
-        return count;
-    }
 }
