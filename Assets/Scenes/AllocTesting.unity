@@ -2755,12 +2755,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7884ea7b695774fd4bf0b68109794150, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 64
-  buildingMask:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!4 &514059297
 Transform:
   m_ObjectHideFlags: 0

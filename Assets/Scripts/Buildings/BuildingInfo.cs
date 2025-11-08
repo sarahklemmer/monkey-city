@@ -26,7 +26,7 @@ public class BuildingInfo : MonoBehaviour
 
         info.SetActive(true);
         // display info using whatever components however you'd like :D
-        removeButton.GetComponent<Button>().onClick.AddListener(building.Remove);
+        removeButton.GetComponent<Button>().onClick.AddListener(building.RemoveNextMonkey);
     }
 
     public void Hide()

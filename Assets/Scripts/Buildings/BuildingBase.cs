@@ -41,12 +41,26 @@ public abstract class BuildingBase : MonoBehaviour
     {
 
     }
-    
-    public virtual void Remove()
+
+    public virtual bool RemoveMonkey(MonkeyController m)
     {
-        if (monkeys.count <= 0) return;
-        --monkeys.count;
-        //TODO: other removal stuff
+        return monkeys.Remove(m);
+    }
+
+    public virtual void RemoveNextMonkey()
+    {
+        monkeys.Remove(NextMonkeyToRemove());
+    }
+
+    public virtual bool AddMonkey(MonkeyController monkey)
+    {
+        // returns whether the add was succeeded
+        return monkeys.Add(monkey);
+    }
+    
+    public virtual MonkeyController NextMonkeyToRemove()
+    {
+        return monkeys.MonkeyToDeallocate();
     }
 
     void OnMouseDown()

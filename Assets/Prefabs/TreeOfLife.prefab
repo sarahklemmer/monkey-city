@@ -60,9 +60,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5317621499353570459, guid: 7298d741162d2474e82ff27a9e9b3bf2, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -2914413575082383075, guid: 7298d741162d2474e82ff27a9e9b3bf2, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7298d741162d2474e82ff27a9e9b3bf2, type: 3}
       propertyPath: m_Name
       value: TreeOfLife
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7298d741162d2474e82ff27a9e9b3bf2, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208135887483320983, guid: 7298d741162d2474e82ff27a9e9b3bf2, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -76,7 +92,7 @@ PrefabInstance:
       addedObject: {fileID: 4591166395795170061}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7298d741162d2474e82ff27a9e9b3bf2, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5834963534661490409}
+      addedObject: {fileID: -5883808233503541963}
   m_SourcePrefab: {fileID: 100100000, guid: 7298d741162d2474e82ff27a9e9b3bf2, type: 3}
 --- !u!1 &4743004110558395889 stripped
 GameObject:
@@ -115,8 +131,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineMaterial: {fileID: 2100000, guid: f5ea81a833a1649e2a382c6e66bdeaba, type: 2}
   targetRenderer: {fileID: 8545974493898764517}
---- !u!136 &5834963534661490409
-CapsuleCollider:
+--- !u!65 &-5883808233503541963
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -133,11 +149,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 8.895138
-  m_Height: 30.932627
-  m_Direction: 1
-  m_Center: {x: -17, y: 14.966326, z: 0}
+  serializedVersion: 3
+  m_Size: {x: 20, y: 20, z: 20}
+  m_Center: {x: -18, y: 10, z: 0}
 --- !u!23 &8545974493898764517 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -4932982780345470907, guid: 7298d741162d2474e82ff27a9e9b3bf2, type: 3}
