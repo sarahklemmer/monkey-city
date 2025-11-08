@@ -33,4 +33,20 @@ public class BuildingManager : MonoBehaviour
             b.OnDayCycle();
         }
     }
+
+    public void MakeBuildingsTransparent()
+    {
+        foreach (BuildingBase b in buildings)
+        {
+            b.MakeTransparent();
+        }
+    }
+
+    public void MakeBuildingsOpaque()
+    {
+        foreach (BuildingBase b in buildings)
+        {
+            b.MakeOpaque();
+        }
+    }
 }

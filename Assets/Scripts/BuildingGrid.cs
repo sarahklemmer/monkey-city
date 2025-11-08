@@ -142,6 +142,8 @@ public class BuildingGrid : MonoBehaviour
     {
         Assert.IsNotNull(placementIndicatorPrefab, "Assign a placementIndicatorPrefab in the Inspector!");
 
+        BuildingManager.instance.MakeBuildingsTransparent();
+
         if (placementIndicatorsParent.childCount != 0)
         {
             DestroyBuildingPlacementIndicators();

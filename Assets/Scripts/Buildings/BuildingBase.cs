@@ -8,6 +8,9 @@ public abstract class BuildingBase : MonoBehaviour
 
     protected Building building;
     protected BuildingMonkeys monkeys;
+    protected Renderer[] renderers;
+    protected Collider[] colliders;
+    public bool selectable{ get; private set; }
 
     // functions to be overrode
     public abstract void OnDayCycle();
@@ -35,6 +38,9 @@ public abstract class BuildingBase : MonoBehaviour
         glow.Initialize(outlineMaterial, targetRenderer);
         // TODO: make this dynamic, placeholder of 2 for now
         monkeys = new(2);
+        renderers = GetComponentsInChildren<Renderer>(true);
+        colliders = GetComponentsInChildren<Collider>(true);
+        selectable = true;
     }
 
     protected virtual void UpdateBehavior()
@@ -77,4 +83,92 @@ public abstract class BuildingBase : MonoBehaviour
     {
         glow.SetGlow(false);
     }
+
+    //START OF AI CODE
+    public void MakeTransparent()
+    {
+        if (renderers == null) return;
+        selectable = false;
+        foreach (var c in colliders) c.enabled = false;
+
+        foreach (var r in renderers)
+        {
+            var mats = r.materials; // per-instance
+            for (int i = 0; i < mats.Length; i++)
+            {
+                var m = mats[i];
+
+                // Set alpha (URP uses _BaseColor, built-in uses _Color)
+                if (m.HasProperty("_BaseColor"))
+                {
+                    var c = m.GetColor("_BaseColor");
+                    c.a = 0.2f;
+                    m.SetColor("_BaseColor", c);
+                }
+                else if (m.HasProperty("_Color"))
+                {
+                    var c = m.color;
+                    c.a = 0.2f;
+                    m.color = c;
+                }
+
+                // URP surface toggle if available
+                if (m.HasProperty("_Surface")) m.SetFloat("_Surface", 1f); // Transparent
+
+                // Built-in Standard fallback settings
+                m.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                m.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                m.SetInt("_ZWrite", 0);
+                m.DisableKeyword("_ALPHATEST_ON");
+                m.EnableKeyword("_ALPHABLEND_ON");
+                m.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                m.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+            }
+        }
+
+        
+    }
+
+    public void MakeOpaque()
+    {
+        if (renderers == null) return;
+        selectable = true;
+        foreach (var c in colliders) c.enabled = true;
+
+        foreach (var r in renderers)
+        {
+            var mats = r.materials; // per-instance
+            for (int i = 0; i < mats.Length; i++)
+            {
+                var m = mats[i];
+
+                // Restore alpha
+                if (m.HasProperty("_BaseColor"))
+                {
+                    var c = m.GetColor("_BaseColor");
+                    c.a = 1f;
+                    m.SetColor("_BaseColor", c);
+                }
+                else if (m.HasProperty("_Color"))
+                {
+                    var c = m.color;
+                    c.a = 1f;
+                    m.color = c;
+                }
+
+                // URP surface toggle if available
+                if (m.HasProperty("_Surface")) m.SetFloat("_Surface", 0f); // Opaque
+
+                // Built-in Standard fallback settings
+                m.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                m.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+                m.SetInt("_ZWrite", 1);
+                m.DisableKeyword("_ALPHATEST_ON");
+                m.DisableKeyword("_ALPHABLEND_ON");
+                m.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                m.renderQueue = -1; // use shader default
+            }
+        }
+    }
+    //END OF AI CODE
 }

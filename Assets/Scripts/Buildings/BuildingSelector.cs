@@ -24,8 +24,10 @@ public class BuildingSelector : MonoBehaviour
 
     public void Select(BuildingBase b)
     {
+        if (b == null) return;
+        if (!b.selectable) return;
         // double clicking a building should deselect it, and selecting null should just deselect
-        if(currentlySelected == b || b == null)
+        if(currentlySelected == b)
         {
             Deselect();
             return;
