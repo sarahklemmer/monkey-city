@@ -5,17 +5,20 @@ public class PlacementIndicatorOnClick : MonoBehaviour
     BuildingType buildingType;
     int grid_x;
     int grid_y;
+    bool isTreeOfLifeIndicator = false;
 
-    public void Initialize(Building building, int grid_x, int grid_y)
+    public void Initialize(Building building, int grid_x, int grid_y, bool isTreeOfLifeIndicator = false)
     {
         buildingType = building.type;
         this.grid_x = grid_x;
         this.grid_y = grid_y;
+        this.isTreeOfLifeIndicator = isTreeOfLifeIndicator;
     }
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.X)) ReturnToNormalState();
+        // dont want to let the player quit out of placing the tutorial (tree of life) indicator accidentally
+        if (Input.GetKey(KeyCode.X) && !isTreeOfLifeIndicator) ReturnToNormalState();
     }
 
     void OnMouseDown()

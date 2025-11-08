@@ -12,6 +12,7 @@ public class BuildingGrid : MonoBehaviour
     [SerializeField] int GRID_SIZE = 20;
     const float BASE_PLANE_SIZE = 10f;
     private Building[,] grid;
+    private bool treeOfLifePlaced = false;
 
     void Awake()
     {
@@ -79,6 +80,8 @@ public class BuildingGrid : MonoBehaviour
     {
         Assert.IsTrue(CanPlace(x_start, y_start, building), "Trying to place building that can't be placed!");
 
+        if (building.type == BuildingType.TreeOfLife) treeOfLifePlaced = true;
+
         int x_end = BuildingUtils.TypeToDimensions(building.type).width + x_start;
         int y_end = BuildingUtils.TypeToDimensions(building.type).height + y_start;
 
@@ -141,6 +144,7 @@ public class BuildingGrid : MonoBehaviour
     public void SpawnBuildingPlacementIndicators(Building building)
     {
         Assert.IsNotNull(placementIndicatorPrefab, "Assign a placementIndicatorPrefab in the Inspector!");
+        if (!treeOfLifePlaced) return;
 
         BuildingManager.instance.MakeBuildingsTransparent();
 
@@ -196,8 +200,8 @@ public class BuildingGrid : MonoBehaviour
         Vector3 pos = new Vector3(GridXToWorldX(x), 0, GridYToWorldZ(y));
 
         GameObject ind = Instantiate(placementIndicatorPrefab, pos, Quaternion.identity, placementIndicatorsParent);
-        // set the building to be spawned when the indicator is clicked
-        ind.GetComponent<PlacementIndicatorOnClick>().Initialize(building, x, y);
+        // set the building to be spawned when the indicator is clicked also make sure it can't be canceled with an x press if we're spawning the treeoflife
+        ind.GetComponent<PlacementIndicatorOnClick>().Initialize(building, x, y, building.type == BuildingType.TreeOfLife);
     }
 }
 
