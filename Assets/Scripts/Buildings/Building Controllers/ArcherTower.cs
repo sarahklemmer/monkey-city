@@ -129,7 +129,7 @@ public class ArcherTower : BuildingBase
 
     public override void OnDestroy()
     {
-        /* do nothing */
+        monkeys.FreeMonkeys();
     }
 
     void OnDrawGizmosSelected()

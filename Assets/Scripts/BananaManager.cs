@@ -35,7 +35,7 @@ public class BananaManager : MonoBehaviour
 
     public void RemoveBananas(int num)
     {
-        Assert.IsTrue(bananaCount <= num, "removing more bananas than we have!");
+        Assert.IsTrue(bananaCount >= num, "removing more bananas than we have!");
         bananaCount -= num;
         UpdateBananaCountText();
     }

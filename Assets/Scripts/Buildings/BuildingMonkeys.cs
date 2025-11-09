@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
 public class BuildingMonkeys
 {
@@ -36,6 +37,17 @@ public class BuildingMonkeys
     public MonkeyController MonkeyToDeallocate()
     {
         return monkeys.Count > 0 ? monkeys[0] : null;
+    }
+
+    public void FreeMonkeys()
+    {
+        // don't want to loop through monkeys while we're removing stuff from it
+        List<MonkeyController> temp = new List<MonkeyController>(monkeys);
+        foreach (MonkeyController m in temp)
+        {
+            m.allocation.Deallocate();
+        }
+        Assert.IsTrue(monkeys.Count == 0, "didn't properly free all monkeys!");
     }
 
     public int Count() => monkeys.Count;

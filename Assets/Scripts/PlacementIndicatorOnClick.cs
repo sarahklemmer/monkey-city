@@ -32,6 +32,12 @@ public class PlacementIndicatorOnClick : MonoBehaviour
     {
         try
         {
+            // pay for building
+            if (buildingType != BuildingType.TreeOfLife)
+            {
+                BananaManager.instance.RemoveBananas(BuildingTypeToPrice.GetPrice(buildingType));
+            }
+
             Building placedBuilding = new Building(buildingType);
 
             BuildingGrid.instance.Place(grid_x, grid_y, placedBuilding);
@@ -48,11 +54,6 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
             pos.x += (dim.width - 1) * 0.5f;
             pos.z += (dim.height - 1) * 0.5f;
-
-            if (buildingType != BuildingType.TreeOfLife)
-            {
-                BananaManager.instance.RemoveBananas(BuildingTypeToPrice.GetPrice(buildingType));
-            }
 
             GameObject buildingObj = Instantiate(prefab, pos, prefab.transform.rotation);
 

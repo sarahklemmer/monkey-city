@@ -36,6 +36,7 @@ public class BuildingManager : MonoBehaviour
 
     public void MakeBuildingsTransparent()
     {
+        BuildingSelector.instance.Deselect();
         foreach (BuildingBase b in buildings)
         {
             b.MakeTransparent();

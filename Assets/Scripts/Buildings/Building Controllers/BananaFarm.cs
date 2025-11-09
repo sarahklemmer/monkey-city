@@ -17,6 +17,6 @@ public class BananaFarm : BuildingBase
 
     public override void OnDestroy()
     {
-        /* do nothing */
+        monkeys.FreeMonkeys();
     }
 }
