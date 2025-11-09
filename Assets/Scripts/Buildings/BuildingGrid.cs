@@ -45,11 +45,16 @@ public class BuildingGrid : MonoBehaviour
     {
         return grid_x - (GRID_SIZE / 2);
     }
-    
+
     public float GridYToWorldZ(int grid_y)
     {
         return grid_y - (GRID_SIZE / 2);
     }
+    
+    public float WorldY()
+    {
+        return transform.position.y;
+    }   
 
 
     // starts at lower left corner of building

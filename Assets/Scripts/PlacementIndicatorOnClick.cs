@@ -60,9 +60,8 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
             if (buildingType == BuildingType.TreeOfLife)
             {
-                // if it's the tree of life we add 1 to the population and don't spend any money
-                //TODO: make this like 5
-                PopulationManager.instance.AddToPopulation(1);
+                Debug.Log("here");
+                PopulationManager.instance.AddToPopulation(5);
             } else
             {
                 // otherwise spend bananas
