@@ -39,4 +39,8 @@ public class BuildingMonkeys
     {
         return monkeys.Count > 0 ? monkeys[0] : null;
     }
+
+    public int Count() => monkeys.Count;
+    public int Capacity() => capacity;
+    public float CountOverCapacity() => ((float)Count()) / Capacity();
 }

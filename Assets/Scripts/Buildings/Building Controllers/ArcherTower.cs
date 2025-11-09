@@ -18,10 +18,13 @@ public class ArcherTower : BuildingBase
     {
         base.SharedAwakeBehavior();
         building = new(BuildingType.ArcherTower);
+        monkeys = new(1);
     }
 
     void Update()
     {
+        // we can't attack if we're unmanned
+        if (monkeys.Count() == 0) return;
         if (targetEnemy == null)
         {
             FindNearestEnemy();

@@ -100,6 +100,10 @@ public abstract class BuildingBase : MonoBehaviour
 
     public BuildingType GetBuildingType() => building.type;
 
+    public string GetMonkeyAllocString()
+    {
+        return monkeys.Count().ToString() + "/" + monkeys.Capacity() + " monkeys";
+    }
     //START OF AI CODE
     public void MakeTransparent()
     {
@@ -142,7 +146,7 @@ public abstract class BuildingBase : MonoBehaviour
             }
         }
 
-        
+
     }
 
     public void MakeOpaque()

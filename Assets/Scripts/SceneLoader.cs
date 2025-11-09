@@ -1,11 +1,19 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Assertions;
 
 public class SceneLoader : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public void LoadScene(string sceneName)
+    static Scene scene;
+
+    void Awake()
     {
-        SceneManager.LoadScene(sceneName);
+        scene = SceneManager.GetActiveScene();
+    }
+    
+    public static void ReloadScene()
+    {
+        Assert.IsTrue(scene.IsValid(), "Couldn't grab scene properly!");
+        SceneManager.LoadScene(scene.name);
     }
 }

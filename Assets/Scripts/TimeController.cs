@@ -9,8 +9,18 @@ public class TimeController : MonoBehaviour
     [SerializeField] float minutesPerDay = 8f;
     float secondsToDay;
 
-    void Start()
+    public static TimeController instance;
+    
+    void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Debug.LogError("duplicate TimeController on " + gameObject.name + " destroying.");
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
         secondsToDay = 60 * minutesPerDay;
     }
 
