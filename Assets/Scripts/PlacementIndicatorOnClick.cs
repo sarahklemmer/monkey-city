@@ -15,7 +15,14 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKey(KeyCode.X)) BuildingGrid.instance.DestroyBuildingPlacementIndicators();
+        if(Input.GetKey(KeyCode.X)) 
+        {
+            BuildingGrid.instance.DestroyBuildingPlacementIndicators();
+            if (PlacementManager.instance != null)
+            {
+                PlacementManager.instance.ClearCurrentBuilding();
+            }
+        }
     }
 
     void OnMouseDown()
@@ -26,7 +33,6 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
         GameObject prefab = BuildingToPrefab.GetPrefab(buildingType);
 
-        // calculate position for building model
         Vector3 pos = new Vector3(
             BuildingGrid.instance.GridXToWorldX(grid_x) + prefab.transform.position.x,
             prefab.transform.position.y,
@@ -35,11 +41,9 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
         BuildingDimensions dim = BuildingUtils.TypeToDimensions(buildingType);
 
-        // center the model (translating from lower-left based coordinate system to center based)
         pos.x += (dim.width - 1) * 0.5f;
         pos.z += (dim.height - 1) * 0.5f;
 
-        // instantiate prefab
         GameObject buildingObj = Instantiate(prefab, pos, prefab.transform.rotation);
 
         placedBuilding.SetInstance(buildingObj);
@@ -57,7 +61,10 @@ public class PlacementIndicatorOnClick : MonoBehaviour
                 PopulationManager.instance.AddToPopulation(1);
             }
         }
-
-        BuildingGrid.instance.DestroyBuildingPlacementIndicators();
+        
+        if (PlacementManager.instance != null)
+        {
+            PlacementManager.instance.RefreshPlacementIndicators();
+        }
     }
 }

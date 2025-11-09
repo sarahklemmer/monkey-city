@@ -91,6 +91,50 @@ public class BuildingGrid : MonoBehaviour
         }
     }
 
+    // Remove building from grid by Building reference
+    public void RemoveBuilding(Building building)
+    {
+        if (building == null) return;
+
+        // Find and clear all cells occupied by this building
+        for (int x = 0; x < GRID_SIZE; x++)
+        {
+            for (int y = 0; y < GRID_SIZE; y++)
+            {
+                if (grid[x, y] == building)
+                {
+                    grid[x, y] = null;
+                }
+            }
+        }
+
+        Debug.Log($"Building removed from grid. Cells now available for placement.");
+    }
+
+    // NEW: Remove building from grid by GameObject reference
+    public void RemoveBuildingByGameObject(GameObject buildingGameObject)
+    {
+        if (buildingGameObject == null) return;
+
+        // Find the Building object that references this GameObject
+        for (int x = 0; x < GRID_SIZE; x++)
+        {
+            for (int y = 0; y < GRID_SIZE; y++)
+            {
+                if (grid[x, y] != null && grid[x, y].instance == buildingGameObject)
+                {
+                    // Found it! Now remove all cells with this Building reference
+                    Building buildingToRemove = grid[x, y];
+                    RemoveBuilding(buildingToRemove);
+                    Debug.Log($"Building removed from grid at ({x}, {y}). Cells now available for placement.");
+                    return;
+                }
+            }
+        }
+
+        Debug.LogWarning($"Could not find building {buildingGameObject.name} in grid!");
+    }
+
     // don't worry about how this works, it works
     public void FrameCameraIsoTopBottom()
     {
@@ -194,9 +238,6 @@ public class BuildingGrid : MonoBehaviour
         Vector3 pos = new Vector3(GridXToWorldX(x), 0, GridYToWorldZ(y));
 
         GameObject ind = Instantiate(placementIndicatorPrefab, pos, Quaternion.identity, placementIndicatorsParent);
-        // set the building to be spawned when the indicator is clicked
         ind.GetComponent<PlacementIndicatorOnClick>().Initialize(building, x, y);
     }
 }
-
-

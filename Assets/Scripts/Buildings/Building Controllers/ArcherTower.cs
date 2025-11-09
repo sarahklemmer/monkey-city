@@ -2,9 +2,13 @@ using UnityEngine;
 
 public class ArcherTower : BuildingBase
 {
+    private int level = 1;
+    private const int MAX_LEVEL = 3;
+    
     private float attackRange = 5f;
     private float attackDamage = 10f;
     private float attackCooldown = 1f; 
+    
     [SerializeField] GameObject arrowPrefab;
     private Transform firePoint;
     private float lastAttackTime;
@@ -85,6 +89,35 @@ public class ArcherTower : BuildingBase
             arrowScript.Initialize(targetEnemy, attackDamage); 
         }
     }
+
+    public void Upgrade()
+    {
+        if (level >= MAX_LEVEL) return;
+        
+        level++;
+        
+        switch (level)
+        {
+            case 2:
+                attackRange = 7f;
+                attackDamage = 15f;
+                attackCooldown = 0.8f;
+                break;
+            case 3:
+                attackRange = 10f;
+                attackDamage = 25f;
+                attackCooldown = 0.6f;
+                break;
+        }
+        
+        Debug.Log($"Archer Tower upgraded to level {level}!");
+    }
+
+    public int GetLevel() => level;
+    public bool IsMaxLevel() => level >= MAX_LEVEL;
+    public float GetAttackRange() => attackRange;
+    public float GetAttackDamage() => attackDamage;
+    public float GetAttackCooldown() => attackCooldown;
 
     public override void OnDayCycle()
     {

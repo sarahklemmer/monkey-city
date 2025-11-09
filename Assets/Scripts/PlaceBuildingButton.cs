@@ -15,19 +15,27 @@ public class PlaceBuildingButton : MonoBehaviour
     public void OnClick()
     {
         Assert.IsTrue(initialized, "trying to click non initialized button");
-        //TODO: add price checks)
+        //TODO: add price checks
         
         Building building = new Building(type);
         
-        // If Tree of Life, use single placement indicator (for tutorial)
-        if (type == BuildingType.TreeOfLife)
+        // Set this as the current building in PlacementManager
+        if (PlacementManager.instance != null)
         {
-            BuildingGrid.instance.SpawnSingleBuildingPlacementIndicators(building);
+            PlacementManager.instance.SetCurrentBuilding(building);
         }
         else
         {
-            BuildingGrid.instance.SpawnBuildingPlacementIndicators(building);
+            // Fallback if PlacementManager doesn't exist yet
+            // If Tree of Life, use single placement indicator (for tutorial)
+            if (type == BuildingType.TreeOfLife)
+            {
+                BuildingGrid.instance.SpawnSingleBuildingPlacementIndicators(building);
+            }
+            else
+            {
+                BuildingGrid.instance.SpawnBuildingPlacementIndicators(building);
+            }
         }
     }
 }
- 

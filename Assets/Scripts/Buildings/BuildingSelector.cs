@@ -5,6 +5,7 @@ public class BuildingSelector : MonoBehaviour
     public static BuildingSelector instance;
 
     BuildingBase currentlySelected = null;
+    
     void Awake()
     {
         if (instance != null && instance != this)
@@ -19,26 +20,32 @@ public class BuildingSelector : MonoBehaviour
 
     void OnMouseDown()
     {
-        //TODO: have monkeys leave
+        if (currentlySelected != null)
+        {
+            currentlySelected.DisableGlow();
+            currentlySelected = null;
+            BuildingInfo.instance.Hide();
+        }
     }
 
     public void Select(BuildingBase b)
     {
-        // hide old building info
-        BuildingInfo.instance.Hide();
-
         if (currentlySelected == b)
         {
-            // toggle off
             currentlySelected.DisableGlow();
             currentlySelected = null;
+            BuildingInfo.instance.Hide();
             return;
         }
 
-        if (currentlySelected != null) currentlySelected.DisableGlow();
+        if (currentlySelected != null)
+        {
+            currentlySelected.DisableGlow();
+        }
+
         currentlySelected = b;
         currentlySelected.EnableGlow();
-        // show new building info
+        
         BuildingInfo.instance.Show(currentlySelected);
     }
 }

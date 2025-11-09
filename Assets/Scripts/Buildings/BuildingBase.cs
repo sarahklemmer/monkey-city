@@ -2,65 +2,58 @@ using UnityEngine;
 
 public abstract class BuildingBase : MonoBehaviour
 {
-    [SerializeField] private Material outlineMaterial;
-    [SerializeField] private Renderer targetRenderer;
-    private GlowEffect glow;
-
     protected Building building;
-    protected BuildingMonkeys monkeys;
-
-    // functions to be overrode
+    
     public abstract void OnDayCycle();
     public abstract void OnDestroy();
 
-    void Update()
-    {
-        UpdateBehavior();
-    }
-
-    // basically RAII for the BuildingManager, super handy
-    protected virtual void OnEnable()
-    {
-        BuildingManager.instance.AddBuilding(this);
-    }
-
-    protected virtual void OnDisable()
-    {
-        BuildingManager.instance.RemoveBuilding(this);
-    }
-
     protected virtual void SharedAwakeBehavior()
     {
-        glow = gameObject.AddComponent<GlowEffect>();
-        glow.Initialize(outlineMaterial, targetRenderer);
-        // TODO: make this dynamic, placeholder of 2 for now
-        monkeys = new(2);
     }
 
-    protected virtual void UpdateBehavior()
-    {
-
-    }
-    
     public virtual void Remove()
     {
-        if (monkeys.count <= 0) return;
-        --monkeys.count;
-        //TODO: other removal stuff
+        if (BuildingGrid.instance != null)
+        {
+            BuildingGrid.instance.RemoveBuildingByGameObject(gameObject);
+            
+            if (PlacementManager.instance != null)
+            {
+                PlacementManager.instance.RefreshPlacementIndicators();
+            }
+        }
+        
+        if (BuildingInfo.instance != null)
+        {
+            BuildingInfo.instance.Hide();
+        }
+        
+        Destroy(gameObject);
     }
 
     void OnMouseDown()
     {
-        BuildingSelector.instance.Select(this);
+        if (BuildingInfo.instance != null)
+        {
+            BuildingInfo.instance.Show(this);
+        }
     }
 
-    public void EnableGlow()
+    public virtual void EnableGlow()
     {
-        glow.SetGlow(true);
     }
 
-    public void DisableGlow()
+    public virtual void DisableGlow()
     {
-        glow.SetGlow(false);
+    }
+
+    public virtual int GetMonkeyCount()
+    {
+        return 0;
+    }
+
+    public virtual int GetMonkeyCapacity()
+    {
+        return 0;
     }
 }
