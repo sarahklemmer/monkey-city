@@ -69,7 +69,7 @@ public class BuildingInfo : MonoBehaviour
         Button removeBtn = removeButton.GetComponent<Button>();
         removeBtn.onClick.RemoveAllListeners();
         removeBtn.onClick.AddListener(() => {
-            building.RemoveNextMonkey();
+            building.NextMonkeyToRemove().allocation.Deallocate();
             // Refresh the display to show updated monkey count
             if (building.GetMonkeyCount() > 0)
             {
@@ -218,23 +218,15 @@ public class BuildingInfo : MonoBehaviour
 
     public void Hide()
     {
+        Debug.Log("hiding");
         currentBuilding = null;
-        
-        if (removeButton != null)
-            removeButton.SetActive(false);
-        if (upgradeButton != null)
-            upgradeButton.SetActive(false);
-        if (upgradeInfoText != null)
-            upgradeInfoText.gameObject.SetActive(false);
-        if (info != null)
-            info.SetActive(false);
-        
-        if (backgroundBlocker != null)
-            backgroundBlocker.SetActive(false);
-        
-        if (removeButton != null)
-            removeButton.GetComponent<Button>().onClick.RemoveAllListeners();
-        if (upgradeButton != null)
-            upgradeButton.GetComponent<Button>().onClick.RemoveAllListeners();
+
+        removeButton.SetActive(false);
+        upgradeButton.SetActive(false);
+        upgradeInfoText.gameObject.SetActive(false);
+        info.SetActive(false);
+        backgroundBlocker.SetActive(false);
+        removeButton.GetComponent<Button>().onClick.RemoveAllListeners();
+        upgradeButton.GetComponent<Button>().onClick.RemoveAllListeners();
     }
 }
