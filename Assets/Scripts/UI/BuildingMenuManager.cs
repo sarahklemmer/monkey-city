@@ -34,6 +34,20 @@ public class BuildingMenuManager : MonoBehaviour
     
     public Color normalColor = new Color(0.8f, 0.8f, 0.8f, 1f); // Light gray
     public Color selectedColor = new Color(1f, 0.9f, 0.5f, 1f); // Yellow sheen
+
+    public static BuildingMenuManager instance;
+
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Debug.LogError("duplicate BuildingMenuManager on " + gameObject.name + " destroying.");
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+    }
     
     void Start()
     {
@@ -123,7 +137,7 @@ public class BuildingMenuManager : MonoBehaviour
         defenseBackground.color = normalColor;
         happyBackground.color = normalColor;
     }
-    
+
     // Call this from your X/close button
     public void CloseAllMenus()
     {
@@ -131,5 +145,10 @@ public class BuildingMenuManager : MonoBehaviour
         defenseToggle.isOn = false;
         happyToggle.isOn = false;
         HideAllMenus();
+    }
+    
+    public void UpdatePrices()
+    {
+        scrollableList.PopulateList(bananaBuildings);
     }
 }

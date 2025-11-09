@@ -71,9 +71,11 @@ public class ScrollableList : MonoBehaviour
 
             BuildingListItem listItem = item.GetComponent<BuildingListItem>();
 
-            // Fill it with data
+            // fill with data and fetch new price
             Assert.IsNotNull(listItem, "itemPrefab missing BuildingListItem");
-            listItem.Setup(buildingData);
+            BuildingData accuratelyPriced = buildingData;
+            accuratelyPriced.cost = BuildingTypeToPrice.GetPrice(accuratelyPriced.type);
+            listItem.Setup(accuratelyPriced);
 
             RectTransform itemRect = item.GetComponent<RectTransform>();
             Assert.IsNotNull(itemRect, "itemPrefab missing RectTransform");

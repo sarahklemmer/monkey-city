@@ -45,6 +45,8 @@ public class PlacementIndicatorOnClick : MonoBehaviour
             pos.x += (dim.width - 1) * 0.5f;
             pos.z += (dim.height - 1) * 0.5f;
 
+            // spend bananas BEFORE INSTANTIATING, as creating a new building will affect price
+            if(buildingType != BuildingType.TreeOfLife) BananaManager.instance.RemoveBananas(BuildingTypeToPrice.GetPrice(buildingType));
             // instantiate prefab
             GameObject buildingObj = Instantiate(prefab, pos, prefab.transform.rotation);
 
@@ -58,10 +60,13 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
             if (buildingType == BuildingType.TreeOfLife)
             {
-                if (PopulationManager.instance != null)
-                {
-                    PopulationManager.instance.AddToPopulation(1);
-                }
+                // if it's the tree of life we add 1 to the population and don't spend any money
+                //TODO: make this like 5
+                PopulationManager.instance.AddToPopulation(1);
+            } else
+            {
+                // otherwise spend bananas
+                BuildingMenuManager.instance.UpdatePrices();
             }
         }
         finally

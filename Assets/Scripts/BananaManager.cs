@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.Assertions;
 
 public class BananaManager : MonoBehaviour
 {
@@ -23,7 +24,6 @@ public class BananaManager : MonoBehaviour
 
     void Start()
     {
-        bananaCount = 0;
         UpdateBananaCountText();
     }
 
@@ -31,17 +31,13 @@ public class BananaManager : MonoBehaviour
     {
         bananaCount += num;
         UpdateBananaCountText();
-        Debug.Log("Banana(s) added! Total bananas: " + bananaCount);
     }
 
-    public void SpendBananas(int num){
-        if(bananaCount >= num){
-            bananaCount -= num;
-            Debug.Log("Banana(s) spent! Total bananas: " + bananaCount);
-            UpdateBananaCountText();
-        } else {
-            Debug.Log("Not enough bananas to spend!");
-        }
+    public void RemoveBananas(int num)
+    {
+        Assert.IsTrue(bananaCount <= num, "removing more bananas than we have!");
+        bananaCount -= num;
+        UpdateBananaCountText();
     }
 
     public int GetBananas() => bananaCount;

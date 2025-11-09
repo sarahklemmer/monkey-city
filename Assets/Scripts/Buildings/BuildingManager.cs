@@ -49,4 +49,8 @@ public class BuildingManager : MonoBehaviour
             b.MakeOpaque();
         }
     }
+
+    // - 1 for TreeOfLife
+    public int NumBuildings() => buildings.Count - 1;
+    public int NumBuildings(BuildingType type) => buildings.Count(b => b.GetBuildingType() == type);
 }

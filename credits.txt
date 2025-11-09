@@ -1,2 +1,3 @@
 All shaders are written by chatgpt, and the materials/shaders related code in MonkeyOnClick is all also from chatgpt
 The block in BuildingBase marked "AI code" that handles making the buildings opaque/transparent is written by chatgpt
+DayNightToggle is all written by chatgpt

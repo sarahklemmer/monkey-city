@@ -84,6 +84,8 @@ public abstract class BuildingBase : MonoBehaviour
         glow.SetGlow(false);
     }
 
+    public BuildingType GetBuildingType() => building.type;
+
     //START OF AI CODE
     public void MakeTransparent()
     {

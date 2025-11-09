@@ -15,7 +15,8 @@ public class PlaceBuildingButton : MonoBehaviour
     public void OnClick()
     {
         Assert.IsTrue(initialized, "trying to click non initialized button");
-        //TODO: add price checks)
+        // if we have less bananas than required just return
+        if (BananaManager.instance.GetBananas() < BuildingTypeToPrice.GetPrice(type)) return;
         
         Building building = new Building(type);
         
