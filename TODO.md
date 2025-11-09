@@ -5,3 +5,4 @@
 5. make it so that the chimps stay level rather than rising in the air when attacking tall buildings
 6. make it so that all classes extending buildingbase are forced to specify their capacity
 7. when a building is destroyed, the monkeys inside it come out
+8. isloate changing allocation state better in monkeycontroller and buildingmonkeys, as right now they interfere with each other and that shouldn't be the case
