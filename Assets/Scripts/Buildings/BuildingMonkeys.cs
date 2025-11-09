@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+using System.Collections.Generic;
+
 public class BuildingMonkeys
 {
     List<MonkeyController> monkeys;
@@ -10,6 +12,9 @@ public class BuildingMonkeys
         monkeys = new();
         this.capacity = capacity;
     }
+
+    // ADD THIS PROPERTY
+    public int count => monkeys.Count;
 
     public bool CanAllocate()
     {

@@ -17,22 +17,27 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
     void Update()
     {
-        // dont want to let the player quit out of placing the tutorial (tree of life) indicator accidentally
-        if (Input.GetKey(KeyCode.X) && !isTreeOfLifeIndicator) ReturnToNormalState();
+        if (Input.GetKey(KeyCode.X) && !isTreeOfLifeIndicator)
+        {
+            ReturnToNormalState();
+            
+            if (PlacementManager.instance != null)
+            {
+                PlacementManager.instance.ClearCurrentBuilding();
+            }
+        }
     }
 
     void OnMouseDown()
     {
         try
         {
-            
             Building placedBuilding = new Building(buildingType);
 
             BuildingGrid.instance.Place(grid_x, grid_y, placedBuilding);
 
             GameObject prefab = BuildingToPrefab.GetPrefab(buildingType);
 
-            // calculate position for building model
             Vector3 pos = new Vector3(
                 BuildingGrid.instance.GridXToWorldX(grid_x) + prefab.transform.position.x,
                 prefab.transform.position.y,
@@ -41,18 +46,19 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
             BuildingDimensions dim = BuildingUtils.TypeToDimensions(buildingType);
 
-            // center the model (translating from lower-left based coordinate system to center based)
             pos.x += (dim.width - 1) * 0.5f;
             pos.z += (dim.height - 1) * 0.5f;
 
-            // spend bananas BEFORE INSTANTIATING, as creating a new building will affect price
-            if(buildingType != BuildingType.TreeOfLife) BananaManager.instance.RemoveBananas(BuildingTypeToPrice.GetPrice(buildingType));
-            // instantiate prefab
+            if (buildingType != BuildingType.TreeOfLife)
+            {
+                BananaManager.instance.RemoveBananas(BuildingTypeToPrice.GetPrice(buildingType));
+            }
+
             GameObject buildingObj = Instantiate(prefab, pos, prefab.transform.rotation);
 
             placedBuilding.SetInstance(buildingObj);
 
-            //TODO: incorporate BuildingHealth into BuildingBase, this is here for now
+            // TODO: incorporate BuildingHealth into BuildingBase, this is here for now
             if (buildingObj.GetComponent<BuildingHealth>() == null)
             {
                 buildingObj.AddComponent<BuildingHealth>();
@@ -60,12 +66,19 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
             if (buildingType == BuildingType.TreeOfLife)
             {
-                Debug.Log("here");
-                PopulationManager.instance.AddToPopulation(5);
-            } else
+                if (PopulationManager.instance != null)
+                {
+                    PopulationManager.instance.AddToPopulation(5);
+                }
+            }
+            else
             {
-                // otherwise spend bananas
                 BuildingMenuManager.instance.UpdatePrices();
+            }
+
+            if (PlacementManager.instance != null)
+            {
+                PlacementManager.instance.RefreshPlacementIndicators();
             }
         }
         finally

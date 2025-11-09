@@ -15,20 +15,26 @@ public class PlaceBuildingButton : MonoBehaviour
     public void OnClick()
     {
         Assert.IsTrue(initialized, "trying to click non initialized button");
-        // if we have less bananas than required just return
+        
         if (BananaManager.instance.GetBananas() < BuildingTypeToPrice.GetPrice(type)) return;
         
         Building building = new Building(type);
         
-        // If Tree of Life, use single placement indicator (for tutorial)
-        if (type == BuildingType.TreeOfLife)
+        if (PlacementManager.instance != null)
         {
-            BuildingGrid.instance.SpawnSingleBuildingPlacementIndicators(building);
+            PlacementManager.instance.SetCurrentBuilding(building);
         }
         else
         {
-            BuildingGrid.instance.SpawnBuildingPlacementIndicators(building);
+            // If Tree of Life, use single placement indicator (for tutorial)
+            if (type == BuildingType.TreeOfLife)
+            {
+                BuildingGrid.instance.SpawnSingleBuildingPlacementIndicators(building);
+            }
+            else
+            {
+                BuildingGrid.instance.SpawnBuildingPlacementIndicators(building);
+            }
         }
     }
 }
- 

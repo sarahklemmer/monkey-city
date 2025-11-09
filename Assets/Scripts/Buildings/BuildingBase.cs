@@ -69,11 +69,14 @@ public abstract class BuildingBase : MonoBehaviour
         return monkeys.MonkeyToDeallocate();
     }
 
+    // From clickBuilding branch - used by BuildingInfo to show panel
     void OnMouseDown()
     {
+        // Use BuildingSelector instead of directly showing BuildingInfo
         BuildingSelector.instance.Select(this);
     }
 
+    // From clickBuilding branch - glow methods now use GlowEffect from develop
     public void EnableGlow()
     {
         glow.SetGlow(true);
@@ -82,6 +85,17 @@ public abstract class BuildingBase : MonoBehaviour
     public void DisableGlow()
     {
         glow.SetGlow(false);
+    }
+
+    // From clickBuilding branch - helper methods for BuildingInfo display
+    public virtual int GetMonkeyCount()
+    {
+        return monkeys?.count ?? 0;
+    }
+
+    public virtual int GetMonkeyCapacity()
+    {
+        return monkeys?.capacity ?? 0;
     }
 
     public BuildingType GetBuildingType() => building.type;
