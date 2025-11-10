@@ -46,7 +46,7 @@ public class PlacementManager : MonoBehaviour
                 }
                 else if (Tutorial.instance.tutorialActive && type == BuildingType.ArcherTower)
                 {
-                    BuildingGrid.instance.SpawnSingleBuildingPlacementIndicators(building, 0, 0);
+                    BuildingGrid.instance.SpawnSingleBuildingPlacementIndicators(building, 1, 1);
                 }
                 else
                 {
