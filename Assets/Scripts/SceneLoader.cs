@@ -5,7 +5,6 @@ using UnityEngine.Assertions;
 public class SceneLoader : MonoBehaviour
 {
     public static SceneLoader instance;
-    [SerializeField] Scene gameplayScene;
 
     void Awake()
     {
@@ -21,7 +20,8 @@ public class SceneLoader : MonoBehaviour
 
     public void ReloadScene()
     {
-        Assert.IsTrue(gameplayScene.IsValid(), "gameplayScene invalild!");
-        SceneManager.LoadScene(gameplayScene.name);
+        Scene scene = SceneManager.GetActiveScene();
+        Assert.IsTrue(scene.IsValid(), "gameplayScene invalild!");
+        SceneManager.LoadScene(scene.name);
     }
 }
