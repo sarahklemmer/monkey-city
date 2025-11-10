@@ -65,14 +65,18 @@ public class BuildingInfo : MonoBehaviour
         }
         else
         {
-            removeButton.SetActive(true);
-            
-            // Setup remove button to destroy the building
-            Button removeBtn = removeButton.GetComponent<Button>();
-            removeBtn.onClick.RemoveAllListeners();
-            removeBtn.onClick.AddListener(() => {
-                RemoveBuilding(building);
-            });
+            MonkeyController victim = currentBuilding.NextMonkeyToRemove();
+
+            removeButton.SetActive(victim != null);
+            if(victim != null)
+            {                
+                Button removeBtn = removeButton.GetComponent<Button>();
+                removeBtn.onClick.RemoveAllListeners();
+                removeBtn.onClick.AddListener(() => {
+                    victim.allocation.Deallocate();
+                    Hide();
+                });
+            }
         }
         
         if (backgroundBlocker != null)
@@ -119,34 +123,34 @@ public class BuildingInfo : MonoBehaviour
         }
     }
 
-    private void RemoveBuilding(BuildingBase building)
-    {
-        if (building == null) return;
+    // private void RemoveBuilding(BuildingBase building)
+    // {
+    //     if (building == null) return;
         
-        // Deallocate all monkeys from this building
-        while (building.GetMonkeyCount() > 0)
-        {
-            MonkeyController monkey = building.NextMonkeyToRemove();
-            if (monkey != null)
-            {
-                monkey.allocation.Deallocate();
-            }
-        }
+    //     // Deallocate all monkeys from this building
+    //     while (building.GetMonkeyCount() > 0)
+    //     {
+    //         MonkeyController monkey = building.NextMonkeyToRemove();
+    //         if (monkey != null)
+    //         {
+    //             monkey.allocation.Deallocate();
+    //         }
+    //     }
         
-        // Clear the grid space
-        if (BuildingGrid.instance != null)
-        {
-            BuildingGrid.instance.ClearBuildingFromGrid(building);
-        }
+    //     // Clear the grid space
+    //     if (BuildingGrid.instance != null)
+    //     {
+    //         BuildingGrid.instance.ClearBuildingFromGrid(building);
+    //     }
         
-        // Hide the UI
-        Hide();
+    //     // Hide the UI
+    //     Hide();
         
-        // Destroy the building GameObject
-        Destroy(building.gameObject);
+    //     // Destroy the building GameObject
+    //     Destroy(building.gameObject);
         
-        Debug.Log($"Building {building.GetType().Name} removed!");
-    }
+    //     Debug.Log($"Building {building.GetType().Name} removed!");
+    // }
 
     private void DisplayBuildingInfo(BuildingBase building)
     {
@@ -174,7 +178,7 @@ public class BuildingInfo : MonoBehaviour
             if (buildingStatsText != null)
             {
                 buildingStatsText.text = 
-                    $"Production: 1 Banana per day\n" +
+                    $"Production: {building.GetMonkeyCount() * 2} Bananas per day\n" +
                     $"Monkeys: {building.GetMonkeyCount()}/{building.GetMonkeyCapacity()}";
             }
         }

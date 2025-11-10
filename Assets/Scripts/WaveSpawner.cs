@@ -47,7 +47,7 @@ public class WaveSpawner : MonoBehaviour
     {
         if (instance != null && instance != this)
         {
-            Debug.LogError("duplicatxe WaveSpawner on " + gameObject.name + " destroying.");
+            Debug.LogError("duplicate WaveSpawner on " + gameObject.name + " destroying.");
             Destroy(gameObject);
             return;
         }
@@ -84,11 +84,15 @@ public class WaveSpawner : MonoBehaviour
     {
         while (true)
         {
-            if(spawningPaused) yield return new WaitForSeconds(0.5f);
+            if (spawningPaused)
+            {
+                Debug.Log("spawning paused");
+                yield return new WaitForSeconds(0.5f);
+            }
             // Check if attacks should start
             if (!attacksUnlocked)
             {
-                int currentBananas = BananaManager.instance.GetBananas();
+                int currentBananas = BananaManager.instance.GetBananasGenerated();
                 if (currentBananas >= bananasRequiredToStartAttacks)
                 {
                     attacksUnlocked = true;
@@ -102,7 +106,7 @@ public class WaveSpawner : MonoBehaviour
             }
             
             // Check if player crossed a new threshold
-            int bananas = BananaManager.instance.GetBananas();
+            int bananas = BananaManager.instance.GetBananasGenerated();
             int currentThreshold = GetCurrentThreshold(bananas);
             
             if (currentThreshold > lastBananaThresholdCrossed)
@@ -161,7 +165,7 @@ public class WaveSpawner : MonoBehaviour
     {
         float waveSize = baseEnemiesPerWave * Mathf.Pow(waveScalingFactor, currentWave - 1);
         
-        int bananas = BananaManager.instance.GetBananas();
+        int bananas = BananaManager.instance.GetBananasGenerated();
         float bananaMultiplier = 1f;
         
         if (bananas >= bananaThreshold3)
@@ -196,7 +200,7 @@ public class WaveSpawner : MonoBehaviour
     private void SpawnEnemy()
     {
         // Get available enemy types based on banana count
-        int bananas = BananaManager.instance.GetBananas();
+        int bananas = BananaManager.instance.GetBananasGenerated();
         var availableEnemies = enemyTypes.Where(e => e.bananaThreshold <= bananas).ToList();
         
         if (availableEnemies.Count == 0)
@@ -283,7 +287,7 @@ public class WaveSpawner : MonoBehaviour
 
     private float GetTimeBetweenWaves()
     {
-        int bananas = BananaManager.instance.GetBananas();
+        int bananas = BananaManager.instance.GetBananasGenerated();
         float timeReduction = 0f;
         
         if (bananas >= bananaThreshold3)

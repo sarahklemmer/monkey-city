@@ -18,6 +18,7 @@ public class ArcherTower : BuildingBase
     {
         base.SharedAwakeBehavior();
         building = new(BuildingType.ArcherTower);
+        monkeys = new(1);
     }
 
     void Update()
@@ -44,7 +45,6 @@ public class ArcherTower : BuildingBase
     private void FindNearestEnemy()
     {
         EnemyAttacker[] enemies = FindObjectsByType<EnemyAttacker>(FindObjectsSortMode.None);
-        Debug.Log($"[ArcherTower] Searching for enemies. Found {enemies.Length} total enemies");
         
         float closestDist = Mathf.Infinity;
         EnemyAttacker closest = null;
@@ -54,7 +54,6 @@ public class ArcherTower : BuildingBase
             if (enemy.GetCurrentHealth() <= 0) continue;
             
             float dist = Vector3.Distance(transform.position, enemy.transform.position);
-            Debug.Log($"[ArcherTower] Enemy at distance: {dist:F2} (range: {attackRange})");
             
             if (dist <= attackRange && dist < closestDist)
             {
@@ -64,10 +63,6 @@ public class ArcherTower : BuildingBase
         }
 
         targetEnemy = closest;
-        if (targetEnemy == null)
-        {
-            Debug.Log("[ArcherTower] No enemies in range");
-        }
     }
 
     private bool IsInRange(EnemyAttacker enemy)

@@ -54,7 +54,7 @@ public class Tutorial : MonoBehaviour
     public void PlayerClickedTreeOfLifeButton()
     {
         Assert.AreEqual(tutorialStage, 1, "PlayerClickedTreeOfLifeButton called at wrong stage!");
-        message = "This is the center of your city. If it gets destroyed, you lose! It will also give you a new monkey every 3 days. Don't ask how.\nClick the indicator in the middle of the screen to place it!";
+        message = "This is the center of your city. If it gets destroyed, you lose! It will also give you a new monkey every 2 days. Don't ask how.\nClick the indicator in the middle of the screen to place it!";
         duration = 6f;
         Toast();
         ++tutorialStage;
@@ -75,7 +75,7 @@ public class Tutorial : MonoBehaviour
     {
         Assert.AreEqual(tutorialStage, 3, "PlayerClickedBananaFarmButtonFirstTime called at wrong stage!");
         message = "Don't see the placement indicator? Use the arrow keys to rotate the camera until you can find it.";
-        duration = 4f;
+        duration = 3f;
         Toast();
         ++tutorialStage;
     }
@@ -85,7 +85,7 @@ public class Tutorial : MonoBehaviour
     {
         Assert.AreEqual(tutorialStage, 4, "PlayerPlacesBananaFarm called at wrong stage!");
         message = "You can click on any building to get its stats and a description of what it does. Try clicking the banana farm!";
-        duration = 4f;
+        duration = 3f;
         Toast();
         ++tutorialStage;
     }
@@ -115,7 +115,7 @@ public class Tutorial : MonoBehaviour
     {
         Assert.AreEqual(tutorialStage, 7, "FirstMonkeyAllocatedToFarm called at wrong stage!");
         message = "Click on the building again to see its updated stats, and then allocate another monkey.";
-        duration = 3f;
+        duration = 2f;
         Toast();
         ++tutorialStage;
     }
@@ -124,8 +124,8 @@ public class Tutorial : MonoBehaviour
     public void PlayerClosesBananaFarmWindowAgainAndAllocatesMonkey()
     {
         Assert.AreEqual(tutorialStage, 8, "PlayerClosesBananaFarmWindowAgainAndAllocatesMonkey called at wrong stage!");
-        message = "It would be nice if your monkeys could just sit around farming bananas all day, but this jungle is also home to evil chimps who are attracted to banana-rich cities. We've given you some bananas to place an archer tower using the building menu. Assign a monkey to it to defend yourself.";
-        duration = 8f;
+        message = "We've given you some bananas to place an archer tower using the building menu. Assign a monkey to it to defend yourself from the other residents of the jungle...";
+        duration = 6f;
         Toast();
         BananaManager.instance.AddBananas(4);
         ++tutorialStage;
@@ -146,8 +146,10 @@ public class Tutorial : MonoBehaviour
     public void ChimpKilledByTower()
     {
         Assert.AreEqual(tutorialStage, 10, "ChimpKilledByTower called at wrong stage!");
-        message = "As your base gets bigger, bigger waves of chimps will come and try to destroy your village! If they get your tree of life, your city is destroyed and you'll have to rebuild from scratch. Make sure your defenses scale with your production, and make sure you upgrade your archer towers by clicking on them when you get the chance.";
-        duration = 5f;
+        duration = 4.5f;
+        message = "As your base gets bigger, bigger waves of chimps will come and try to destroy your village! If they get your tree of life, your city is destroyed and you'll have to rebuild from scratch.";
+        Toast();
+        message = "Make sure your defenses scale with your production, and make sure you upgrade your archer towers by clicking on them when you get the chance. Good luck!";
         Toast();
         FinishTutorial();
     }

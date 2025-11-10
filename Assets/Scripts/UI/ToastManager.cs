@@ -30,6 +30,7 @@ public class ToastManager : MonoBehaviour
 
     Queue<ToastData> toastQueue = new Queue<ToastData>();
 
+    private bool fading = false;
     private bool isShowingToast = false;
     private bool waitingForInput = false;
 
@@ -56,9 +57,10 @@ public class ToastManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (waitingForInput && Input.GetKeyDown(KeyCode.Space))
+        continuePrompt.SetActive(isShowingToast && !fading);
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            SkipToNextToast();
+            ForceEndCurrentToast();
         }
         if (!freezeToasts)
         {
@@ -88,8 +90,6 @@ public class ToastManager : MonoBehaviour
             StopAllCoroutines();
             toastCanvasGroup.alpha = 0f;
             toastPanel.SetActive(false);
-            if (continuePrompt != null)
-                continuePrompt.SetActive(false);
             isShowingToast = false;
             waitingForInput = false;
         }
@@ -127,9 +127,6 @@ public class ToastManager : MonoBehaviour
 
         if (data.waitForInput)
         {
-            if (continuePrompt != null)
-                continuePrompt.SetActive(true);
-                
             waitingForInput = true;
             
             // Wait until spacebar is pressed (handled in Update)
@@ -137,9 +134,6 @@ public class ToastManager : MonoBehaviour
             {
                 yield return null;
             }
-            
-            if (continuePrompt != null)
-                continuePrompt.SetActive(false);
         }
         else
         {
@@ -162,8 +156,7 @@ public class ToastManager : MonoBehaviour
     }
     IEnumerator FadeOutAndNext()
     {
-        if (continuePrompt != null)
-            continuePrompt.SetActive(false);
+        fading = true;
             
         float initialTime = Time.time;
         float progress = 0.0f;
@@ -179,5 +172,6 @@ public class ToastManager : MonoBehaviour
         toastCanvasGroup.alpha = 0.0f;
         toastPanel.SetActive(false);
         isShowingToast = false;
+        fading = false;
     }
 }

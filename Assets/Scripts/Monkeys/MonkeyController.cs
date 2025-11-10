@@ -47,7 +47,6 @@ public class MonkeyController : MonoBehaviour
 
     void OnMouseDown()
     {
-        glow.SetGlow(true);
         MonkeySelector.instance.Select(this);
     }
     

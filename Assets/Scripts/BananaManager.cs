@@ -7,6 +7,7 @@ public class BananaManager : MonoBehaviour
     [SerializeField] private GameObject bananaPrefab;
     [SerializeField] private TextMeshProUGUI bananaCountText;
     [SerializeField] private int bananaCount = 0;
+    private int bananasGenerated = 0;
 
     public static BananaManager instance;
 
@@ -30,6 +31,7 @@ public class BananaManager : MonoBehaviour
     public void AddBananas(int num)
     {
         bananaCount += num;
+        bananasGenerated += num;
         UpdateBananaCountText();
     }
 
@@ -41,6 +43,7 @@ public class BananaManager : MonoBehaviour
     }
 
     public int GetBananas() => bananaCount;
+    public int GetBananasGenerated() => bananasGenerated;
 
     private void UpdateBananaCountText()
     {

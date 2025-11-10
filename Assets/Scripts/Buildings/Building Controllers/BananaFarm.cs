@@ -12,7 +12,7 @@ public class BananaFarm : BuildingBase
     public override void OnDayCycle()
     {
         // add a banana for each monkey we have allocated
-        BananaManager.instance.AddBananas(bananasPerDay * monkeys.Count());
+        BananaManager.instance.AddBananas(bananasPerDay * monkeys.Count() * 2);
     }
 
     public override void OnDestroy()
