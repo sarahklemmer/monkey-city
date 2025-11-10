@@ -21,6 +21,6 @@ public class TreeOfLife : BuildingBase
     public override void OnDestroy()
     {
         //TODO: make restarting MUCH more polished
-        SceneLoader.ReloadScene();
+        SceneLoader.instance.ReloadScene();
     }
 }

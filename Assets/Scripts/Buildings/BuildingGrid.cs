@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +9,7 @@ public class BuildingGrid : MonoBehaviour
     
     [SerializeField] GameObject placementIndicatorPrefab;
     [SerializeField] Transform placementIndicatorsParent;
+    [SerializeField] TMP_Text xToolTip;
 
     [SerializeField] int GRID_SIZE = 20;
     const float BASE_PLANE_SIZE = 10f;
@@ -195,6 +197,7 @@ public class BuildingGrid : MonoBehaviour
         Assert.IsNotNull(placementIndicatorPrefab, "Assign a placementIndicatorPrefab in the Inspector!");
         if (!treeOfLifePlaced) return;
 
+        xToolTip.enabled = true;
         BuildingManager.instance.MakeBuildingsTransparent();
 
         if (placementIndicatorsParent.childCount != 0)
@@ -224,6 +227,7 @@ public class BuildingGrid : MonoBehaviour
     
     public void DestroyBuildingPlacementIndicators()
     {
+        xToolTip.enabled = false;
         foreach (Transform child in placementIndicatorsParent) Destroy(child.gameObject);
     }
 

@@ -56,19 +56,6 @@ public class ToastManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            RequestToast("This is a test toast message!", duration: 1.0f, fadeDuration: 0.3f);
-        }
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            RequestToast("This is another toast message!", duration: 1.0f, fadeDuration: 0.3f, waitForInput: true);
-            RequestToast("Hello", duration: 1.0f, fadeDuration: 0.3f, waitForInput: true);
-            RequestToast("I'm", duration: 1.0f, fadeDuration: 0.3f, waitForInput: true);
-            RequestToast("Sarah", duration: 1.0f, fadeDuration: 0.3f, waitForInput: true);
-            RequestToast("6", duration: 1.0f, fadeDuration: 0.3f, waitForInput: true);
-            RequestToast("7", duration: 1.0f, fadeDuration: 0.3f, waitForInput: true);
-        }
         if (waitingForInput && Input.GetKeyDown(KeyCode.Space))
         {
             SkipToNextToast();
