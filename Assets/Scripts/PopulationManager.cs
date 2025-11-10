@@ -41,7 +41,7 @@ public class PopulationManager : MonoBehaviour
             float world_x = BuildingGrid.instance.GridXToWorldX(xOffset + Mathf.RoundToInt(BuildingGrid.instance.GetGridSize() / 2));
             float world_y = BuildingGrid.instance.WorldY();
             float world_z = BuildingGrid.instance.GridYToWorldZ(-2 + Mathf.RoundToInt(BuildingGrid.instance.GetGridSize() / 2)) + zOffset;
-            Instantiate(monkeyPrefab, new Vector3(world_x, world_y, world_z), Quaternion.identity);
+            Instantiate(monkeyPrefab, new Vector3(world_x, world_y + .7f, world_z), Quaternion.identity);
         }
         
         monkeyCount += num;

@@ -55,7 +55,23 @@ public class PlacementIndicatorOnClick : MonoBehaviour
             pos.x += (dim.width - 1) * 0.5f;
             pos.z += (dim.height - 1) * 0.5f;
 
-            GameObject buildingObj = Instantiate(prefab, pos, prefab.transform.rotation);
+            Quaternion rotation = prefab.transform.rotation;
+            if (buildingType == BuildingType.Wall)
+            {
+                Vector3 center = BuildingGrid.instance.transform.position;
+                Vector3 directionFromCenter = pos - center;
+                Vector3 baseAngles = prefab.transform.rotation.eulerAngles;
+                if (Mathf.Abs(directionFromCenter.x) > Mathf.Abs(directionFromCenter.z))
+                {
+                    rotation = Quaternion.Euler(baseAngles.x, baseAngles.y + 90f, baseAngles.z);
+                }
+                else
+                {
+                    rotation = Quaternion.Euler(baseAngles);
+                }
+            }
+
+            GameObject buildingObj = Instantiate(prefab, pos, rotation);
 
             placedBuilding.SetInstance(buildingObj);
 

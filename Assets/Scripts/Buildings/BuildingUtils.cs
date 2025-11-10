@@ -6,6 +6,7 @@ public enum BuildingType
     TreeOfLife,
     BananaFarm,
     ArcherTower,
+    Wall,
 }
 
 public struct BuildingDimensions
@@ -26,7 +27,8 @@ public class BuildingUtils
     {
         { BuildingType.TreeOfLife, new BuildingDimensions(4, 4) },
         { BuildingType.BananaFarm, new BuildingDimensions(1, 1) },
-        { BuildingType.ArcherTower, new BuildingDimensions(1, 1) }
+        { BuildingType.ArcherTower, new BuildingDimensions(1, 1) },
+        { BuildingType.Wall, new BuildingDimensions(1, 1) }
     };
 
     public static BuildingDimensions TypeToDimensions(BuildingType type)

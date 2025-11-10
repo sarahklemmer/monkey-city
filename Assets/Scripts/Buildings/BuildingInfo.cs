@@ -18,6 +18,12 @@ public class BuildingInfo : MonoBehaviour
     [Header("Positioning")]
     [SerializeField] Vector2 offset = new Vector2(150, 0);
     
+    [SerializeField] private string wallUnlockToast = "New defenses available! Open the Building Menu to construct walls.";
+    private bool wallToastShown = false;
+    
+    [Header("Upgrade Settings")]
+    [SerializeField] private int archerTowerUpgradeCost = 300;
+    
     public static BuildingInfo instance;
     private BuildingBase currentBuilding;
     private RectTransform panelRect;
@@ -106,8 +112,8 @@ public class BuildingInfo : MonoBehaviour
                 }
                 else
                 {
-                    upgradeInfoText.text = $"Upgrade Cost: 300 Bananas";
-                    upgradeBtn.interactable = BananaManager.instance.GetBananas() >= 300;
+                    upgradeInfoText.text = $"Upgrade Cost: {archerTowerUpgradeCost} Bananas";
+                    upgradeBtn.interactable = BananaManager.instance.GetBananas() >= archerTowerUpgradeCost;
                 }
             }
         }
@@ -210,11 +216,20 @@ public class BuildingInfo : MonoBehaviour
             return;
         }
 
-        if (BananaManager.instance.GetBananas() >= 300)
+        if (BananaManager.instance.GetBananas() >= archerTowerUpgradeCost)
         {
-            BananaManager.instance.RemoveBananas(300);
+            BananaManager.instance.RemoveBananas(archerTowerUpgradeCost);
             archer.Upgrade();
-            Show(archer);
+            if (BuildingMenuManager.instance != null)
+            {
+                BuildingMenuManager.instance.UnlockDefenseBuildings();
+            }
+            if (!wallToastShown)
+            {
+                wallToastShown = true;
+                ToastManager.Instance.RequestToast(wallUnlockToast, 4f);
+            }
+            Hide();
             Debug.Log("Archer Tower upgraded!");
         }
         else

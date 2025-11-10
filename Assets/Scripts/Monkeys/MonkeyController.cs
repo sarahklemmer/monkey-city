@@ -34,6 +34,13 @@ public class MonkeyController : MonoBehaviour
         // we'll be walking ianto buildings anyways so this 0.05 is fine i think
         while (Vector3.Distance(transform.position, target) > 0.05f)
         {
+            Vector3 direction = target - transform.position;
+            direction.y = 0f;
+            if (direction.sqrMagnitude > 0.0001f)
+            {
+                transform.rotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
+            }
+
             transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
             yield return null;
         }

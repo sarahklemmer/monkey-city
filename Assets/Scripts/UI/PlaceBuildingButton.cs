@@ -17,6 +17,24 @@ public class PlaceBuildingButton : MonoBehaviour
         Assert.IsTrue(initialized, "trying to click non initialized button");
 
         if (BananaManager.instance.GetBananas() < BuildingTypeToPrice.GetPrice(type)) return;
+        
+        if (type == BuildingType.Wall)
+        {
+            BananaManager.instance.RemoveBananas(BuildingTypeToPrice.GetPrice(type));
+            if (BuildingGrid.instance != null)
+            {
+                BuildingGrid.instance.RevealPresetWalls();
+                BuildingGrid.instance.FinishLevel();
+            }
+            BuildingMenuManager.instance.ForceCloseBananaMenu();
+            BuildingMenuManager.instance.UpdatePrices();
+            if (PlacementManager.instance != null)
+            {
+                PlacementManager.instance.ClearCurrentBuilding();
+            }
+            return;
+        }
+        
         if (Tutorial.instance.tutorialActive)
         {
             switch(type)
@@ -31,6 +49,9 @@ public class PlaceBuildingButton : MonoBehaviour
                     break;
                 case BuildingType.ArcherTower:
                     if (Tutorial.instance.tutorialStage != 9) return;
+                    break;
+                case BuildingType.Wall:
+                    // No special tutorial restrictions
                     break;
             }
         } //1, 3, 9 are placing tree of life, placing farm, and archer tower respectively

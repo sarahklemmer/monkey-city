@@ -35,6 +35,9 @@ public class BuildingMenuManager : MonoBehaviour
     public Color normalColor = new Color(0.8f, 0.8f, 0.8f, 1f); // Light gray
     public Color selectedColor = new Color(1f, 0.9f, 0.5f, 1f); // Yellow sheen
 
+    [SerializeField] private bool defenseUnlockedAtStart = false;
+    private bool defenseUnlocked;
+
     public static BuildingMenuManager instance;
 
     void Awake()
@@ -58,6 +61,9 @@ public class BuildingMenuManager : MonoBehaviour
         bananaToggle.onValueChanged.AddListener((isOn) => OnBananaToggle(isOn));
         defenseToggle.onValueChanged.AddListener((isOn) => OnDefenseToggle(isOn));
         happyToggle.onValueChanged.AddListener((isOn) => OnHappyToggle(isOn));
+
+        defenseUnlocked = defenseUnlockedAtStart;
+        UpdateDefenseToggleVisibility();
 
         HideAllMenus();
     }
@@ -136,7 +142,31 @@ public class BuildingMenuManager : MonoBehaviour
             scrollableList.ClearList();
         }
     }
-    
+
+    void UpdateDefenseToggleVisibility()
+    {
+        bool active = defenseUnlocked;
+        if (defenseToggle != null)
+        {
+            defenseToggle.gameObject.SetActive(active);
+            if (!active && defenseToggle.isOn)
+            {
+                defenseToggle.isOn = false;
+            }
+        }
+        if (defenseBackground != null)
+        {
+            defenseBackground.gameObject.SetActive(active);
+        }
+    }
+
+    public void UnlockDefenseBuildings()
+    {
+        if (defenseUnlocked) return;
+        defenseUnlocked = true;
+        UpdateDefenseToggleVisibility();
+    }
+
     void HideAllMenus()
     {
         buildingScrollbar.SetActive(false);

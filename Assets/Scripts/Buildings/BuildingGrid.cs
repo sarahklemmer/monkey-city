@@ -11,6 +11,10 @@ public class BuildingGrid : MonoBehaviour
     [SerializeField] GameObject placementIndicatorPrefab;
     [SerializeField] Transform placementIndicatorsParent;
     [SerializeField] TMP_Text xToolTip;
+    [SerializeField] GameObject presetWalls;
+    [SerializeField] private string wallCompleteToast = "Congratulations! You beat this level of gameplay! Come back soon for more...";
+    [SerializeField] private float wallCompleteToastDuration = 4f;
+    private bool presetWallsRevealed = false;
 
     [SerializeField] int GRID_SIZE = 20;
     const float BASE_PLANE_SIZE = 10f;
@@ -37,6 +41,19 @@ public class BuildingGrid : MonoBehaviour
     void Start()
     {
         FrameCameraIsoTopBottom();
+    }
+
+    public void RevealPresetWalls()
+    {
+        if (presetWalls != null)
+        {
+            presetWalls.SetActive(true);
+            presetWallsRevealed = true;
+        }
+        else
+        {
+            Debug.LogWarning("BuildingGrid presetWalls reference not assigned.");
+        }
     }
 
     public int GetGridSize()
@@ -273,5 +290,13 @@ public class BuildingGrid : MonoBehaviour
 
         GameObject ind = Instantiate(placementIndicatorPrefab, pos, Quaternion.identity, placementIndicatorsParent);
         ind.GetComponent<PlacementIndicatorOnClick>().Initialize(building, x, y, building.type == BuildingType.TreeOfLife);
+    }
+
+    public void FinishLevel()
+    {
+        if (presetWallsRevealed)
+        {
+            ToastManager.Instance.RequestToast(wallCompleteToast, 60f);
+        }
     }
 }

@@ -10,7 +10,8 @@ public class BuildingTypeToPrice
     {
         { BuildingType.TreeOfLife, 0 },
         { BuildingType.BananaFarm, 1 },
-        { BuildingType.ArcherTower, 4 }
+        { BuildingType.ArcherTower, 4 },
+        { BuildingType.Wall, 2 }
     };
 
     public static int GetPrice(BuildingType ty)

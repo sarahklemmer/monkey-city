@@ -66,4 +66,12 @@ public class MonkeySelector : MonoBehaviour
         if (currentlySelected != null) currentlySelected.DisableGlow();
         currentlySelected = null;
     }
+
+    public void DeselectIfSelected(MonkeyController m)
+    {
+        if (currentlySelected == m)
+        {
+            Deselect();
+        }
+    }
 }

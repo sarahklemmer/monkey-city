@@ -127,6 +127,7 @@ public class ArcherTower : BuildingBase
                 break;
         }
         
+        transform.GetChild(0).gameObject.SetActive(true);
         Debug.Log($"Archer Tower upgraded to level {level}!");
     }
 

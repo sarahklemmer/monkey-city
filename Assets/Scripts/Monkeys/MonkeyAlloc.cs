@@ -38,6 +38,11 @@ public class MonkeyAlloc : MonoBehaviour
         current = next;
         GetComponent<Renderer>().enabled = false;
         GetComponent<Collider>().enabled = false;
+        transform.GetChild(0).gameObject.SetActive(false);
+        if (MonkeySelector.instance != null)
+        {
+            MonkeySelector.instance.DeselectIfSelected(self);
+        }
     }
     
     public void Deallocate()
@@ -46,6 +51,7 @@ public class MonkeyAlloc : MonoBehaviour
         current.RemoveMonkey(self);
         GetComponent<Renderer>().enabled = true;
         GetComponent<Collider>().enabled = true;
+        transform.GetChild(0).gameObject.SetActive(true);
         current = null;
     }
 }
