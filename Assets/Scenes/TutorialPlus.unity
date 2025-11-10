@@ -13256,7 +13256,7 @@ MonoBehaviour:
     spawnWeight: 1
     enemyName: 
   bossPrefab: {fileID: 0}
-  bananasRequiredToStartAttacks: 75
+  bananasRequiredToStartAttacks: 10
   timeReductionPerThreshold: 5
   minimumTimeBetweenWaves: 10
   gracePeriodAfterThreshold: 10
