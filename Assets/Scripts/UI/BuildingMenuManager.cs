@@ -61,20 +61,22 @@ public class BuildingMenuManager : MonoBehaviour
 
         HideAllMenus();
     }
-    
+
     void OnBananaToggle(bool isOn)
     {
         bananaBackground.color = isOn ? selectedColor : normalColor;
-        
+
         if (isOn)
         {
             // Turn off other toggles
             defenseToggle.isOn = false;
             happyToggle.isOn = false;
-            
+
             // Show scrollbar and populate with banana buildings
             buildingScrollbar.SetActive(true);
             scrollableList.PopulateList(bananaBuildings);
+
+            if (!Tutorial.instance.tutorialActive) BuildingGrid.instance.DestroyBuildingPlacementIndicators();
         }
         else
         {
@@ -82,6 +84,13 @@ public class BuildingMenuManager : MonoBehaviour
             buildingScrollbar.SetActive(false);
             scrollableList.ClearList();
         }
+    }
+    
+    public void ForceCloseBananaMenu()
+    {
+        bananaToggle.isOn = false;
+        buildingScrollbar.SetActive(false);
+        scrollableList.ClearList();
     }
     
     void OnDefenseToggle(bool isOn)

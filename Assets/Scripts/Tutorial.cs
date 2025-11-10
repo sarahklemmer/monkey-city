@@ -104,7 +104,7 @@ public class Tutorial : MonoBehaviour
     public void PlayerClosesBananaFarmWindow()
     {
         Assert.AreEqual(tutorialStage, 6, "PlayerClosesBananaFarmWindow called at wrong stage!");
-        message = "Left click a monkey and right click the banana farm to assign that monkey to the building. It should go inside the building once it arrives.";
+        message = "Left click a monkey and right click the banana farm to assign that monkey to the building. It should go inside the building once it arrives. Hint: if you're having trouble selecting things, try rotating the camera so that you have an unobstructed line of sight";
         duration = 5f;
         Toast();
         ++tutorialStage;
@@ -149,7 +149,8 @@ public class Tutorial : MonoBehaviour
         duration = 4.5f;
         message = "As your base gets bigger, bigger waves of chimps will come and try to destroy your village! If they get your tree of life, your city is destroyed and you'll have to rebuild from scratch.";
         Toast();
-        message = "Make sure your defenses scale with your production, and make sure you upgrade your archer towers by clicking on them when you get the chance. Good luck!";
+        duration = 6f;
+        message = "Make sure your defenses scale with your production, and make sure you upgrade your archer towers by clicking on them when you get the chance. Once your farms have made 75 bananas, chimps will start coming in increasing waves. Good luck!";
         Toast();
         FinishTutorial();
     }

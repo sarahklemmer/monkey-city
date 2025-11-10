@@ -34,9 +34,10 @@ public class PlaceBuildingButton : MonoBehaviour
                     break;
             }
         } //1, 3, 9 are placing tree of life, placing farm, and archer tower respectively
-        
+
         Building building = new Building(type);
-        
+
+        BuildingMenuManager.instance.ForceCloseBananaMenu();
         PlacementManager.instance.SetCurrentBuilding(building);
     }
 }
