@@ -57,29 +57,29 @@ public class BuildingInfo : MonoBehaviour
 
         currentBuilding = building;
         info.SetActive(true);
-        removeButton.SetActive(true);
+        
+        // Check if this is a TreeOfLife - if so, hide remove button
+        if (building is TreeOfLife)
+        {
+            removeButton.SetActive(false);
+        }
+        else
+        {
+            removeButton.SetActive(true);
+            
+            // Setup remove button to destroy the building
+            Button removeBtn = removeButton.GetComponent<Button>();
+            removeBtn.onClick.RemoveAllListeners();
+            removeBtn.onClick.AddListener(() => {
+                RemoveBuilding(building);
+            });
+        }
         
         if (backgroundBlocker != null)
             StartCoroutine(EnableBackgroundBlockerDelayed());
         
         PositionPanelNearBuilding(building);
         DisplayBuildingInfo(building);
-
-        // Changed: Remove button now calls RemoveNextMonkey instead of Remove
-        Button removeBtn = removeButton.GetComponent<Button>();
-        removeBtn.onClick.RemoveAllListeners();
-        removeBtn.onClick.AddListener(() => {
-            building.NextMonkeyToRemove().allocation.Deallocate();
-            // Refresh the display to show updated monkey count
-            if (building.GetMonkeyCount() > 0)
-            {
-                DisplayBuildingInfo(building);
-            }
-            else
-            {
-                Hide();
-            }
-        });
 
         if (building is ArcherTower && upgradeButton != null)
         {
@@ -119,6 +119,35 @@ public class BuildingInfo : MonoBehaviour
         }
     }
 
+    private void RemoveBuilding(BuildingBase building)
+    {
+        if (building == null) return;
+        
+        // Deallocate all monkeys from this building
+        while (building.GetMonkeyCount() > 0)
+        {
+            MonkeyController monkey = building.NextMonkeyToRemove();
+            if (monkey != null)
+            {
+                monkey.allocation.Deallocate();
+            }
+        }
+        
+        // Clear the grid space
+        if (BuildingGrid.instance != null)
+        {
+            BuildingGrid.instance.ClearBuildingFromGrid(building);
+        }
+        
+        // Hide the UI
+        Hide();
+        
+        // Destroy the building GameObject
+        Destroy(building.gameObject);
+        
+        Debug.Log($"Building {building.GetType().Name} removed!");
+    }
+
     private void DisplayBuildingInfo(BuildingBase building)
     {
         if (building is ArcherTower)
@@ -149,6 +178,16 @@ public class BuildingInfo : MonoBehaviour
                     $"Monkeys: {building.GetMonkeyCount()}/{building.GetMonkeyCapacity()}";
             }
         }
+        else if (building is TreeOfLife)
+        {
+            if (buildingNameText != null)
+                buildingNameText.text = "Tree of Life";
+            
+            if (buildingStatsText != null)
+            {
+                buildingStatsText.text = "Your base - Protect at all costs!";
+            }
+        }
         else
         {
             if (buildingNameText != null)
@@ -169,7 +208,8 @@ public class BuildingInfo : MonoBehaviour
 
         if (BananaManager.instance.GetBananas() >= 300)
         {
-            BananaManager.instance.RemoveBananas(300);            archer.Upgrade();
+            BananaManager.instance.RemoveBananas(300);
+            archer.Upgrade();
             Show(archer);
             Debug.Log("Archer Tower upgraded!");
         }

@@ -8765,7 +8765,7 @@ MonoBehaviour:
   - key: 0
     value: {fileID: 4743004110558395889, guid: 41b7781031edf446ab365a996fc9bb3c, type: 3}
   - key: 2
-    value: {fileID: 7165693314679942278, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
+    value: {fileID: 8345615188445516739, guid: 6aa96407addbf4ee1b1f706df1abecf7, type: 3}
 --- !u!114 &1352258249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11098,19 +11098,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5788679cf18b64a718d4134c602a1ff6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 1357137234455950628, guid: 1ac321233209646acb90f654358a11c2, type: 3}
   timeBetweenWaves: 60
   baseEnemiesPerWave: 3
   waveScalingFactor: 1.2
-  enemyTypes:
-  - enemyPrefab: {fileID: 2707234809516472809, guid: 047f2f983af6e4a59b64a5a540fe8d67, type: 3}
-    bananaThreshold: 0
-    spawnWeight: 1
-    enemyName: Chimp
-  bossPrefab: {fileID: 2707234809516472809, guid: 047f2f983af6e4a59b64a5a540fe8d67, type: 3}
-  bananasRequiredToStartAttacks: 50
-  timeReductionPerThreshold: 5
-  minimumTimeBetweenWaves: 10
-  gracePeriodAfterThreshold: 10
 --- !u!4 &1721964290
 Transform:
   m_ObjectHideFlags: 0
