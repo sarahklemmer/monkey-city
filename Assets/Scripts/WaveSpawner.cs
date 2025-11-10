@@ -38,7 +38,22 @@ public class WaveSpawner : MonoBehaviour
     private int enemiesAlive = 0;
     private bool waveActive = false;
     private bool attacksUnlocked = false;
+    private bool spawningPaused = false;
     private int lastBananaThresholdCrossed = 0;
+
+    public static WaveSpawner instance;
+
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Debug.LogError("duplicatxe WaveSpawner on " + gameObject.name + " destroying.");
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+    }
 
     void Start()
     {
@@ -69,6 +84,7 @@ public class WaveSpawner : MonoBehaviour
     {
         while (true)
         {
+            if(spawningPaused) yield return new WaitForSeconds(0.5f);
             // Check if attacks should start
             if (!attacksUnlocked)
             {
@@ -297,6 +313,8 @@ public class WaveSpawner : MonoBehaviour
     public int GetEnemiesAlive() => enemiesAlive;
     public bool IsWaveActive() => waveActive;
     public bool AreAttacksUnlocked() => attacksUnlocked;
+    public void PauseSpawning() { spawningPaused = true; }
+    public void UnpauseSpawning() { spawningPaused = false; }
 }
 
 public class EnemyDeathTracker : MonoBehaviour

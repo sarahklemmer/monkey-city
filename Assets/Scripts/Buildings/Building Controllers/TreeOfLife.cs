@@ -10,8 +10,8 @@ public class TreeOfLife : BuildingBase
     public override void OnDayCycle()
     {   
         // TODO: replace this with real, good monkey spawning logic
-        // add a monkey every 5 days
-        if(TimeController.instance.currentDay % 5 == 0 && TimeController.instance.currentDay > 0)
+        // add a monkey every 2 days
+        if(TimeController.instance.currentDay % 2 == 0 && TimeController.instance.currentDay > 0)
         {
             PopulationManager.instance.AddToPopulation(1);
         }
