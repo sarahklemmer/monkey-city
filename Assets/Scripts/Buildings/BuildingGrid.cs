@@ -2,6 +2,8 @@ using TMPro;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class BuildingGrid : MonoBehaviour
 {
@@ -13,8 +15,11 @@ public class BuildingGrid : MonoBehaviour
     [SerializeField] TMP_Text xToolTip;
     [SerializeField] GameObject presetWalls;
     [SerializeField] private string wallCompleteToast = "Congratulations! You beat this level of gameplay! Come back soon for more...";
-    [SerializeField] private float wallCompleteToastDuration = 4f;
+    [SerializeField] private float wallCompleteToastDuration = 60f;
+    [SerializeField] private string restartToast = "Restarting game in 5 seconds...";
+    [SerializeField] private float restartToastDuration = 5f;
     private bool presetWallsRevealed = false;
+    private bool levelCompleted = false;
 
     [SerializeField] int GRID_SIZE = 20;
     const float BASE_PLANE_SIZE = 10f;
@@ -294,9 +299,25 @@ public class BuildingGrid : MonoBehaviour
 
     public void FinishLevel()
     {
-        if (presetWallsRevealed)
+        if (presetWallsRevealed && !levelCompleted)
         {
-            ToastManager.Instance.RequestToast(wallCompleteToast, 60f);
+            levelCompleted = true;
+            ToastManager.Instance.RequestToast(wallCompleteToast, wallCompleteToastDuration);
+            ToastManager.Instance.RequestToast(restartToast, restartToastDuration);
+            StartCoroutine(RestartSceneAfterDelay(wallCompleteToastDuration + restartToastDuration));
+        }
+    }
+
+    private IEnumerator RestartSceneAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (SceneLoader.instance != null)
+        {
+            SceneLoader.instance.ReloadScene();
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }

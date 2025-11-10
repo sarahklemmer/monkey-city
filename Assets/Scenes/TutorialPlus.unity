@@ -3074,6 +3074,8 @@ MonoBehaviour:
   wallCompleteToast: Congratulations! You beat this level of gameplay! Come back
     soon for more...
   wallCompleteToastDuration: 4
+  restartToast: Restarting game in 5 seconds...
+  restartToastDuration: 5
   GRID_SIZE: 20
 --- !u!64 &422049158
 MeshCollider:
@@ -10505,7 +10507,7 @@ MonoBehaviour:
   upgradeInfoText: {fileID: 1440316867}
   offset: {x: 150, y: 0}
   wallUnlockToast: New defenses available! Open the Building Menu to construct walls.
-  archerTowerUpgradeCost: 200
+  archerTowerUpgradeCost: 150
 --- !u!1001 &1361005732
 PrefabInstance:
   m_ObjectHideFlags: 0

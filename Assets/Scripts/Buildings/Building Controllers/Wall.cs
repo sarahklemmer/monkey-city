@@ -19,3 +19,4 @@ public class Wall : BuildingBase
         // Walls currently have no destruction side effects
     }
 }
+
