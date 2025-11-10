@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -246,9 +247,19 @@ public class BuildingGrid : MonoBehaviour
         int w = dimensions.width;
         int h = dimensions.height;
 
-        int x = GRID_SIZE / 2 - w/2;
-        int y = GRID_SIZE / 2 - h/2;
+        int x = GRID_SIZE / 2 - w / 2;
+        int y = GRID_SIZE / 2 - h / 2;
 
+        SpawnSingleBuildingPlacementIndicators(building, x, y);
+    }
+    
+    public void SpawnSingleBuildingPlacementIndicators(Building building, int x, int y)
+    {
+        BuildingDimensions dimensions = BuildingUtils.TypeToDimensions(building.type);
+
+        int w = dimensions.width;
+        int h = dimensions.height;
+        
         Assert.IsNotNull(placementIndicatorPrefab, "Assign a placementIndicatorPrefab in the Inspector!");
 
         if (placementIndicatorsParent.childCount != 0)

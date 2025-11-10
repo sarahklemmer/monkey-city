@@ -71,9 +71,11 @@ public class PlacementIndicatorOnClick : MonoBehaviour
                 {
                     PopulationManager.instance.AddToPopulation(5);
                 }
+                if (Tutorial.instance.tutorialActive) Tutorial.instance.PlayerPlacesTreeOfLife();
             }
             else
             {
+                if (Tutorial.instance.tutorialActive && buildingType == BuildingType.BananaFarm) Tutorial.instance.PlayerPlacesBananaFarm();
                 BuildingMenuManager.instance.UpdatePrices();
             }
 
