@@ -18,13 +18,10 @@ public class ArcherTower : BuildingBase
     {
         base.SharedAwakeBehavior();
         building = new(BuildingType.ArcherTower);
-        monkeys = new(1);
     }
 
     void Update()
     {
-        // we can't attack if we're unmanned
-        if (monkeys.Count() == 0) return;
         if (targetEnemy == null)
         {
             FindNearestEnemy();
@@ -47,6 +44,8 @@ public class ArcherTower : BuildingBase
     private void FindNearestEnemy()
     {
         EnemyAttacker[] enemies = FindObjectsByType<EnemyAttacker>(FindObjectsSortMode.None);
+        Debug.Log($"[ArcherTower] Searching for enemies. Found {enemies.Length} total enemies");
+        
         float closestDist = Mathf.Infinity;
         EnemyAttacker closest = null;
         
@@ -55,6 +54,8 @@ public class ArcherTower : BuildingBase
             if (enemy.GetCurrentHealth() <= 0) continue;
             
             float dist = Vector3.Distance(transform.position, enemy.transform.position);
+            Debug.Log($"[ArcherTower] Enemy at distance: {dist:F2} (range: {attackRange})");
+            
             if (dist <= attackRange && dist < closestDist)
             {
                 closestDist = dist;
@@ -63,6 +64,10 @@ public class ArcherTower : BuildingBase
         }
 
         targetEnemy = closest;
+        if (targetEnemy == null)
+        {
+            Debug.Log("[ArcherTower] No enemies in range");
+        }
     }
 
     private bool IsInRange(EnemyAttacker enemy)
@@ -84,12 +89,26 @@ public class ArcherTower : BuildingBase
     private void SpawnArrow()
     {
         Vector3 spawnPos = firePoint != null ? firePoint.position : transform.position + Vector3.up;
+        Debug.Log($"[ArcherTower] Spawning arrow at {spawnPos}");
+        
+        if (arrowPrefab == null)
+        {
+            Debug.LogError("[ArcherTower] Arrow prefab is NULL! Assign it in the Inspector!");
+            return;
+        }
+        
         GameObject arrow = Instantiate(arrowPrefab, spawnPos, Quaternion.identity);
+        Debug.Log($"[ArcherTower] Arrow instantiated: {arrow.name}");
         
         Arrow arrowScript = arrow.GetComponent<Arrow>();
         if (arrowScript != null && targetEnemy != null)
         {
-            arrowScript.Initialize(targetEnemy, attackDamage); 
+            arrowScript.Initialize(targetEnemy, attackDamage);
+            Debug.Log($"[ArcherTower] Arrow initialized with target: {targetEnemy.name}, damage: {attackDamage}");
+        }
+        else
+        {
+            Debug.LogError($"[ArcherTower] Arrow script: {arrowScript}, Target: {targetEnemy}");
         }
     }
 
@@ -129,7 +148,7 @@ public class ArcherTower : BuildingBase
 
     public override void OnDestroy()
     {
-        monkeys.FreeMonkeys();
+        /* do nothing */
     }
 
     void OnDrawGizmosSelected()

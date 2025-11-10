@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class EnemyAttacker : MonoBehaviour
 {
+    [Header("Combat Stats")]
     private float attackDamage = 10f;
     private float attackCooldown = 1f;
     private float attackRange = 2f;
@@ -9,6 +10,10 @@ public class EnemyAttacker : MonoBehaviour
     private float recoilDistance = 1f;
     private float recoilDuration = 0.2f;
     private float maxHealth = 40f;
+    
+    [Header("Animation")]
+    private Animator animator;
+    
     private BuildingHealth targetBuilding;
     private float lastAttackTime;
     private bool isRecoiling = false;
@@ -16,16 +21,24 @@ public class EnemyAttacker : MonoBehaviour
     private Vector3 recoilTargetPos;
     private float recoilTimer;
     private float currentHealth;
+    private bool isWalking = false;
 
     void Awake()
     {
         currentHealth = maxHealth;
+        animator = GetComponentInChildren<Animator>();
+        
+        if (animator == null)
+        {
+            Debug.LogWarning($"No Animator found on {gameObject.name} or its children!");
+        }
     }
 
     void Update()
     {
         if (isRecoiling)
         {
+            SetWalking(false);
             recoilTimer += Time.deltaTime;
             float t = recoilTimer / recoilDuration;
             
@@ -43,6 +56,7 @@ public class EnemyAttacker : MonoBehaviour
 
         if (targetBuilding == null)
         {
+            SetWalking(false);
             FindNearestBuilding();
             return;
         }
@@ -52,20 +66,32 @@ public class EnemyAttacker : MonoBehaviour
         if (targetBuilding == null || targetBuilding.GetCurrentHealth() <= 0)
         {
             targetBuilding = null;
+            SetWalking(false);
             return;
         }
 
         if (distanceToTarget > attackRange)
         {
+            SetWalking(true);
             MoveTowardTarget();
         }
         else
         {
+            SetWalking(false);
             if (Time.time - lastAttackTime >= attackCooldown)
             {
                 AttackBuilding();
                 lastAttackTime = Time.time;
             }
+        }
+    }
+
+    private void SetWalking(bool walking)
+    {
+        if (animator != null && isWalking != walking)
+        {
+            isWalking = walking;
+            animator.SetBool("IsWalking", walking);
         }
     }
 
@@ -102,6 +128,12 @@ public class EnemyAttacker : MonoBehaviour
     {
         if (targetBuilding != null)
         {
+            // Trigger attack animation
+            if (animator != null)
+            {
+                animator.SetTrigger("Attack");
+            }
+            
             targetBuilding.TakeDamage(attackDamage);
             
             Vector3 directionAwayFromTarget = (transform.position - targetBuilding.transform.position).normalized;
@@ -125,7 +157,14 @@ public class EnemyAttacker : MonoBehaviour
 
     private void Die()
     {
-        Destroy(gameObject);
+        // Trigger death animation if you have one
+        if (animator != null)
+        {
+            animator.SetTrigger("Die");
+        }
+        
+        // Destroy after a short delay to let death animation play
+        Destroy(gameObject, 0.5f);
     }
 
     public float GetCurrentHealth()

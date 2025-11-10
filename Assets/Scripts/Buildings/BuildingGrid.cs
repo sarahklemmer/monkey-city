@@ -145,6 +145,15 @@ public class BuildingGrid : MonoBehaviour
         Debug.LogWarning($"Could not find building {buildingGameObject.name} in grid!");
     }
 
+    // NEW: Clear building from grid using BuildingBase component
+    public void ClearBuildingFromGrid(BuildingBase buildingBase)
+    {
+        if (buildingBase == null) return;
+        
+        // Use the existing method that works with GameObjects
+        RemoveBuildingByGameObject(buildingBase.gameObject);
+    }
+
     // don't worry about how this works, it works
     public void FrameCameraIsoTopBottom()
     {
@@ -219,7 +228,6 @@ public class BuildingGrid : MonoBehaviour
                 // annoyingly, y iz z, grid_size / 2 is because 0, 0 is the bottom left not the middle
                 Vector3 pos = new Vector3(GridXToWorldX(x), 0, GridYToWorldZ(y));
                 GameObject ind = Instantiate(placementIndicatorPrefab, pos, Quaternion.identity, placementIndicatorsParent);
-                // set the building to be spawned when the indicator is clicked
                 ind.GetComponent<PlacementIndicatorOnClick>().Initialize(building, x, y);
             }
         }
@@ -253,7 +261,6 @@ public class BuildingGrid : MonoBehaviour
         Vector3 pos = new Vector3(GridXToWorldX(x), 0, GridYToWorldZ(y));
 
         GameObject ind = Instantiate(placementIndicatorPrefab, pos, Quaternion.identity, placementIndicatorsParent);
-        // set the building to be spawned when the indicator is clicked also make sure it can't be canceled with an x press if we're spawning the treeoflife
         ind.GetComponent<PlacementIndicatorOnClick>().Initialize(building, x, y, building.type == BuildingType.TreeOfLife);
     }
 }
