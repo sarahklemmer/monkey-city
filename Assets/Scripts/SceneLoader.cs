@@ -4,16 +4,24 @@ using UnityEngine.Assertions;
 
 public class SceneLoader : MonoBehaviour
 {
-    static Scene scene;
+    public static SceneLoader instance;
+    [SerializeField] Scene gameplayScene;
 
     void Awake()
     {
-        scene = SceneManager.GetActiveScene();
+        if (instance != null && instance != this)
+        {
+            Debug.LogError("duplicate SceneLoader on " + gameObject.name + " destroying.");
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
     }
-    
-    public static void ReloadScene()
+
+    public void ReloadScene()
     {
-        Assert.IsTrue(scene.IsValid(), "Couldn't grab scene properly!");
-        SceneManager.LoadScene(scene.name);
+        Assert.IsTrue(gameplayScene.IsValid(), "gameplayScene invalild!");
+        SceneManager.LoadScene(gameplayScene.name);
     }
 }
