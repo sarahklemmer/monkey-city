@@ -31,19 +31,25 @@ public class BuildingSelector : MonoBehaviour
         // From develop: Check if building is selectable
         if (!b.selectable) return;
         
-        // Double clicking a building should deselect it
-        if (currentlySelected == b)
-        {
-            Deselect();
-            return;
-        }
+        // // Double clicking a building should deselect it
+        // if (currentlySelected == b)
+        // {
+        //     Deselect();
+        //     return;
+        // }
 
         // Deselect previous building
         Deselect();
 
+        if (Tutorial.instance.tutorialActive)
+        {
+            if (Tutorial.instance.tutorialStage == 5 && b.GetBuildingType() == BuildingType.BananaFarm) Tutorial.instance.PlayerSelectsBananaFarm();
+            else if (b.GetBuildingType() != BuildingType.ArcherTower && !(Tutorial.instance.tutorialStage == 8 && b.GetBuildingType() == BuildingType.BananaFarm)) return;
+        }
+
         // Select new building
         currentlySelected = b;
-        currentlySelected.EnableGlow();
+        // currentlySelected.EnableGlow();
         
         // Show building info
         BuildingInfo.instance.Show(currentlySelected);
@@ -55,6 +61,7 @@ public class BuildingSelector : MonoBehaviour
 
     public void Deselect()
     {
+        if (Tutorial.instance.tutorialActive && Tutorial.instance.tutorialStage == 6) Tutorial.instance.PlayerClosesBananaFarmWindow();
         // Hide building info
         BuildingInfo.instance.Hide();
         
@@ -65,6 +72,4 @@ public class BuildingSelector : MonoBehaviour
         
         currentlySelected = null;
     }
-
-    public BuildingBase Selected() => currentlySelected;
 }

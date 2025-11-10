@@ -228,5 +228,6 @@ public class BuildingInfo : MonoBehaviour
         backgroundBlocker.SetActive(false);
         removeButton.GetComponent<Button>().onClick.RemoveAllListeners();
         upgradeButton.GetComponent<Button>().onClick.RemoveAllListeners();
+        if (Tutorial.instance.tutorialActive && Tutorial.instance.tutorialStage == 6) Tutorial.instance.PlayerClosesBananaFarmWindow();
     }
 }

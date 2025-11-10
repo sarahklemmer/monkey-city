@@ -46,6 +46,8 @@ public class MonkeySelector : MonoBehaviour
 
     public void Select(MonkeyController m, bool fromClick = true)
     {
+        // cant select a monkey during the tutorial when we're not supposed to
+        if (Tutorial.instance.tutorialActive && (Tutorial.instance.tutorialStage < 7 || Tutorial.instance.tutorialStage > 9)) return;
         // clicking a monkey that's already selected should just deselect
         if (currentlySelected == m && fromClick)
         {

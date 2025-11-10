@@ -21,16 +21,37 @@ public class PlacementManager : MonoBehaviour
     public void SetCurrentBuilding(Building building)
     {
         currentBuildingForPlacement = building;
+        BuildingType type = building.type;
         
         if (building != null && BuildingGrid.instance != null)
         {
-            if (building.type == BuildingType.TreeOfLife)
+            if (type == BuildingType.TreeOfLife)
             {
                 BuildingGrid.instance.SpawnSingleBuildingPlacementIndicators(building);
             }
             else
             {
-                BuildingGrid.instance.SpawnBuildingPlacementIndicators(building);
+                if (Tutorial.instance.tutorialActive && type == BuildingType.BananaFarm)
+                {
+                    BuildingDimensions dimensions = BuildingUtils.TypeToDimensions(building.type);
+
+                    int w = dimensions.width;
+                    int h = dimensions.height;
+
+                    int x = BuildingGrid.instance.GetGridSize() / 2 + w / 2;
+                    int y = BuildingGrid.instance.GetGridSize() / 2 + h / 2;
+                    x += 2;
+                    y += 2;
+                    BuildingGrid.instance.SpawnSingleBuildingPlacementIndicators(building, x, y);
+                }
+                else if (Tutorial.instance.tutorialActive && type == BuildingType.ArcherTower)
+                {
+                    BuildingGrid.instance.SpawnSingleBuildingPlacementIndicators(building, 0, 0);
+                }
+                else
+                {
+                    BuildingGrid.instance.SpawnBuildingPlacementIndicators(building);
+                }
             }
         }
     }
