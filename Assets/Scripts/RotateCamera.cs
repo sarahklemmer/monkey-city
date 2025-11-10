@@ -5,6 +5,7 @@ public class RotateCamera : MonoBehaviour
     float rotationStep = 90f;  // rotate in 90° increments
     Transform camTransform;
     Vector3 pivot;
+    [SerializeField] private Transform lightingTransform;
 
     void Start()
     {
@@ -20,17 +21,21 @@ public class RotateCamera : MonoBehaviour
 
     void RotateCameraLeft()
     {
-        RotateAroundPivot(-rotationStep);
+        RotateAroundPivot(camTransform, -rotationStep);
+        RotateAroundPivot(lightingTransform, -rotationStep);
     }
     
     void RotateCameraRight()
     {
-        RotateAroundPivot(rotationStep);
+        RotateAroundPivot(camTransform, rotationStep);
+        RotateAroundPivot(lightingTransform, rotationStep);
     }
 
-    void RotateAroundPivot(float angle)
+    void RotateAroundPivot(Transform target, float angle)
     {
-        camTransform.RotateAround(pivot, Vector3.up, angle);
-        camTransform.LookAt(pivot);
+        if (target == null) return;
+
+        target.RotateAround(pivot, Vector3.up, angle);
+        target.LookAt(pivot);
     }
 }
