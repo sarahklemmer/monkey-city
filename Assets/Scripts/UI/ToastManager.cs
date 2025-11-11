@@ -9,12 +9,15 @@ public struct ToastData
     public float duration;
     public float fadeDuration;
     public bool waitForInput;
-    public ToastData(string message, float duration = 2.0f, float fadeDuration = 0.5f, bool waitForInput = false)
+    public bool showContinuePrompt;
+    
+    public ToastData(string message, float duration = 2.0f, float fadeDuration = 0.5f, bool waitForInput = false, bool showContinuePrompt = false)
     {
         this.message = message;
         this.duration = duration;
         this.fadeDuration = fadeDuration;
         this.waitForInput = waitForInput;
+        this.showContinuePrompt = showContinuePrompt;
     }
 }
 
@@ -33,6 +36,7 @@ public class ToastManager : MonoBehaviour
     private bool fading = false;
     private bool isShowingToast = false;
     private bool waitingForInput = false;
+    private bool currentToastShowsPrompt = false;
 
     public bool freezeToasts = false;
 
@@ -54,10 +58,10 @@ public class ToastManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        continuePrompt.SetActive(isShowingToast && !fading);
+        continuePrompt.SetActive(isShowingToast && !fading && currentToastShowsPrompt);
+        
         if (Input.GetKeyDown(KeyCode.Space))
         {
             ForceEndCurrentToast();
@@ -68,9 +72,9 @@ public class ToastManager : MonoBehaviour
         }
     }
 
-    public void RequestToast(string message, float duration = 2.0f, float fadeDuration = 0.5f, bool waitForInput = false)
+    public void RequestToast(string message, float duration = 2.0f, float fadeDuration = 0.5f, bool waitForInput = false, bool showContinuePrompt = false)
     {
-        ToastData toastData = new ToastData(message, duration, fadeDuration, waitForInput);
+        ToastData toastData = new ToastData(message, duration, fadeDuration, waitForInput, showContinuePrompt);
         toastQueue.Enqueue(toastData);
     }
 
@@ -83,6 +87,7 @@ public class ToastManager : MonoBehaviour
             StartCoroutine(FadeOutAndNext());
         }
     }
+    
     public void ForceEndCurrentToast()
     {
         if (isShowingToast)
@@ -92,6 +97,7 @@ public class ToastManager : MonoBehaviour
             toastPanel.SetActive(false);
             isShowingToast = false;
             waitingForInput = false;
+            currentToastShowsPrompt = false;
         }
     }
 
@@ -111,6 +117,7 @@ public class ToastManager : MonoBehaviour
             yield break;
         }
         isShowingToast = true;
+        currentToastShowsPrompt = data.showContinuePrompt; // Set for current toast
         toastText.text = data.message;
         toastPanel.SetActive(true);
 
@@ -129,7 +136,6 @@ public class ToastManager : MonoBehaviour
         {
             waitingForInput = true;
             
-            // Wait until spacebar is pressed (handled in Update)
             while (waitingForInput)
             {
                 yield return null;
@@ -153,7 +159,9 @@ public class ToastManager : MonoBehaviour
         toastCanvasGroup.alpha = 0.0f;
         toastPanel.SetActive(false);
         isShowingToast = false;
+        currentToastShowsPrompt = false;
     }
+    
     IEnumerator FadeOutAndNext()
     {
         fading = true;
@@ -172,6 +180,7 @@ public class ToastManager : MonoBehaviour
         toastCanvasGroup.alpha = 0.0f;
         toastPanel.SetActive(false);
         isShowingToast = false;
+        currentToastShowsPrompt = false;
         fading = false;
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class EnemyAttacker : MonoBehaviour
 {
@@ -13,6 +14,13 @@ public class EnemyAttacker : MonoBehaviour
     
     [Header("Animation")]
     private Animator animator;
+    
+    [Header("Damage Flash")]
+    [SerializeField] private float flashDuration = 0.15f;
+    [SerializeField] private Color flashColor = Color.red;
+    private Renderer[] renderers;
+    private Material[][] originalMaterials;
+    private bool isFlashing = false;
     
     private BuildingHealth targetBuilding;
     private float lastAttackTime;
@@ -31,6 +39,28 @@ public class EnemyAttacker : MonoBehaviour
         if (animator == null)
         {
             Debug.LogWarning($"No Animator found on {gameObject.name} or its children!");
+        }
+        
+        // Get all renderers and store original materials
+        SetupFlashEffect();
+    }
+
+    private void SetupFlashEffect()
+    {
+        renderers = GetComponentsInChildren<Renderer>();
+        
+        if (renderers.Length > 0)
+        {
+            originalMaterials = new Material[renderers.Length][];
+            
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                originalMaterials[i] = renderers[i].materials;
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"No Renderers found on {gameObject.name} - damage flash won't work!");
         }
     }
 
@@ -149,14 +179,80 @@ public class EnemyAttacker : MonoBehaviour
         currentHealth -= damage;
         Debug.Log($"{gameObject.name} took {damage} damage. Health: {currentHealth}/{maxHealth}");
         
+        // Flash red when taking damage
+        if (!isFlashing)
+        {
+            StartCoroutine(FlashRed());
+        }
+        
         if (currentHealth <= 0)
         {
             Die();
         }
     }
 
+    private IEnumerator FlashRed()
+    {
+        if (renderers == null || renderers.Length == 0)
+        {
+            yield break;
+        }
+        
+        isFlashing = true;
+        
+        // Create flash materials
+        Material[][] flashMaterials = new Material[renderers.Length][];
+        
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            flashMaterials[i] = new Material[originalMaterials[i].Length];
+            
+            for (int j = 0; j < originalMaterials[i].Length; j++)
+            {
+                // Create a new material instance with flash color
+                flashMaterials[i][j] = new Material(originalMaterials[i][j]);
+                flashMaterials[i][j].color = flashColor;
+                
+                // If using Standard shader, also set emission
+                if (flashMaterials[i][j].HasProperty("_EmissionColor"))
+                {
+                    flashMaterials[i][j].EnableKeyword("_EMISSION");
+                    flashMaterials[i][j].SetColor("_EmissionColor", flashColor * 0.5f);
+                }
+            }
+            
+            renderers[i].materials = flashMaterials[i];
+        }
+        
+        // Wait for flash duration
+        yield return new WaitForSeconds(flashDuration);
+        
+        // Restore original materials
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            renderers[i].materials = originalMaterials[i];
+        }
+        
+        isFlashing = false;
+    }
+
     private void Die()
     {
+        // Stop any ongoing flash
+        StopAllCoroutines();
+        
+        // Restore materials before death
+        if (renderers != null && originalMaterials != null)
+        {
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                if (renderers[i] != null)
+                {
+                    renderers[i].materials = originalMaterials[i];
+                }
+            }
+        }
+        
         // Trigger death animation if you have one
         if (animator != null)
         {
@@ -164,6 +260,7 @@ public class EnemyAttacker : MonoBehaviour
         }
 
         if (Tutorial.instance.tutorialActive) Tutorial.instance.ChimpKilledByTower();
+        
         // Destroy after a short delay to let death animation play
         Destroy(gameObject, 0.5f);
     }

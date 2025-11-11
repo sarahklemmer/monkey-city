@@ -14,11 +14,105 @@ public class ArcherTower : BuildingBase
     private float lastAttackTime;
     private EnemyAttacker targetEnemy;
 
+    // Range indicator components
+    private LineRenderer rangeIndicator;
+    [SerializeField] private bool showRangeOnSelect = true;
+    [SerializeField] private Color rangeColor = new Color(0.5f, 0.8f, 1f, 0.15f); // Subtle blue with low transparency
+    [SerializeField] private int circleSegments = 50;
+    [SerializeField] private Vector3 circleOffset = Vector3.zero; // Adjust if tower isn't centered
+
     void Awake()
     {
         base.SharedAwakeBehavior();
         building = new(BuildingType.ArcherTower);
         monkeys = new(1);
+        
+        CreateRangeIndicator();
+    }
+
+    void Start()
+    {
+        // ALWAYS show range indicator for testing
+        if (rangeIndicator != null)
+        {
+            rangeIndicator.enabled = true;
+            Debug.Log("[ArcherTower] Range indicator enabled!");
+        }
+        else
+        {
+            Debug.LogError("[ArcherTower] Range indicator is NULL!");
+        }
+    }
+
+    private void CreateRangeIndicator()
+    {
+        Debug.Log("[ArcherTower] Creating range indicator...");
+        
+        // Create a new GameObject for the range indicator
+        GameObject rangeObj = new GameObject("RangeIndicator");
+        rangeObj.transform.SetParent(transform);
+        rangeObj.transform.localPosition = circleOffset; // Apply offset
+        
+        // Add and configure LineRenderer
+        rangeIndicator = rangeObj.AddComponent<LineRenderer>();
+        rangeIndicator.useWorldSpace = false;
+        rangeIndicator.loop = true;
+        rangeIndicator.positionCount = circleSegments;
+        rangeIndicator.startWidth = 0.08f;  // Thinner for subtlety
+        rangeIndicator.endWidth = 0.08f;
+        
+        // Try multiple shaders to find one that works
+        Material mat = new Material(Shader.Find("Sprites/Default"));
+        if (mat.shader == null || mat.shader.name == "Hidden/InternalErrorShader")
+        {
+            Debug.LogWarning("[ArcherTower] Sprites/Default not found, trying Unlit/Color");
+            mat = new Material(Shader.Find("Unlit/Color"));
+        }
+        if (mat.shader == null || mat.shader.name == "Hidden/InternalErrorShader")
+        {
+            Debug.LogWarning("[ArcherTower] Unlit/Color not found, trying Particles/Standard Unlit");
+            mat = new Material(Shader.Find("Particles/Standard Unlit"));
+        }
+        
+        rangeIndicator.material = mat;
+        rangeIndicator.startColor = rangeColor;
+        rangeIndicator.endColor = rangeColor;
+        
+        // Disable shadows
+        rangeIndicator.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        rangeIndicator.receiveShadows = false;
+        
+        UpdateRangeCircle();
+        
+        Debug.Log($"[ArcherTower] Range indicator created with {circleSegments} segments, range: {attackRange}");
+    }
+
+    private void UpdateRangeCircle()
+    {
+        if (rangeIndicator == null)
+        {
+            Debug.LogError("[ArcherTower] Cannot update range circle - rangeIndicator is null!");
+            return;
+        }
+        
+        float angleStep = 360f / circleSegments;
+        
+        for (int i = 0; i < circleSegments; i++)
+        {
+            float angle = i * angleStep * Mathf.Deg2Rad;
+            float x = Mathf.Cos(angle) * attackRange;
+            float z = Mathf.Sin(angle) * attackRange;
+            
+            // Try 3D first (flat on ground)
+            Vector3 position = new Vector3(x, 0.1f, z); // Slightly elevated
+            
+            // If you have a 2D game, uncomment this instead:
+            // Vector3 position = new Vector3(x, z, 0);
+            
+            rangeIndicator.SetPosition(i, position);
+        }
+        
+        Debug.Log($"[ArcherTower] Range circle updated: {circleSegments} points at range {attackRange}");
     }
 
     void Update()
@@ -39,6 +133,33 @@ public class ArcherTower : BuildingBase
         {
             Attack();
             lastAttackTime = Time.time;
+        }
+    }
+
+    // Call this method when the tower is selected/clicked
+    public void OnSelected()
+    {
+        if (rangeIndicator != null && showRangeOnSelect)
+        {
+            rangeIndicator.enabled = true;
+        }
+    }
+
+    // Call this method when the tower is deselected
+    public void OnDeselected()
+    {
+        if (rangeIndicator != null)
+        {
+            rangeIndicator.enabled = false;
+        }
+    }
+
+    // Optional: Always show range indicator
+    public void SetRangeIndicatorVisible(bool visible)
+    {
+        if (rangeIndicator != null)
+        {
+            rangeIndicator.enabled = visible;
         }
     }
 
@@ -126,6 +247,9 @@ public class ArcherTower : BuildingBase
                 attackCooldown = 0.6f;
                 break;
         }
+        
+        // Update the range circle when upgrading
+        UpdateRangeCircle();
         
         transform.GetChild(0).gameObject.SetActive(true);
         Debug.Log($"Archer Tower upgraded to level {level}!");

@@ -19,22 +19,18 @@ public class BuildingListItem : MonoBehaviour
     
     void Awake()
     {
-        // Get the button component
         button = GetComponent<Button>();
         
-        // Hook up the click event
         if (button != null)
         {
             button.onClick.AddListener(OnClick);
         }
     }
     
-    // This method fills in all the UI with the building's info
     public void Setup(BuildingData data)
     {
         buildingData = data;
         
-        // Fill in the UI elements
         if (iconImage != null)
             iconImage.sprite = data.icon;
             
@@ -43,6 +39,26 @@ public class BuildingListItem : MonoBehaviour
             
         if (costText != null)
             costText.text = "$" + data.cost.ToString();
+            
+        CheckIfShouldHide();
+    }
+    
+    private void CheckIfShouldHide()
+    {
+        if (buildingData.buildingName == "Tree of Life")
+        {
+            TreeOfLife existingTree = FindFirstObjectByType<TreeOfLife>();
+            
+            if (existingTree != null)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+    }
+    
+    public void RefreshVisibility()
+    {
+        CheckIfShouldHide();
     }
     
     // This runs when the button is clicked
@@ -64,5 +80,10 @@ public class BuildingListItem : MonoBehaviour
     {
         if (iconImage != null)
             iconImage.color = normalColor;
+    }
+    
+    public BuildingData GetBuildingData()
+    {
+        return buildingData;
     }
 }

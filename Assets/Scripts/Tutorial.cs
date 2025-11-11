@@ -38,7 +38,6 @@ public class Tutorial : MonoBehaviour
         repeatButton.SetActive(false);
     }
 
-    //check
     void BeginTutorial()
     {
         Assert.AreEqual(tutorialStage, 0, "calling BeginTutorial at the wrong stage!");
@@ -49,81 +48,113 @@ public class Tutorial : MonoBehaviour
         Toast();
         ++tutorialStage;
     }
-
-    //check
+    
     public void PlayerClickedTreeOfLifeButton()
     {
-        Assert.AreEqual(tutorialStage, 1, "PlayerClickedTreeOfLifeButton called at wrong stage!");
+        if (tutorialStage != 1)
+        {
+            Debug.LogWarning($"PlayerClickedTreeOfLifeButton called at wrong stage! Expected 1, got {tutorialStage}");
+            return;
+        }
+        
         message = "This is the center of your city. If it gets destroyed, you lose! It will also give you a new monkey every 2 days. Don't ask how.\nClick the indicator in the middle of the screen to place it!";
         duration = 6f;
         Toast();
         ++tutorialStage;
     }
 
-    //check
     public void PlayerPlacesTreeOfLife()
     {
-        Assert.AreEqual(tutorialStage, 2, "PlayerPlacesTreeOfLife called at wrong stage!");
+        if (tutorialStage != 2)
+        {
+            Debug.LogWarning($"PlayerPlacesTreeOfLife called at wrong stage! Expected 2, got {tutorialStage}");
+            return;
+        }
+        
         message = "Click the building menu again, but this time build a banana farm.";
         duration = 3f;
         Toast();
         ++tutorialStage;
     }
 
-    // check
     public void PlayerClickedBananaFarmButton()
     {
-        Assert.AreEqual(tutorialStage, 3, "PlayerClickedBananaFarmButtonFirstTime called at wrong stage!");
+        if (tutorialStage != 3)
+        {
+            Debug.LogWarning($"PlayerClickedBananaFarmButton called at wrong stage! Expected 3, got {tutorialStage}");
+            return;
+        }
+        
         message = "Don't see the placement indicator? Use the arrow keys to rotate the camera until you can find it.";
         duration = 3f;
         Toast();
         ++tutorialStage;
     }
 
-    // check
     public void PlayerPlacesBananaFarm()
     {
-        Assert.AreEqual(tutorialStage, 4, "PlayerPlacesBananaFarm called at wrong stage!");
+        if (tutorialStage != 4)
+        {
+            Debug.LogWarning($"PlayerPlacesBananaFarm called at wrong stage! Expected 4, got {tutorialStage}");
+            return;
+        }
+        
         message = "You can click on any building to get its stats and a description of what it does. Try clicking the banana farm!";
         duration = 3f;
         Toast();
         ++tutorialStage;
     }
 
-    // check
     public void PlayerSelectsBananaFarm()
     {
-        Assert.AreEqual(tutorialStage, 5, "PlayerSelectsBananaFarm called at wrong stage!");
+        if (tutorialStage != 5)
+        {
+            Debug.LogWarning($"PlayerSelectsBananaFarm called at wrong stage! Expected 5, got {tutorialStage}");
+            return;
+        }
+        
         message = "Right now, it won't produce anything because it doesn't have any monkeys assigned to it. Click anywhere outside of the window to close it.";
         duration = 5f;
         Toast();
         ++tutorialStage;
     }
 
-    // check
     public void PlayerClosesBananaFarmWindow()
     {
-        Assert.AreEqual(tutorialStage, 6, "PlayerClosesBananaFarmWindow called at wrong stage!");
+        if (tutorialStage != 6)
+        {
+            Debug.LogWarning($"PlayerClosesBananaFarmWindow called at wrong stage! Expected 6, got {tutorialStage}");
+            return;
+        }
+        
         message = "Left click a monkey and right click the banana farm to assign that monkey to the building. It should go inside the building once it arrives. Hint: if you're having trouble selecting things, try rotating the camera so that you have an unobstructed line of sight";
         duration = 5f;
         Toast();
         ++tutorialStage;
     }
 
-    // check
     public void FirstMonkeyAllocatedToFarm()
     {
-        Assert.AreEqual(tutorialStage, 7, "FirstMonkeyAllocatedToFarm called at wrong stage!");
+        if (tutorialStage != 7)
+        {
+            Debug.LogWarning($"FirstMonkeyAllocatedToFarm called at wrong stage! Expected 7, got {tutorialStage}");
+            return;
+        }
+        
         message = "Click on the building again to see its updated stats, and then allocate another monkey.";
         duration = 2f;
         Toast();
         ++tutorialStage;
     }
 
-    // check
     public void PlayerClosesBananaFarmWindowAgainAndAllocatesMonkey()
     {
-        Assert.AreEqual(tutorialStage, 8, "PlayerClosesBananaFarmWindowAgainAndAllocatesMonkey called at wrong stage!");
+        if (tutorialStage != 8)
+        {
+            Debug.LogWarning($"PlayerClosesBananaFarmWindowAgainAndAllocatesMonkey called at wrong stage! Expected 8, got {tutorialStage}");
+            return;
+        }
+        
         message = "We've given you some bananas to place an archer tower using the building menu. Assign a monkey to it to defend yourself from the other residents of the jungle...";
         duration = 6f;
         Toast();
@@ -131,10 +162,14 @@ public class Tutorial : MonoBehaviour
         ++tutorialStage;
     }
 
-    // check
     public void PlayerPlacedAndAllocatedArcherTower()
     {
-        Assert.AreEqual(tutorialStage, 9, "PlayerPlacedAndAllocatedArcherTower called at wrong stage!");
+        if (tutorialStage != 9)
+        {
+            Debug.LogWarning($"PlayerPlacedAndAllocatedArcherTower called at wrong stage! Expected 9, got {tutorialStage}");
+            return;
+        }
+        
         message = "Your archer towers will only defend when manned.";
         duration = 1f;
         Toast();
@@ -142,10 +177,16 @@ public class Tutorial : MonoBehaviour
         ++tutorialStage;
     }
 
-    // check
     public void ChimpKilledByTower()
     {
-        Assert.AreEqual(tutorialStage, 10, "ChimpKilledByTower called at wrong stage!");
+        if (tutorialStage != 10)
+        {
+            Debug.LogWarning($"ChimpKilledByTower called at wrong stage! Expected 10, got {tutorialStage}");
+            return;
+        }
+        
+        repeatButton.SetActive(false);
+        
         duration = 4.5f;
         message = "As your base gets bigger, bigger waves of chimps will come and try to destroy your village! If they get your tree of life, your city is destroyed and you'll have to rebuild from scratch.";
         Toast();
@@ -179,5 +220,28 @@ public class Tutorial : MonoBehaviour
     {
         ToastManager.Instance.RequestToast(message, duration);
         ToastManager.Instance.SkipToNextToast();
+    }
+
+    public void RepeatCurrentInstruction()
+    {
+        if (tutorialActive && !string.IsNullOrEmpty(message))
+        {
+            ToastManager.Instance.RequestToast(message, duration);
+            ToastManager.Instance.SkipToNextToast();
+        }
+    }
+
+    public bool IsOnStep(int step)
+    {
+        return tutorialActive && tutorialStage == step;
+    }
+
+    public void ShowStepMismatchWarning(string actionName, int expectedStep)
+    {
+        if (tutorialActive && tutorialStage != expectedStep)
+        {
+            string warningMsg = $"Please complete the current tutorial step first!";
+            ToastManager.Instance.RequestToast(warningMsg, 2f);
+        }
     }
 }
