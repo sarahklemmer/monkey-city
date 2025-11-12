@@ -29,11 +29,14 @@ make building icons their models
 <!-- click through toasts -->
 
 UX/UI:
+*DONE* take out tree of life from building menu
+*DONE* Change camera rotating from snapping to a spin
+*DONE* instantly regenerate building health after wave 
+
+
 make monkeys walk faster
-Change camera rotating from snapping to a spin
 indicators instead of text for tutorial
 fix rendering bug
-take out tree of life from building menu
 let players place buildings wherever in tutorial
 update the icons for buildings
 make it visually clear without clicking that monkeys are in buildings
@@ -42,7 +45,6 @@ shift click for building info
 monkeys can no longer move on the map
 icons or some kind of feedback for when buildings are regenerating or generating bananas
 change dollar sign in menu to bananas
-instantly regenerate building health after wave 
 make tutorial directly railroady instead of text
 indicate to the player when chimps are coming 
 make it clearer exactly how many chimps your archer towers will kill

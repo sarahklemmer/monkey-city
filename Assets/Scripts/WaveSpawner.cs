@@ -127,6 +127,9 @@ public class WaveSpawner : MonoBehaviour
             }
             
             waveActive = false;
+            
+            // Heal all buildings to full health after wave ends
+            HealAllBuildings();
         }
     }
 
@@ -283,6 +286,26 @@ public class WaveSpawner : MonoBehaviour
         }
         
         return new Vector3(x, 0, z);
+    }
+
+    private void HealAllBuildings()
+    {
+        BuildingHealth[] allBuildings = FindObjectsByType<BuildingHealth>(FindObjectsSortMode.None);
+        
+        int healedCount = 0;
+        foreach (BuildingHealth building in allBuildings)
+        {
+            if (building != null && building.GetCurrentHealth() > 0)
+            {
+                building.HealToFull();
+                healedCount++;
+            }
+        }
+        
+        if (healedCount > 0)
+        {
+            Debug.Log($"✨ Wave cleared! All {healedCount} buildings restored to full health!");
+        }
     }
 
     private float GetTimeBetweenWaves()

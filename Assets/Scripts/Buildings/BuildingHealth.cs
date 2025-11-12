@@ -123,6 +123,20 @@ public class BuildingHealth : MonoBehaviour
         UpdateVisuals();
     }
 
+    public void HealToFull()
+    {
+        currentHealth = maxHealth;
+        UpdateVisuals();
+        
+        // Stop any ongoing regeneration
+        if (regenCoroutine != null)
+        {
+            StopCoroutine(regenCoroutine);
+            isRegenerating = false;
+            regenCoroutine = null;
+        }
+    }
+
     public void SetHealth(float health)
     {
         currentHealth = Mathf.Clamp(health, 0, maxHealth);

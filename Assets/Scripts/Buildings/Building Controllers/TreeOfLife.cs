@@ -1,10 +1,24 @@
 public class TreeOfLife : BuildingBase
 {
+    // Add this static event for hiding the UI button
+    public static event System.Action OnTreePlaced;
+    
     void Awake()
     {
         base.SharedAwakeBehavior();
         building = new(BuildingType.TreeOfLife); 
         monkeys = new(0);
+    }
+    
+    void Start()
+    {
+        // Notify that the tree has been placed
+        NotifyTreePlaced();
+    }
+    
+    public void NotifyTreePlaced()
+    {
+        OnTreePlaced?.Invoke();
     }
 
     public override void OnDayCycle()

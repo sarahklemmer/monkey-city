@@ -27,9 +27,29 @@ public class BuildingListItem : MonoBehaviour
         }
     }
     
+    void OnEnable()
+    {
+        // Check visibility whenever this UI element is enabled
+        if (!string.IsNullOrEmpty(buildingData.buildingName))
+        {
+            CheckIfShouldHide();
+        }
+    }
+    
+    void OnDisable()
+    {
+        // Unsubscribe from event
+        if (!string.IsNullOrEmpty(buildingData.buildingName) && buildingData.buildingName == "Tree Of Life")
+        {
+            TreeOfLife.OnTreePlaced -= HandleTreePlaced;
+        }
+    }
+    
     public void Setup(BuildingData data)
     {
         buildingData = data;
+        
+        Debug.Log($"BuildingListItem Setup called for: {data.buildingName}");
         
         if (iconImage != null)
             iconImage.sprite = data.icon;
@@ -39,20 +59,40 @@ public class BuildingListItem : MonoBehaviour
             
         if (costText != null)
             costText.text = "$" + data.cost.ToString();
-            
+        
+        // Check immediately after setup if this should be hidden
         CheckIfShouldHide();
+        
+        // Subscribe to event after buildingData is set
+        if (!string.IsNullOrEmpty(buildingData.buildingName) && buildingData.buildingName == "Tree Of Life")
+        {
+            Debug.Log("Subscribing to TreeOfLife.OnTreePlaced event");
+            TreeOfLife.OnTreePlaced += HandleTreePlaced;
+        }
     }
     
     private void CheckIfShouldHide()
     {
-        if (buildingData.buildingName == "Tree of Life")
+        if (!string.IsNullOrEmpty(buildingData.buildingName) && buildingData.buildingName == "Tree Of Life")
         {
             TreeOfLife existingTree = FindFirstObjectByType<TreeOfLife>();
             
+            Debug.Log($"Checking Tree of Life visibility. Found existing tree: {existingTree != null}");
+            
             if (existingTree != null)
             {
+                Debug.Log("Hiding Tree of Life button!");
                 gameObject.SetActive(false);
             }
+        }
+    }
+    
+    private void HandleTreePlaced()
+    {
+        // Hide this item when Tree of Life is placed
+        if (!string.IsNullOrEmpty(buildingData.buildingName) && buildingData.buildingName == "Tree Of Life")
+        {
+            gameObject.SetActive(false);
         }
     }
     
