@@ -27,3 +27,42 @@ make building icons their models
 <!-- make production number accurate -->
 <!-- X to get out of buildinginfo -->
 <!-- click through toasts -->
+
+UX/UI:
+make monkeys walk faster
+Change camera rotating from snapping to a spin
+indicators instead of text for tutorial
+fix rendering bug
+take out tree of life from building menu
+let players place buildings wherever in tutorial
+update the icons for buildings
+make it visually clear without clicking that monkeys are in buildings
+keybinds to quick assign monkeys to nearest banana farm or archer tower
+shift click for building info
+monkeys can no longer move on the map
+icons or some kind of feedback for when buildings are regenerating or generating bananas
+change dollar sign in menu to bananas
+instantly regenerate building health after wave 
+make tutorial directly railroady instead of text
+indicate to the player when chimps are coming 
+make it clearer exactly how many chimps your archer towers will kill
+display resource generation numbers
+
+Bugs:
+monkeys getting stuck next to buildings
+weird rendering bug (i know what this bug is i can fix it -elliot)
+limit monkeys and move around monkeys \
+
+Gameplay:
+3-4 upgrades per building (each visually different)
+make building upgrade more attainable
+fix difficulty curve
+move buildings
+limit buildings and monkeys
+path system with 3 paths and 3 buildings
+fix walls
+attack every 7 days and specify how many chimps are coming, ui element
+buildings have an upkeep 
+limit monkeys
+
+chimps attack from set locations or attack from set locations most of the time
