@@ -51,6 +51,18 @@ public class BuildingManager : MonoBehaviour
         }
     }
 
+    public BuildingBase GetTreeOfLife()
+    {
+        foreach (BuildingBase b in buildings)
+        {
+            if (b is TreeOfLife) return b;
+        }
+        Debug.LogError("error, trying to get tree of life when none exists");
+        return null;
+    }
+
+    public List<BuildingBase> GetBuildingsOfType(BuildingType ty) => buildings.Where(b => b.GetBuildingType() == ty).ToList(); 
+
     // - 1 for TreeOfLife
     public int NumBuildings() => buildings.Count - 1;
     public int NumBuildings(BuildingType type) => buildings.Count(b => b.GetBuildingType() == type);

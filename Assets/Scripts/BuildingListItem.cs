@@ -58,7 +58,7 @@ public class BuildingListItem : MonoBehaviour
             nameText.text = data.buildingName;
             
         if (costText != null)
-            costText.text = "$" + data.cost.ToString();
+            costText.text = data.cost.ToString() + " Banana" + (data.cost != 1 ? "s" : "");
         
         // Check immediately after setup if this should be hidden
         CheckIfShouldHide();

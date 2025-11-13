@@ -7,13 +7,18 @@ public class TreeOfLife : BuildingBase
     {
         base.SharedAwakeBehavior();
         building = new(BuildingType.TreeOfLife); 
-        monkeys = new(0);
+        monkeys = new(999);
     }
     
     void Start()
     {
         // Notify that the tree has been placed
         NotifyTreePlaced();
+        SimpleTutorial.instance.StartTutorial();
+        // unlock other buildings
+        BuildingUnlock.Unlock(BuildingType.BananaFarm);
+        BuildingUnlock.Unlock(BuildingType.ArcherTower);
+        BuildingUnlock.Disable(BuildingType.TreeOfLife);
     }
     
     public void NotifyTreePlaced()
@@ -23,12 +28,6 @@ public class TreeOfLife : BuildingBase
 
     public override void OnDayCycle()
     {   
-        // TODO: replace this with real, good monkey spawning logic
-        // add a monkey every 2 days
-        if(TimeController.instance.currentDay % 2 == 0 && TimeController.instance.currentDay > 0)
-        {
-            PopulationManager.instance.AddToPopulation(1);
-        }
         /* do nothing */
     }
 

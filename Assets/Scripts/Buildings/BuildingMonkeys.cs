@@ -45,7 +45,9 @@ public class BuildingMonkeys
         List<MonkeyController> temp = new List<MonkeyController>(monkeys);
         foreach (MonkeyController m in temp)
         {
-            m.allocation.Deallocate();
+            m.allocation.Unassign();
+            // run back to the tree of life
+            m.StartWalkingToBuilding(BuildingManager.instance.GetTreeOfLife());
         }
         Assert.IsTrue(monkeys.Count == 0, "didn't properly free all monkeys!");
     }

@@ -37,6 +37,8 @@ public class PlacementIndicatorOnClick : MonoBehaviour
             {
                 BananaManager.instance.RemoveBananas(BuildingTypeToPrice.GetPrice(buildingType));
             }
+            // disable building selection for 1 frame
+            BuildingSelector.instance.DisableSelectionThisFrame();
 
             Building placedBuilding = new Building(buildingType);
 
@@ -81,24 +83,10 @@ public class PlacementIndicatorOnClick : MonoBehaviour
                 buildingObj.AddComponent<BuildingHealth>();
             }
 
-            if (buildingType == BuildingType.TreeOfLife)
-            {
-                if (PopulationManager.instance != null)
-                {
-                    PopulationManager.instance.AddToPopulation(5);
-                }
-                if (Tutorial.instance.tutorialActive) Tutorial.instance.PlayerPlacesTreeOfLife();
-            }
-            else
-            {
-                if (Tutorial.instance.tutorialActive && buildingType == BuildingType.BananaFarm) Tutorial.instance.PlayerPlacesBananaFarm();
-                BuildingMenuManager.instance.UpdatePrices();
-            }
-
-            if (PlacementManager.instance != null)
-            {
-                PlacementManager.instance.RefreshPlacementIndicators();
-            }
+            if (buildingType == BuildingType.TreeOfLife) PopulationManager.instance.AddToPopulation(5);
+            
+            BuildingMenuManager.instance.UpdatePrices();
+            PlacementManager.instance.RefreshPlacementIndicators();
         }
         finally
         {

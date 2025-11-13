@@ -242,9 +242,9 @@ public class BuildingGrid : MonoBehaviour
         int w = dimensions.width;
         int h = dimensions.height;
 
-        for (int x = 0; x <= GRID_SIZE - w; x++)
+        for (int x = 0; x <= GRID_SIZE - w; x+=2)
         {
-            for (int y = 0; y <= GRID_SIZE - h; y++)
+            for (int y = 0; y <= GRID_SIZE - h; y+=2)
             {
                 if (!AreaFree(x, y, w, h)) continue;
                 

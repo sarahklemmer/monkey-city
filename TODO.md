@@ -1,3 +1,4 @@
+QOL code changes (out of date):
 1. *DONE* make it so that buildings become invisible in "placement" mode so you can place buildings next to each other
 2. *DONE* make raycast based movement detection in monkeySelector only hit the ground using layer masks rather than buildings
 3. make far more robust selection system with the selector being a templated data structure that accepts a "Selectable" object that implements an OnSelect() and OnDeselect() function. for goldspike because it's only two things im just duplicating the code
@@ -6,45 +7,26 @@
 6. make it so that all classes extending buildingbase are forced to specify their capacity
 7. *DONE* when a building is destroyed, the monkeys inside it come out
 8. isloate changing allocation state better in monkeycontroller and buildingmonkeys, as right now they interfere with each other and that shouldn't be the case
-9. have indiciators that regeneration is possible/happening
-
-Todo before playtest:
-<!-- move sun for lighting issue -->
-<!-- shouldn't be able to visually select monkey during tutorial -->
-<!-- shrink toast  -->
-<!-- make repeat instruction button say repeat instruction -->
-<!-- close the building menu when you select a building -->
-<!-- when you open the building menu get rid of indicators if present -->
-repeat instruction button repeats too many times
-<!-- make toast background black when building info is selected -->
-<!-- able to click banana farm in tutorial after both monkeys allocated -->
-close building menu by clicking off
-make building icons their models
-<!-- raise y level of archer tower -->
-<!-- get rid of remove button deleting archer tower -->
-<!-- move archer tower closer to center -->
-<!-- fix tree of life tooltip should say 2 days instead of 3 days -->
-<!-- make production number accurate -->
-<!-- X to get out of buildinginfo -->
-<!-- click through toasts -->
 
 UX/UI:
 *DONE* take out tree of life from building menu
 *DONE* Change camera rotating from snapping to a spin
 *DONE* instantly regenerate building health after wave 
+*DONE* fix rendering bug
+*DONE* let players place buildings wherever in tutorial
+*DONE* update the icons for buildings
+*DONE* shift click for building info
+*DONE* monkeys can no longer move on the map
+*DONE* change dollar sign in menu to bananas
+*DONE* building menu flashing when new building is unlocked, building unlock system
+*DONE* make placement 2X2 instead of 1X1
 
 
 make monkeys walk faster
 indicators instead of text for tutorial
-fix rendering bug
-let players place buildings wherever in tutorial
-update the icons for buildings
 make it visually clear without clicking that monkeys are in buildings
 keybinds to quick assign monkeys to nearest banana farm or archer tower
-shift click for building info
-monkeys can no longer move on the map
 icons or some kind of feedback for when buildings are regenerating or generating bananas
-change dollar sign in menu to bananas
 make tutorial directly railroady instead of text
 indicate to the player when chimps are coming 
 make it clearer exactly how many chimps your archer towers will kill
@@ -52,8 +34,7 @@ display resource generation numbers
 
 Bugs:
 monkeys getting stuck next to buildings
-weird rendering bug (i know what this bug is i can fix it -elliot)
-limit monkeys and move around monkeys \
+limit monkeys and move around monkeys
 
 Gameplay:
 3-4 upgrades per building (each visually different)

@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Archer tower
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5c7b9289eec348b39beae6cc36c3eb4, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -122,7 +126,7 @@ MonoBehaviour:
   maxHealth: 100
   regenDelay: 60
   regenRate: 5
-  buildingRenderer: {fileID: 0}
+  buildingRenderer: {fileID: 8678810773718043987}
   fullHealthColor: {r: 1, g: 1, b: 1, a: 1}
   lowHealthColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &4843772670022547107
@@ -137,12 +141,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3fa92ef51450495a84897ee7560a93b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMaterial: {fileID: 0}
-  targetRenderer: {fileID: 0}
+  outlineMaterial: {fileID: 2100000, guid: f5ea81a833a1649e2a382c6e66bdeaba, type: 2}
+  targetRenderer: {fileID: 8678810773718043987}
   arrowPrefab: {fileID: 5185233238152244382, guid: 6a724de8cbe77454d8e1f79e84ba5cd6, type: 3}
+  showRangeOnSelect: 1
+  rangeColor: {r: 0.5, g: 0.8, b: 1, a: 0.15}
+  circleSegments: 50
+  circleOffset: {x: 0, y: 0, z: 0}
 --- !u!4 &7510448052551022140 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5c7b9289eec348b39beae6cc36c3eb4, type: 3}
+  m_PrefabInstance: {fileID: 8048145612990747095}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8678810773718043987 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: d5c7b9289eec348b39beae6cc36c3eb4, type: 3}
   m_PrefabInstance: {fileID: 8048145612990747095}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &9186629426075580464
@@ -212,6 +225,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f4203c9f6f12541afae451843762b9b4, type: 3}
       propertyPath: m_Name
       value: banana split
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f4203c9f6f12541afae451843762b9b4, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f4203c9f6f12541afae451843762b9b4, type: 3}
       propertyPath: m_IsActive
