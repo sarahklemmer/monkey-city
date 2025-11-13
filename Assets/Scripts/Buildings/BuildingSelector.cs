@@ -3,6 +3,8 @@ using UnityEngine;
 public class BuildingSelector : MonoBehaviour
 {
     public static BuildingSelector instance;
+    [SerializeField] LayerMask buildingMask;
+    private bool selectionDisabled = false;
 
     BuildingBase currentlySelected = null;
     
@@ -18,58 +20,82 @@ public class BuildingSelector : MonoBehaviour
         instance = this;
     }
 
-    void OnMouseDown()
+    void Update()
     {
-        // Deselect when clicking empty space
-        Deselect();
+        if(selectionDisabled)
+        {
+            selectionDisabled = false;
+            return;
+        }
+        // neither mouse button pressed
+        bool leftClick = Input.GetMouseButtonDown(0);
+        bool rightClick = Input.GetMouseButtonDown(1);
+
+        if (!leftClick && !rightClick) return;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        BuildingBase clicked = null;
+        if (Physics.Raycast(ray, out hit, 1000f, buildingMask))
+            clicked = hit.collider.GetComponentInParent<BuildingBase>();
+        
+        // right click, building selected, and right clicked another building
+        if (rightClick && clicked != null && currentlySelected != null)
+        {   
+            if (clicked == currentlySelected) return; // ignore if same building
+            if (!clicked.CanAllocate()) return;       // building is full or unavailable
+
+            // remove next monkey and send them to the building we clicked
+            MonkeyController victim = currentlySelected.NextMonkeyToRemove();
+            // no monkeys 
+            if (victim == null) return;
+            currentlySelected.RemoveMonkey(victim);
+            victim.StartWalkingToBuilding(clicked);
+        }
+        // left click for selecting
+        else if (leftClick)
+        {
+            if (clicked == null) Deselect();
+            // shift click shows info
+            else if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
+                BuildingInfo.instance.Show(clicked);
+                return;
+            }
+            // select if we didn't JUST place something
+            // else if (PlacementManager.instance.GetCurrentBuilding() == null) Select(clicked);
+            else Select(clicked);
+        }
     }
 
-    public void Select(BuildingBase b)
+    void Select(BuildingBase b)
     {
         if (b == null) return;
-        
-        // From develop: Check if building is selectable
-        if (!b.selectable) return;
-        
-        // // Double clicking a building should deselect it
-        // if (currentlySelected == b)
-        // {
-        //     Deselect();
-        //     return;
-        // }
-
-        // Deselect previous building
+        // deselect previous building
         Deselect();
-
-        if (Tutorial.instance.tutorialActive)
-        {
-            if (Tutorial.instance.tutorialStage == 5 && b.GetBuildingType() == BuildingType.BananaFarm) Tutorial.instance.PlayerSelectsBananaFarm();
-            else if (b.GetBuildingType() != BuildingType.ArcherTower && !(Tutorial.instance.tutorialStage == 8 && b.GetBuildingType() == BuildingType.BananaFarm)) return;
-        }
+        // we still want to deselect even if b isn't selectable as it should be like any other random press on scenery
+        if (!b.selectable) return;
+        Debug.Log("selecting");
 
         // Select new building
         currentlySelected = b;
-        // currentlySelected.EnableGlow();
-        
-        // Show building info
-        BuildingInfo.instance.Show(currentlySelected);
-        
-        // From develop: Select monkey in building for allocation/deallocation
-        // The false parameter means this is an internal call to avoid the double click deselect check
-        MonkeySelector.instance.Select(b.NextMonkeyToRemove(), false);
+        currentlySelected.EnableGlow();
     }
 
     public void Deselect()
     {
-        if (Tutorial.instance.tutorialActive && Tutorial.instance.tutorialStage == 6) Tutorial.instance.PlayerClosesBananaFarmWindow();
-        // Hide building info
-        BuildingInfo.instance.Hide();
-        
         if (currentlySelected != null)
         {
             currentlySelected.DisableGlow();
         }
-        
+
         currentlySelected = null;
     }
+
+    public void DisableSelectionThisFrame()
+    {
+        selectionDisabled = true;
+    }
+
+    public bool BuildingSelected() => currentlySelected == null;
 }

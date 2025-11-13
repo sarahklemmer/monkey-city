@@ -26,7 +26,7 @@ public class PlaceBuildingButton : MonoBehaviour
                 BuildingGrid.instance.RevealPresetWalls();
                 BuildingGrid.instance.FinishLevel();
             }
-            BuildingMenuManager.instance.ForceCloseBananaMenu();
+            BuildingMenuManager.instance.ForceCloseMenu();
             BuildingMenuManager.instance.UpdatePrices();
             if (PlacementManager.instance != null)
             {
@@ -34,31 +34,10 @@ public class PlaceBuildingButton : MonoBehaviour
             }
             return;
         }
-        
-        if (Tutorial.instance.tutorialActive)
-        {
-            switch(type)
-            {
-                case BuildingType.TreeOfLife:
-                    if (Tutorial.instance.tutorialStage != 1) return;
-                    else Tutorial.instance.PlayerClickedTreeOfLifeButton();
-                    break;
-                case BuildingType.BananaFarm:
-                    if (Tutorial.instance.tutorialStage != 3) return;
-                    else Tutorial.instance.PlayerClickedBananaFarmButton();
-                    break;
-                case BuildingType.ArcherTower:
-                    if (Tutorial.instance.tutorialStage != 9) return;
-                    break;
-                case BuildingType.Wall:
-                    // No special tutorial restrictions
-                    break;
-            }
-        } //1, 3, 9 are placing tree of life, placing farm, and archer tower respectively
 
         Building building = new Building(type);
 
-        BuildingMenuManager.instance.ForceCloseBananaMenu();
+        BuildingMenuManager.instance.ForceCloseMenu();
         PlacementManager.instance.SetCurrentBuilding(building);
     }
 }

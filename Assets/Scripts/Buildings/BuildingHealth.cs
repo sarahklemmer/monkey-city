@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Assertions;
+using System.Linq;
 
 public class BuildingHealth : MonoBehaviour
 {
@@ -20,14 +22,7 @@ public class BuildingHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
         lastDamageTime = -regenDelay;
-        
-        if (buildingRenderer == null)
-            buildingRenderer = GetComponent<Renderer>();
-            
-        if (buildingRenderer == null)
-        {
-            buildingRenderer = GetComponentInChildren<Renderer>();
-        }
+        Assert.IsNotNull(buildingRenderer, "you forgot to assign a buildingrenderer in the inspector!");
     }
 
     void Start()
@@ -71,7 +66,6 @@ public class BuildingHealth : MonoBehaviour
         
         while (currentHealth < maxHealth && isRegenerating)
         {
-            float oldHealth = currentHealth;
             currentHealth = Mathf.Min(maxHealth, currentHealth + regenRate * Time.deltaTime);
 
             UpdateVisuals();
@@ -84,22 +78,17 @@ public class BuildingHealth : MonoBehaviour
 
     private void UpdateVisuals()
     {
-        if (buildingRenderer == null)
-        {
-            return;
-        }
-
         float healthPercent = currentHealth / maxHealth;
         Color targetColor = Color.Lerp(lowHealthColor, fullHealthColor, healthPercent);
-        
-        foreach (Material mat in buildingRenderer.materials)
+        //the last one is the glow material
+        foreach (Material mat in buildingRenderer.materials.SkipLast(1))
         {
             if (mat.HasProperty("_Color"))
             {
                 mat.SetColor("_Color", targetColor);
             }
             
-            mat.color = targetColor;
+            mat.SetColor("_Color", targetColor);
         }
     }
 

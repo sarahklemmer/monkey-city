@@ -258,9 +258,6 @@ public class EnemyAttacker : MonoBehaviour
         {
             animator.SetTrigger("Die");
         }
-
-        if (Tutorial.instance.tutorialActive) Tutorial.instance.ChimpKilledByTower();
-        
         // Destroy after a short delay to let death animation play
         Destroy(gameObject, 0.5f);
     }

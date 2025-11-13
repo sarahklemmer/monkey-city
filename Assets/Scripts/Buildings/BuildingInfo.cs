@@ -29,6 +29,9 @@ public class BuildingInfo : MonoBehaviour
     private RectTransform panelRect;
     private Canvas canvas;
 
+    private bool shownOnce = false;
+    private bool hiddenOnce = false;
+
     void Awake()
     {
         if (instance != null && instance != this)
@@ -61,6 +64,7 @@ public class BuildingInfo : MonoBehaviour
             return;
         }
 
+        shownOnce = true;
         currentBuilding = building;
         info.SetActive(true);
         
@@ -79,7 +83,7 @@ public class BuildingInfo : MonoBehaviour
                 Button removeBtn = removeButton.GetComponent<Button>();
                 removeBtn.onClick.RemoveAllListeners();
                 removeBtn.onClick.AddListener(() => {
-                    victim.allocation.Deallocate();
+                    victim.allocation.Unassign();
                     Hide();
                 });
             }
@@ -129,35 +133,6 @@ public class BuildingInfo : MonoBehaviour
         }
     }
 
-    // private void RemoveBuilding(BuildingBase building)
-    // {
-    //     if (building == null) return;
-        
-    //     // Deallocate all monkeys from this building
-    //     while (building.GetMonkeyCount() > 0)
-    //     {
-    //         MonkeyController monkey = building.NextMonkeyToRemove();
-    //         if (monkey != null)
-    //         {
-    //             monkey.allocation.Deallocate();
-    //         }
-    //     }
-        
-    //     // Clear the grid space
-    //     if (BuildingGrid.instance != null)
-    //     {
-    //         BuildingGrid.instance.ClearBuildingFromGrid(building);
-    //     }
-        
-    //     // Hide the UI
-    //     Hide();
-        
-    //     // Destroy the building GameObject
-    //     Destroy(building.gameObject);
-        
-    //     Debug.Log($"Building {building.GetType().Name} removed!");
-    // }
-
     private void DisplayBuildingInfo(BuildingBase building)
     {
         if (building is ArcherTower)
@@ -184,7 +159,7 @@ public class BuildingInfo : MonoBehaviour
             if (buildingStatsText != null)
             {
                 buildingStatsText.text = 
-                    $"Production: {building.GetMonkeyCount() * 2} Bananas per day\n" +
+                    $"Production: {building.GetMonkeyCount() * 2} Bananas per day (2 per monkey)\n" +
                     $"Monkeys: {building.GetMonkeyCount()}/{building.GetMonkeyCapacity()}";
             }
         }
@@ -195,7 +170,9 @@ public class BuildingInfo : MonoBehaviour
             
             if (buildingStatsText != null)
             {
-                buildingStatsText.text = "Your base - Protect at all costs!";
+                buildingStatsText.text =
+                    "Your base - Protect at all costs!\n" +
+                    $"Idle Monkeys: {building.GetMonkeyCount()}";
             }
         }
         else
@@ -220,10 +197,6 @@ public class BuildingInfo : MonoBehaviour
         {
             BananaManager.instance.RemoveBananas(archerTowerUpgradeCost);
             archer.Upgrade();
-            if (BuildingMenuManager.instance != null)
-            {
-                BuildingMenuManager.instance.UnlockDefenseBuildings();
-            }
             if (!wallToastShown)
             {
                 wallToastShown = true;
@@ -267,7 +240,7 @@ public class BuildingInfo : MonoBehaviour
         panelRect.anchoredPosition = canvasPos;
     }
 
-    private System.Collections.IEnumerator EnableBackgroundBlockerDelayed()
+    private IEnumerator EnableBackgroundBlockerDelayed()
     {
         yield return null;
         
@@ -280,6 +253,7 @@ public class BuildingInfo : MonoBehaviour
         Debug.Log("hiding");
         currentBuilding = null;
 
+        if (shownOnce) hiddenOnce = true;
         removeButton.SetActive(false);
         upgradeButton.SetActive(false);
         upgradeInfoText.gameObject.SetActive(false);
@@ -287,6 +261,7 @@ public class BuildingInfo : MonoBehaviour
         backgroundBlocker.SetActive(false);
         removeButton.GetComponent<Button>().onClick.RemoveAllListeners();
         upgradeButton.GetComponent<Button>().onClick.RemoveAllListeners();
-        if (Tutorial.instance.tutorialActive && Tutorial.instance.tutorialStage == 6) Tutorial.instance.PlayerClosesBananaFarmWindow();
     }
+
+    public bool ShownAndHidden() => hiddenOnce;
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class MonkeyController : MonoBehaviour
 {
@@ -18,19 +19,21 @@ public class MonkeyController : MonoBehaviour
         allocation.Initialize(this);
     }
 
-    public void StartWalkingToPosition(float x, float z, BuildingBase buildingTarget = null)
+    public void StartWalkingToBuilding(BuildingBase buildingTarget)
     {
         if (moveRoutine != null)
             StopCoroutine(moveRoutine);
 
-        moveRoutine = StartCoroutine(WalkToPosition(new Vector3(x, transform.position.y, z), buildingTarget));
+        moveRoutine = StartCoroutine(WalkToBuilding(buildingTarget));
     }
 
-    private IEnumerator WalkToPosition(Vector3 target, BuildingBase buildingTarget)
+    private IEnumerator WalkToBuilding(BuildingBase buildingTarget)
     {
+        Vector3 target = new Vector3(buildingTarget.transform.position.x, transform.position.y, buildingTarget.transform.position.z);
+        Assert.IsNotNull(buildingTarget);
         // always deallocate on walk, either we're leaving a building or we're not allocated and it just
         // does nothing
-        allocation.Deallocate();
+        allocation.Unassign();
         // we'll be walking ianto buildings anyways so this 0.05 is fine i think
         while (Vector3.Distance(transform.position, target) > 0.05f)
         {
@@ -48,13 +51,11 @@ public class MonkeyController : MonoBehaviour
         transform.position = target;
         moveRoutine = null;
 
-        // if there's a targeted building allocate to it
-        if(buildingTarget != null) allocation.Allocate(buildingTarget);
-    }
-
-    void OnMouseDown()
-    {
-        MonkeySelector.instance.Select(this);
+        if (!buildingTarget.CanAllocate()) StartWalkingToBuilding(BuildingManager.instance.GetTreeOfLife());
+        else
+        {
+            allocation.Assign(buildingTarget);
+        }
     }
     
     public void EnableGlow()  => glow.SetGlow(true);

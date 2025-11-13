@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public abstract class BuildingBase : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public abstract class BuildingBase : MonoBehaviour
     protected BuildingMonkeys monkeys;
     protected Renderer[] renderers;
     protected Collider[] colliders;
-    public bool selectable{ get; private set; }
+    public bool selectable { get; private set; }
 
     // functions to be overrode
     public abstract void OnDayCycle();
@@ -25,6 +26,7 @@ public abstract class BuildingBase : MonoBehaviour
     protected virtual void OnEnable()
     {
         BuildingManager.instance.AddBuilding(this);
+        ToggleFlasher.instance.StopFlash();
     }
 
     protected virtual void OnDisable()
@@ -34,6 +36,11 @@ public abstract class BuildingBase : MonoBehaviour
 
     protected virtual void SharedAwakeBehavior()
     {
+        Assert.IsTrue(
+            gameObject.layer == LayerMask.NameToLayer("Building"),
+            $"{gameObject.name} MUST be on the 'Building' layer, but is currently on '{LayerMask.LayerToName(gameObject.layer)}'"
+        );
+
         glow = gameObject.AddComponent<GlowEffect>();
         glow.Initialize(outlineMaterial, targetRenderer);
         // TODO: make this dynamic, placeholder of 2 for now
@@ -58,6 +65,7 @@ public abstract class BuildingBase : MonoBehaviour
         monkeys.Remove(NextMonkeyToRemove());
     }
 
+    // DON'T USE THIS, THIS IS ONLY TO BE USED IN MONKEYALLOC
     public virtual bool AddMonkey(MonkeyController monkey)
     {
         // returns whether the add was succeeded
@@ -67,13 +75,6 @@ public abstract class BuildingBase : MonoBehaviour
     public virtual MonkeyController NextMonkeyToRemove()
     {
         return monkeys.MonkeyToDeallocate();
-    }
-
-    // From clickBuilding branch - used by BuildingInfo to show panel
-    void OnMouseDown()
-    {
-        // Use BuildingSelector instead of directly showing BuildingInfo
-        BuildingSelector.instance.Select(this);
     }
 
     // From clickBuilding branch - glow methods now use GlowEffect from develop
@@ -96,6 +97,11 @@ public abstract class BuildingBase : MonoBehaviour
     public virtual int GetMonkeyCapacity()
     {
         return monkeys?.capacity ?? 0;
+    }
+
+    public bool CanAllocate()
+    {
+        return monkeys?.CanAllocate() ?? false;
     }
 
     public BuildingType GetBuildingType() => building.type;
