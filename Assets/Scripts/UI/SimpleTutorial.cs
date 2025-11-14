@@ -18,7 +18,10 @@ public class SimpleTutorial : MonoBehaviour
         instance = this;
     }
 
-    public void StartTutorial() => tutorialActive = true;
+    public void StartTutorial() {
+        tutorialActive = true;
+        TimeController.instance.StopTicking();
+    }
 
     // Update is called once per frame
     void Update()
@@ -30,8 +33,8 @@ public class SimpleTutorial : MonoBehaviour
             case 0:
                 if (BuildingSelector.instance.BuildingSelected() && BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm).Count > 0)
                 {
-                    TextOverBuilding.instance.DisplayText(BuildingManager.instance.GetTreeOfLife().gameObject, "left click me!");
-                    TextOverBuilding.instance.DisplayText(BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm)[0].gameObject, "right click me!");
+                    TextOverBuilding.instance.DisplayText(BuildingManager.instance.GetTreeOfLife().gameObject, "first, left click me!");
+                    TextOverBuilding.instance.DisplayText(BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm)[0].gameObject, "then, right click me!");
                     ++stage;
                 }
                 break;
@@ -49,6 +52,7 @@ public class SimpleTutorial : MonoBehaviour
                     TextOverBuilding.instance.DisableAllText();
                     ToastManager.Instance.RequestToast("you can move monkeys between any two buildings this way. Good luck!");
                     tutorialActive = false;
+                    TimeController.instance.StartTicking();
                 }
                 break;
         }

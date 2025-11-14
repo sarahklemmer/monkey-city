@@ -32,6 +32,7 @@ public class BuildingManager : MonoBehaviour
         {
             b.OnDayCycle();
         }
+        BananaManager.instance.AddBananas(GetDailyProduction());
     }
 
     public void MakeBuildingsTransparent()
@@ -60,6 +61,8 @@ public class BuildingManager : MonoBehaviour
         Debug.LogError("error, trying to get tree of life when none exists");
         return null;
     }
+
+    public int GetDailyProduction() => buildings.Sum(b => b.bananasPerDay);
 
     public List<BuildingBase> GetBuildingsOfType(BuildingType ty) => buildings.Where(b => b.GetBuildingType() == ty).ToList(); 
 

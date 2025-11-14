@@ -1,12 +1,10 @@
 using UnityEngine;
-using TMPro;
 using UnityEngine.Assertions;
 
 public class BananaManager : MonoBehaviour
 {
-    [SerializeField] private GameObject bananaPrefab;
-    [SerializeField] private TextMeshProUGUI bananaCountText;
-    [SerializeField] private int bananaCount = 0;
+    [SerializeField] private int startingBananas = 1;
+    public int bananaCount {get; private set;}
     private int bananasGenerated = 0;
 
     public static BananaManager instance;
@@ -25,31 +23,21 @@ public class BananaManager : MonoBehaviour
 
     void Start()
     {
-        UpdateBananaCountText();
+        AddBananas(startingBananas);
     }
 
     public void AddBananas(int num)
     {
         bananaCount += num;
         bananasGenerated += num;
-        UpdateBananaCountText();
     }
 
     public void RemoveBananas(int num)
     {
         Assert.IsTrue(bananaCount >= num, "removing more bananas than we have!");
         bananaCount -= num;
-        UpdateBananaCountText();
     }
 
     public int GetBananas() => bananaCount;
     public int GetBananasGenerated() => bananasGenerated;
-
-    private void UpdateBananaCountText()
-    {
-        if (bananaCountText != null)
-        {
-            bananaCountText.text = bananaCount.ToString();
-        }
-    }
 }
