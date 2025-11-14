@@ -5,7 +5,6 @@ using System.Collections;
 
 public class BuildingInfo : MonoBehaviour
 {
-    [SerializeField] GameObject removeButton;
     [SerializeField] GameObject upgradeButton;
     [SerializeField] GameObject info;
     [SerializeField] GameObject backgroundBlocker; 
@@ -25,7 +24,6 @@ public class BuildingInfo : MonoBehaviour
     [SerializeField] private int archerTowerUpgradeCost = 300;
     
     public static BuildingInfo instance;
-    private BuildingBase currentBuilding;
     private RectTransform panelRect;
     private Canvas canvas;
 
@@ -58,36 +56,14 @@ public class BuildingInfo : MonoBehaviour
     {
         if (building == null) return;
         
-        if (info == null || removeButton == null)
+        if (info == null)
         {
             Debug.LogError("BuildingInfo UI elements not assigned in Inspector!");
             return;
         }
 
         shownOnce = true;
-        currentBuilding = building;
         info.SetActive(true);
-        
-        // Check if this is a TreeOfLife - if so, hide remove button
-        if (building is TreeOfLife)
-        {
-            removeButton.SetActive(false);
-        }
-        else
-        {
-            MonkeyController victim = currentBuilding.NextMonkeyToRemove();
-
-            removeButton.SetActive(victim != null);
-            if(victim != null)
-            {                
-                Button removeBtn = removeButton.GetComponent<Button>();
-                removeBtn.onClick.RemoveAllListeners();
-                removeBtn.onClick.AddListener(() => {
-                    victim.allocation.Unassign();
-                    Hide();
-                });
-            }
-        }
         
         if (backgroundBlocker != null)
             StartCoroutine(EnableBackgroundBlockerDelayed());
@@ -251,15 +227,12 @@ public class BuildingInfo : MonoBehaviour
     public void Hide()
     {
         Debug.Log("hiding");
-        currentBuilding = null;
 
         if (shownOnce) hiddenOnce = true;
-        removeButton.SetActive(false);
         upgradeButton.SetActive(false);
         upgradeInfoText.gameObject.SetActive(false);
         info.SetActive(false);
         backgroundBlocker.SetActive(false);
-        removeButton.GetComponent<Button>().onClick.RemoveAllListeners();
         upgradeButton.GetComponent<Button>().onClick.RemoveAllListeners();
     }
 

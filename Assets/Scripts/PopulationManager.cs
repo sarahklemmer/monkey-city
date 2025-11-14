@@ -1,5 +1,4 @@
 using UnityEngine;
-using TMPro;
 using UnityEngine.Assertions;
 
 public class PopulationManager : MonoBehaviour
@@ -7,9 +6,9 @@ public class PopulationManager : MonoBehaviour
     public static PopulationManager instance;
     
     [SerializeField] private GameObject monkeyPrefab;
-    [SerializeField] private TextMeshProUGUI monkeyCountText;
-    [SerializeField] private int monkeyCount = 0;
     [SerializeField] private float zOffset = 0.2f;
+
+    public int population {get; private set; } = 0;
     
     void Awake()
     {
@@ -21,18 +20,12 @@ public class PopulationManager : MonoBehaviour
         }
         instance = this;
     }
-
-    void Start()
-    {
-        monkeyCount = 0;
-        AddToPopulation(0);
-    }
     
     public void AddToPopulation(int num)
     {
-        Assert.IsNotNull(monkeyCountText, "Assign a monkeyCountText in the Inspector!");
         Assert.IsTrue(num >= 0, "trying to spawn negative monkeys!");
 
+        population += num;
         int xOffset = -num / 2;
         int count = num;
         while(count-- > 0)
@@ -45,8 +38,12 @@ public class PopulationManager : MonoBehaviour
             // allocate monkey to tree of life instantly
             monkey.GetComponent<MonkeyController>().StartWalkingToBuilding(BuildingManager.instance.GetTreeOfLife());
         }
-        
-        monkeyCount += num;
-        monkeyCountText.text = monkeyCount.ToString();
+    }
+
+    //TODO: actually make this more impactful on the state, it's pretty much useless
+    public void RemoveFromPopulation(int num)
+    {
+        Assert.IsTrue(num >= 0, "trying to remove negative monkeys!");
+        population -= num;
     }
 }

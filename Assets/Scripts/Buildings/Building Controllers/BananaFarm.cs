@@ -1,7 +1,6 @@
 public class BananaFarm : BuildingBase
 {
     //TODO: make this scale with upgrades
-    private int bananasPerDay = 1;
     void Awake()
     {
         base.SharedAwakeBehavior();
@@ -9,10 +8,15 @@ public class BananaFarm : BuildingBase
         monkeys = new(2);
     }
 
+    void Update()
+    {
+        //TODO: move this out of update this is really shitty and not performant 
+        bananasPerDay = monkeys.Count() * 2;
+    }
+
     public override void OnDayCycle()
     {
-        // add a banana for each monkey we have allocated
-        BananaManager.instance.AddBananas(bananasPerDay * monkeys.Count() * 2);
+        // do nothing
     }
 
     public override void OnDestroy()

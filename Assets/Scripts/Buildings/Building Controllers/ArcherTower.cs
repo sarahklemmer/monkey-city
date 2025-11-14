@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ArcherTower : BuildingBase
@@ -117,6 +118,9 @@ public class ArcherTower : BuildingBase
 
     void Update()
     {
+        // 5 ^ (level - 1) so -1, -5, -25 times number of monkeys + 1 so it still costs bananas to defend
+        bananasPerDay = ((int)Math.Pow(5, level - 1)) * GetMonkeyCount() * -1;
+
         if (targetEnemy == null)
         {
             FindNearestEnemy();
@@ -263,7 +267,7 @@ public class ArcherTower : BuildingBase
 
     public override void OnDayCycle()
     {
-        /* do nothing */
+        // do nothing
     }
 
     public override void OnDestroy()
