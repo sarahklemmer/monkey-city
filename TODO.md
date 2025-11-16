@@ -47,4 +47,4 @@ attack every 7 days and specify how many chimps are coming, ui element
 buildings have an upkeep 
 limit monkeys
 
-chimps attack from set locations or attack from set locations most of the time
+chimps attack from set locations or attack from set locations most of the tim

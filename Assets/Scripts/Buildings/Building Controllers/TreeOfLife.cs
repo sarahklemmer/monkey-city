@@ -1,5 +1,8 @@
 public class TreeOfLife : BuildingBase
 {
+    private int level = 1;
+    private const int MAX_LEVEL = 2; // CAP AT LEVEL 2
+    
     // Add this static event for hiding the UI button
     public static event System.Action OnTreePlaced;
     
@@ -25,6 +28,29 @@ public class TreeOfLife : BuildingBase
     {
         OnTreePlaced?.Invoke();
     }
+    
+    public void Upgrade()
+    {
+        if (level >= MAX_LEVEL)
+        {
+            UnityEngine.Debug.Log($"Tree of Life is already at max level ({MAX_LEVEL})!");
+            return;
+        }
+        
+        // Add upgrade cost logic here if needed
+        level++;
+        
+        UnityEngine.Debug.Log($"Tree of Life upgraded to level {level}!");
+        
+        // You can add visual changes or stat improvements here
+        // For example:
+        // - Increase monkey capacity
+        // - Visual model changes
+        // - Special abilities unlock
+    }
+    
+    public int GetLevel() => level;
+    public bool IsMaxLevel() => level >= MAX_LEVEL;
 
     public override void OnDayCycle()
     {   
