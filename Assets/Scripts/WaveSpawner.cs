@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Linq;
+using UnityEditor.PackageManager.Requests;
 
 [System.Serializable]
 public class EnemyWaveConfig
@@ -34,6 +35,7 @@ public class WaveSpawner : MonoBehaviour
     [SerializeField] private float minimumTimeBetweenWaves = 20f; // Increased from 10f
     [SerializeField] private float gracePeriodAfterThreshold = 15f; // Increased from 10f
     
+    private ToastManager toastManager;
     private int currentWave = 0;
     private int enemiesAlive = 0;
     private bool waveActive = false;
@@ -68,6 +70,7 @@ public class WaveSpawner : MonoBehaviour
             Debug.LogError("BuildingGrid instance not found!");
             return;
         }
+        toastManager = ToastManager.Instance;
 
         StartCoroutine(WaveLoop());
     }
@@ -119,8 +122,9 @@ public class WaveSpawner : MonoBehaviour
             yield return new WaitForSeconds(GetTimeBetweenWaves());
             
             currentWave++;
-            StartWave();
-            
+            int enemiesToSpawn = CalculateWaveSize();
+            StartCoroutine(AnnounceAndStartWave(enemiesToSpawn, (currentWave % 5 == 0) && bossPrefab != null));
+            yield return new WaitForSeconds(2f);
             while (enemiesAlive > 0)
             {
                 yield return new WaitForSeconds(0.5f);
@@ -139,12 +143,13 @@ public class WaveSpawner : MonoBehaviour
         {
             StopAllCoroutines();
             currentWave++;
-            StartWave();
+            int enemiesToSpawn = CalculateWaveSize();
+            StartCoroutine(AnnounceAndStartWave(enemiesToSpawn, (currentWave % 5 == 0) && bossPrefab != null));
             StartCoroutine(WaveLoop());
         }
     }
 
-    private void StartWave()
+    private void StartWave(int enemiesToSpawn)
     {
         waveActive = true;
         
@@ -159,7 +164,7 @@ public class WaveSpawner : MonoBehaviour
         else
         {
             Debug.Log($"Wave {currentWave} starting...");
-            int enemiesToSpawn = CalculateWaveSize();
+            
             StartCoroutine(SpawnEnemies(enemiesToSpawn));
         }
     }
@@ -189,6 +194,16 @@ public class WaveSpawner : MonoBehaviour
         Debug.Log($"Wave size: Base={baseEnemiesPerWave * Mathf.Pow(waveScalingFactor, currentWave - 1):F1}, Banana multiplier={bananaMultiplier:F1}, Final={Mathf.CeilToInt(waveSize)}");
         
         return Mathf.CeilToInt(waveSize);
+    }
+
+    IEnumerator AnnounceAndStartWave(int enemiestoSpawn, bool isBossWave)
+    {
+        if (isBossWave)
+            toastManager.RequestToast($"🚨 BOSS WAVE Incoming! Prepare Yourself! 🚨", 2.0f, 0.3f, false, false);
+        else
+            toastManager.RequestToast($"Chimpanzees Incoming! Wave Size: " + enemiestoSpawn, 2.0f, 0.3f, false, false);
+        yield return new WaitForSeconds(2f);
+        StartWave(enemiestoSpawn);
     }
 
     private IEnumerator SpawnEnemies(int count)
