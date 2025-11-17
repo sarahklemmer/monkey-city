@@ -251,8 +251,8 @@ public class BuildingInfo : MonoBehaviour
                 int totalProduction = farm.GetBananasPerDay() * building.GetMonkeyCount() * 2;
                 buildingStatsText.text = 
                     $"Level: {farm.GetLevel()}\n" +
-                    $"Production: {farm.bananasToProduce} Bananas/day\n" +
-                    $"Per Monkey: {farm.bananasToProduce / building.GetMonkeyCount()} Bananas/day\n" +
+                    $"Production: {farm.bananasToProduce * 3} Bananas/day\n" +
+                    $"Per Monkey: {(farm.bananasToProduce / building.GetMonkeyCount()) * 3} Bananas/day\n" +
                     $"Monkeys: {building.GetMonkeyCount()}/{building.GetMonkeyCapacity()}";
             }
         }
