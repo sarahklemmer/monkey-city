@@ -56,6 +56,5 @@ public class TimeController : MonoBehaviour
         secondsPassedSinceLastDay %= secondsToDay;
         night = false;
         DayNightToggle.instance.SetNight(false);
-        BuildingManager.instance.PassDay();
     }
 }
