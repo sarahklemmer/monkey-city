@@ -6,6 +6,7 @@ public class BananaFarm : BuildingBase
     private const int MAX_LEVEL = 4;
     private int baseBananaProduction = 1;
     public int bananasToProduce = 0;
+    public int buildingLevel = 1;
     private static readonly int[] upgradeCosts = { 0, 5, 40, 100, 200 };
     
     [SerializeField] ParticleSystem upgradeEffect;
@@ -21,7 +22,7 @@ public class BananaFarm : BuildingBase
     {
         if (AllBananaFarmInfo.instance != null && monkeys != null)
         {
-            bananasToProduce = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count();
+            bananasToProduce = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count() * buildingLevel;
         }
     }
 
@@ -72,19 +73,20 @@ public class BananaFarm : BuildingBase
         
         level++;
         
+        // building level is used as a multiplier for the banana production
         switch (level)
         {
             case 1:
-                baseBananaProduction = 1;
+                buildingLevel = 1;
                 break;
             case 2:
-                baseBananaProduction = 2;
+                buildingLevel = 2;
                 break;
             case 3:
-                baseBananaProduction = 3;
+                buildingLevel = 3;
                 break;
             case 4:
-                baseBananaProduction = 5;
+                buildingLevel = 5;
                 break;
         }
         

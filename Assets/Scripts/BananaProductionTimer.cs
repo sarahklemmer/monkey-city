@@ -9,7 +9,6 @@ public class BananaProductionTimer : MonoBehaviour
 
     [SerializeField] private float productionInterval = 10f;
 
-    private float timeSinceLastProduction = 0f;
     private bool isRunning = true;
 
     void Awake()
@@ -82,7 +81,7 @@ public class BananaProductionTimer : MonoBehaviour
             Debug.LogWarning("Production interval must be greater than 0!");
             return;
         }
-        
+
         productionInterval = interval;
         StopAllCoroutines();
         StartCoroutine(ProductionLoop());

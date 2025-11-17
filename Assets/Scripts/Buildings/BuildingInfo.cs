@@ -14,6 +14,7 @@ public class BuildingInfo : MonoBehaviour
     [SerializeField] TextMeshProUGUI buildingNameText;
     [SerializeField] TextMeshProUGUI buildingStatsText;
     [SerializeField] TextMeshProUGUI upgradeInfoText;
+    [SerializeField] GameObject treeOfLifeExtraUI;
     [SerializeField] BuildingManager manager;
     
     [Header("Positioning")]
@@ -74,6 +75,11 @@ public class BuildingInfo : MonoBehaviour
         current = building;
         shownOnce = true;
         info.SetActive(true);
+
+        if (treeOfLifeExtraUI != null)
+        {
+            treeOfLifeExtraUI.SetActive(false);
+        }
         
         if (backgroundBlocker != null)
             StartCoroutine(EnableBackgroundBlockerDelayed());
@@ -127,14 +133,14 @@ public class BuildingInfo : MonoBehaviour
                     else
                     {
                         int cost = archer.GetUpgradeCost();
-                        upgradeInfoText.text = $"Upgrade Cost: {cost} Bananas\nIncreased range & faster shooting";
+                        upgradeInfoText.text = $"Upgrade Cost: {cost} Bananas\n Next Upgrade: Increased range & faster shooting";
                         upgradeBtn.interactable = BananaManager.instance.GetBananas() >= cost;
                     }
                 }
                 else // Level 1 -> 2
                 {
                     int cost = archer.GetUpgradeCost();
-                    upgradeInfoText.text = $"Upgrade Cost: {cost} Bananas\nFaster shooting";
+                    upgradeInfoText.text = $"Upgrade Cost: {cost} Bananas\n Next Upgrade: Faster shooting";
                     upgradeBtn.interactable = BananaManager.instance.GetBananas() >= cost;
                 }
             }
@@ -171,14 +177,14 @@ public class BuildingInfo : MonoBehaviour
                     else
                     {
                         int cost = farm.GetUpgradeCost();
-                        upgradeInfoText.text = $"Upgrade Cost: {cost} Bananas\nNext: {farm.GetLevel() + 1}x production";
+                        upgradeInfoText.text = $"Upgrade Cost: {cost} Bananas\nNext Upgrade: {farm.GetLevel() + 1}x production";
                         upgradeBtn.interactable = BananaManager.instance.GetBananas() >= cost;
                     }
                 }
                 else
                 {
                     int cost = farm.GetUpgradeCost();
-                    upgradeInfoText.text = $"Upgrade Cost: {cost} Bananas\nNext: {farm.GetLevel() + 1}x production";
+                    upgradeInfoText.text = $"Upgrade Cost: {cost} Bananas\nNext Upgrade: {farm.GetLevel() + 1}x production";
                     upgradeBtn.interactable = BananaManager.instance.GetBananas() >= cost;
                 }
             }
@@ -188,6 +194,11 @@ public class BuildingInfo : MonoBehaviour
         {
             TreeOfLife tree = building as TreeOfLife;
             upgradeButton.SetActive(true);
+
+            if (treeOfLifeExtraUI != null)
+            {
+                treeOfLifeExtraUI.SetActive(true);
+            }
             
             Button upgradeBtn = upgradeButton.GetComponent<Button>();
             upgradeBtn.onClick.RemoveAllListeners();

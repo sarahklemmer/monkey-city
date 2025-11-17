@@ -66,6 +66,12 @@ public class EnemyAttacker : MonoBehaviour
 
     void Update()
     {
+        if (WaveSpawner.instance != null && WaveSpawner.instance.IsPaused())
+        {
+            SetWalking(false);
+            return;
+        }
+
         if (isRecoiling)
         {
             SetWalking(false);

@@ -4,9 +4,9 @@ public class AllMonkeyInfo : MonoBehaviour
 {
     public static AllMonkeyInfo instance;
 
-    [SerializeField] private float baseMonkeySpeed = 1;
+    [SerializeField] private float baseMonkeySpeed = 5;
 
-    [SerializeField] private float costMultiplier = 1.0f;
+    //[SerializeField] private float costMultiplier = 1.0f;
 
     void Awake()
     {

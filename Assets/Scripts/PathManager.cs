@@ -20,7 +20,7 @@ public class PathManager : MonoBehaviour
     public PathType currentPathType = PathType.Farmer;
 
     [SerializeField] private float discountFactor = 0.5f;
-    [SerializeField] private int playerPoints = 0;
+    [SerializeField] public int playerPoints = 0;
 
     void Awake()
     {
@@ -61,10 +61,14 @@ public class PathManager : MonoBehaviour
         }
     }
 
-    void FarmerPathUpgrade()
+    public void FarmerPathUpgrade()
     {
         int costOfUpgrade = CalculateCostOfUpgrade(PathType.Farmer);
-        if (playerPoints < costOfUpgrade){ return; }
+        if (playerPoints < costOfUpgrade)
+        {
+            ToastManager.Instance?.RequestToast("You don't have enough player points for the Farmer path upgrade", 2f);
+            return;
+        }
 
         playerPoints -= costOfUpgrade;
         farmerPathLevel++;
@@ -72,10 +76,14 @@ public class PathManager : MonoBehaviour
         IncreaseFarmerPathLevel();
     }
 
-    void WarriorPathUpgrade()
+    public void WarriorPathUpgrade()
     {
         int costOfUpgrade = CalculateCostOfUpgrade(PathType.Warrior);
-        if (playerPoints < costOfUpgrade){ return; }
+        if (playerPoints < costOfUpgrade)
+        {
+            ToastManager.Instance?.RequestToast("You don't have enough player points for the Warrior path upgrade", 2f);
+            return;
+        }
 
         playerPoints -= costOfUpgrade;
         warriorPathLevel++;
@@ -83,10 +91,14 @@ public class PathManager : MonoBehaviour
         IncreaseWarriorPathLevel();
     }
 
-    void ScholarPathUpgrade()
+    public void ScholarPathUpgrade()
     {
         int costOfUpgrade = CalculateCostOfUpgrade(PathType.Scholar);
-        if (playerPoints < costOfUpgrade){ return; }
+        if (playerPoints < costOfUpgrade)
+        {
+            ToastManager.Instance?.RequestToast("You don't have enough player points for the Scholar path upgrade", 2f);
+            return;
+        }
 
         playerPoints -= costOfUpgrade;
         scholarPathLevel++;
@@ -94,7 +106,7 @@ public class PathManager : MonoBehaviour
         IncreaseScholarPathLevel();
     }
     
-    int CalculateCostOfUpgrade(PathType pathType)
+    public int CalculateCostOfUpgrade(PathType pathType)
     {
         int costOfUpgrade = levelCosts[GetPathLevel(pathType)];
         
@@ -108,56 +120,62 @@ public class PathManager : MonoBehaviour
 
     void IncreaseFarmerPathLevel()
     {
-        if (farmerPathLevel % 2 == 1)
-        {
-            AllBananaFarmInfo.instance.IncreaseBananasPerDay(1);
-        }
-        else
-        {
-            //AllBananaFarmInfo.instance.IncreaseBananasPerDay(2);
-        }
+        // if (farmerPathLevel % 2 == 1)
+        // {
+        AllBananaFarmInfo.instance.IncreaseBananasPerDay(1);
+        ToastManager.Instance?.RequestToast("Farmer path upgraded to level " + farmerPathLevel + "!", 1f);
+        // }
+        // else
+        // {
+        //     //AllBananaFarmInfo.instance.IncreaseBananasPerDay(2);
+        // }
     }
     
     void IncreaseWarriorPathLevel()
     {
-        Debug.Log($"Warrior path upgraded to level {warriorPathLevel}!");
-        if (warriorPathLevel % 2 == 1)
-        {
-            AllArcherTowerInfo.instance.IncreaseDamagePerAttack(5);
-        }
-        else
-        {
-            //AllArcherTowerInfo.instance.IncreaseDamagePerAttack(2);
-        }
+        // Debug.Log($"Warrior path upgraded to level {warriorPathLevel}!");
+        // if (warriorPathLevel % 2 == 1)
+        // {
+        AllArcherTowerInfo.instance.IncreaseDamagePerAttack(5);
+        ToastManager.Instance?.RequestToast("Warrior path upgraded to level " + warriorPathLevel + "!", 1f);
+        // }
+        // else
+        // {
+        //     //AllArcherTowerInfo.instance.IncreaseDamagePerAttack(2);
+        // }
     }
     
     void IncreaseScholarPathLevel()
     {
-        Debug.Log($"Scholar path upgraded to level {scholarPathLevel}!");
-        if (scholarPathLevel % 2 == 1)
-        {
-            AllMonkeyInfo.instance.IncreaseMonkeySpeed(2f);
-        }
-        else
-        {
-            //AllEnemyInfo.instance.IncreaseMaxHealth(20);
-        }
+        // Debug.Log($"Scholar path upgraded to level {scholarPathLevel}!");
+        // if (scholarPathLevel % 2 == 1)
+        // {
+        AllMonkeyInfo.instance.IncreaseMonkeySpeed(2f);
+        ToastManager.Instance?.RequestToast("Scholar path upgraded to level " + scholarPathLevel + "!", 1f);
+        // }
+        // else
+        // {
+        //     //AllEnemyInfo.instance.IncreaseMaxHealth(20);
+        // }
     }
 
     // Public methods to select initial path (call from UI buttons)
     public void SelectFarmerPath()
     {
         currentPathType = PathType.Farmer;
+        ToastManager.Instance?.RequestToast("Farmer path selected!", 2f);
     }
 
     public void SelectWarriorPath()
     {
         currentPathType = PathType.Warrior;
+        ToastManager.Instance?.RequestToast("Warrior path selected!", 2f);
     }
 
     public void SelectScholarPath()
     {
         currentPathType = PathType.Scholar;
+        ToastManager.Instance?.RequestToast("Scholar path selected!", 2f);
     }
     
     public int GetPlayerPoints() => playerPoints;

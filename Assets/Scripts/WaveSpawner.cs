@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Linq;
-using UnityEditor.PackageManager.Requests;
 
 [System.Serializable]
 public class EnemyWaveConfig
@@ -87,7 +86,7 @@ public class WaveSpawner : MonoBehaviour
     {
         while (true)
         {
-            if (spawningPaused)
+            while (spawningPaused)
             {
                 Debug.Log("spawning paused");
                 yield return new WaitForSeconds(0.5f);
@@ -134,6 +133,11 @@ public class WaveSpawner : MonoBehaviour
             
             // Heal all buildings to full health after wave ends
             HealAllBuildings();
+
+            if (currentWave == 1)
+            {
+                ChoosePathSystem.instance.ShowPathMenu();
+            }
         }
     }
 
@@ -357,6 +361,7 @@ public class WaveSpawner : MonoBehaviour
     public bool AreAttacksUnlocked() => attacksUnlocked;
     public void PauseSpawning() { spawningPaused = true; }
     public void UnpauseSpawning() { spawningPaused = false; }
+    public bool IsPaused() => spawningPaused;
 }
 
 public class EnemyDeathTracker : MonoBehaviour

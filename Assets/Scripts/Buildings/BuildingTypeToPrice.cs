@@ -5,7 +5,7 @@ using System.Linq;
 
 public class BuildingTypeToPrice
 {
-    static float costScaleFactor = 0.5f;
+    //static float costScaleFactor = 0.5f;
     private static Dictionary<BuildingType, int> basePrice = new()
     {
         { BuildingType.TreeOfLife, 0 },
