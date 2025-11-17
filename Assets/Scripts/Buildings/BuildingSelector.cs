@@ -63,7 +63,6 @@ public class BuildingSelector : MonoBehaviour
                 return;
             }
             // select if we didn't JUST place something
-            // else if (PlacementManager.instance.GetCurrentBuilding() == null) Select(clicked);
             else Select(clicked);
         }
     }

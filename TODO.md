@@ -34,6 +34,7 @@ make it clearer exactly how many chimps your archer towers will kill
 
 Bugs:
 limit monkeys and move around monkeys
+what happens when we spawn placement indicators when there are no possible locations? obviously pressing x will fix it but that seems ass
 
 Gameplay:
 3-4 upgrades per building (each visually different)

@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
@@ -140,8 +139,6 @@ public class BuildingGrid : MonoBehaviour
                 }
             }
         }
-
-        Debug.Log($"Building removed from grid. Cells now available for placement.");
     }
 
     // From clickBuilding: Remove building from grid by GameObject reference
@@ -224,10 +221,11 @@ public class BuildingGrid : MonoBehaviour
         return true;
     }
 
-    public void SpawnBuildingPlacementIndicators(Building building)
+    public void SpawnBuildingPlacementIndicators(Building building, BuildingBase buildingToMove = null)
     {
         Assert.IsNotNull(placementIndicatorPrefab, "Assign a placementIndicatorPrefab in the Inspector!");
         if (!treeOfLifePlaced) return;
+        Assert.IsFalse(buildingToMove != null && buildingToMove.GetBuildingType() == BuildingType.TreeOfLife, "can't move the tree of life!");
 
         xToolTip.enabled = true;
         BuildingManager.instance.MakeBuildingsTransparent();
@@ -251,7 +249,10 @@ public class BuildingGrid : MonoBehaviour
                 // annoyingly, y iz z, grid_size / 2 is because 0, 0 is the bottom left not the middle
                 Vector3 pos = new Vector3(GridXToWorldX(x), 0, GridYToWorldZ(y));
                 GameObject ind = Instantiate(placementIndicatorPrefab, pos, Quaternion.identity, placementIndicatorsParent);
-                ind.GetComponent<PlacementIndicatorOnClick>().Initialize(building, x, y);
+                if(buildingToMove == null)
+                    ind.GetComponent<PlacementIndicatorOnClick>().Initialize(building, x, y);
+                else
+                    ind.GetComponent<PlacementIndicatorOnClick>().InitializeWithExistingBuilding(buildingToMove, x, y);
             }
         }
     }

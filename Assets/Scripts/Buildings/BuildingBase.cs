@@ -42,8 +42,8 @@ public abstract class BuildingBase : MonoBehaviour
 
         glow = gameObject.AddComponent<GlowEffect>();
         glow.Initialize(outlineMaterial, targetRenderer);
-        // TODO: make this dynamic, placeholder of 2 for now
-        monkeys = new(2);
+        // TODO: make this dynamic, placeholder of 0 for now
+        monkeys = new(0);
         renderers = GetComponentsInChildren<Renderer>(true);
         colliders = GetComponentsInChildren<Collider>(true);
         selectable = true;
@@ -54,60 +54,36 @@ public abstract class BuildingBase : MonoBehaviour
 
     }
 
-    public virtual bool RemoveMonkey(MonkeyController m)
-    {
-        return monkeys.Remove(m);
-    }
-
-    public virtual void RemoveNextMonkey()
-    {
-        monkeys.Remove(NextMonkeyToRemove());
-    }
+    public virtual bool RemoveMonkey(MonkeyController m) => monkeys.Remove(m);
+    public virtual void RemoveNextMonkey() => monkeys.Remove(NextMonkeyToRemove());
 
     // DON'T USE THIS, THIS IS ONLY TO BE USED IN MONKEYALLOC
-    public virtual bool AddMonkey(MonkeyController monkey)
-    {
-        // returns whether the add was succeeded
-        return monkeys.Add(monkey);
-    }
-    
-    public virtual MonkeyController NextMonkeyToRemove()
-    {
-        return monkeys.MonkeyToDeallocate();
-    }
+    public virtual bool AddMonkey(MonkeyController monkey) => monkeys.Add(monkey);
+    // AS A REMINDER, DO NOT USE THIS!
 
-    // From clickBuilding branch - glow methods now use GlowEffect from develop
-    public void EnableGlow()
-    {
-        glow.SetGlow(true);
-    }
+    public virtual MonkeyController NextMonkeyToRemove() => monkeys.MonkeyToDeallocate();
 
-    public void DisableGlow()
-    {
-        glow.SetGlow(false);
-    }
+    public void EnableGlow() => glow.SetGlow(true);
+    public void DisableGlow() => glow.SetGlow(false);
 
-    // From clickBuilding branch - helper methods for BuildingInfo display
-    public virtual int GetMonkeyCount()
-    {
-        return monkeys?.count ?? 0;
-    }
-
-    public virtual int GetMonkeyCapacity()
-    {
-        return monkeys?.capacity ?? 0;
-    }
-
-    public bool CanAllocate()
-    {
-        return monkeys?.CanAllocate() ?? false;
-    }
+    public virtual int GetMonkeyCount() => monkeys.count;
+    public virtual int GetMonkeyCapacity() => monkeys.capacity;
+    public bool CanAllocate() => monkeys.CanAllocate();
 
     public BuildingType GetBuildingType() => building.type;
+    public Building GetInternalBuilding() => building;
 
-    public string GetMonkeyAllocString()
+    public void SetVisible(bool visible)
     {
-        return monkeys.Count().ToString() + "/" + monkeys.Capacity() + " monkeys";
+        foreach (Renderer r in renderers)
+        {
+            r.enabled = visible;
+        }
+        // this is so we don't click on it by mistake
+        foreach (Collider c in colliders)
+        {
+            c.enabled = visible;
+        }
     }
     //START OF AI CODE
     public void MakeTransparent()

@@ -1,11 +1,14 @@
+using UnityEngine.Assertions;
 using UnityEngine;
 
 public class PlacementIndicatorOnClick : MonoBehaviour
 {
     BuildingType buildingType;
+    BuildingBase existingBuilding;
     int grid_x;
     int grid_y;
     bool isTreeOfLifeIndicator = false;
+    bool isMoving = false;
 
     public void Initialize(Building building, int grid_x, int grid_y, bool isTreeOfLifeIndicator = false)
     {
@@ -15,16 +18,20 @@ public class PlacementIndicatorOnClick : MonoBehaviour
         this.isTreeOfLifeIndicator = isTreeOfLifeIndicator;
     }
 
+    public void InitializeWithExistingBuilding(BuildingBase existingBuilding, int grid_x, int grid_y)
+    {
+        this.grid_x = grid_x;
+        this.grid_y = grid_y;
+        isMoving = true;
+        this.existingBuilding = existingBuilding;
+    }
+
     void Update()
     {
         if (Input.GetKey(KeyCode.X) && !isTreeOfLifeIndicator)
         {
             ReturnToNormalState();
-            
-            if (PlacementManager.instance != null)
-            {
-                PlacementManager.instance.ClearCurrentBuilding();
-            }
+            PlacementManager.instance.ClearCurrentBuilding();
         }
     }
 
@@ -32,17 +39,10 @@ public class PlacementIndicatorOnClick : MonoBehaviour
     {
         try
         {
-            // pay for building
-            if (buildingType != BuildingType.TreeOfLife)
-            {
-                BananaManager.instance.RemoveBananas(BuildingTypeToPrice.GetPrice(buildingType));
-            }
             // disable building selection for 1 frame
             BuildingSelector.instance.DisableSelectionThisFrame();
 
             Building placedBuilding = new Building(buildingType);
-
-            BuildingGrid.instance.Place(grid_x, grid_y, placedBuilding);
 
             GameObject prefab = BuildingToPrefab.GetPrefab(buildingType);
 
@@ -58,8 +58,20 @@ public class PlacementIndicatorOnClick : MonoBehaviour
             pos.z += (dim.height - 1) * 0.5f;
 
             Quaternion rotation = prefab.transform.rotation;
+            if (isMoving)
+            {
+                Assert.IsNotNull(existingBuilding, "existing building cannot be null if we're moving!");
+                existingBuilding.transform.position = pos;
+                existingBuilding.transform.rotation = rotation;
+                // remove and then immediately place in its new destination
+                BuildingGrid.instance.RemoveBuilding(existingBuilding.GetInternalBuilding());
+                BuildingGrid.instance.Place(grid_x, grid_y, existingBuilding.GetInternalBuilding());
+                return;
+            }
+            //TODO: ask kyle about this or make walls not movable
             if (buildingType == BuildingType.Wall)
             {
+                Assert.IsFalse(isMoving, "can't move walls until we talk to Kyle!");
                 Vector3 center = BuildingGrid.instance.transform.position;
                 Vector3 directionFromCenter = pos - center;
                 Vector3 baseAngles = prefab.transform.rotation.eulerAngles;
@@ -73,6 +85,7 @@ public class PlacementIndicatorOnClick : MonoBehaviour
                 }
             }
 
+            BuildingGrid.instance.Place(grid_x, grid_y, placedBuilding);
             GameObject buildingObj = Instantiate(prefab, pos, rotation);
 
             placedBuilding.SetInstance(buildingObj);
@@ -83,7 +96,10 @@ public class PlacementIndicatorOnClick : MonoBehaviour
                 buildingObj.AddComponent<BuildingHealth>();
             }
 
+            // spawn monkeys if treeoflife
             if (buildingType == BuildingType.TreeOfLife) PopulationManager.instance.AddToPopulation(5);
+            // otherwise pay for building
+            else BananaManager.instance.RemoveBananas(BuildingTypeToPrice.GetPrice(buildingType));
             
             BuildingMenuManager.instance.UpdatePrices();
             PlacementManager.instance.RefreshPlacementIndicators();
@@ -98,5 +114,7 @@ public class PlacementIndicatorOnClick : MonoBehaviour
     {
         BuildingManager.instance.MakeBuildingsOpaque();
         BuildingGrid.instance.DestroyBuildingPlacementIndicators();
+        // if we error and exit early want the building to come back
+        if(existingBuilding != null) existingBuilding.SetVisible(true);
     }
 }
