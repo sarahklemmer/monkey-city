@@ -55,6 +55,7 @@ public class BuildingManager : MonoBehaviour
         
         GameObject textObj = Instantiate(floatingTextPrefab, spawnPos, Quaternion.identity);
         BananaVisualization floater = textObj.GetComponent<BananaVisualization>();
+        
         if (floater != null)
         {
             floater.Initialize(amount);

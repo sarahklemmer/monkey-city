@@ -5,6 +5,8 @@ public abstract class BuildingBase : MonoBehaviour
 {
     [SerializeField] private Material outlineMaterial;
     [SerializeField] private Renderer targetRenderer;
+    [Header("Occupancy Models")]
+    [SerializeField] protected GameObject[] occupancyModels;
     private GlowEffect glow;
     protected Building building;
     protected BuildingMonkeys monkeys;
@@ -47,6 +49,8 @@ public abstract class BuildingBase : MonoBehaviour
         renderers = GetComponentsInChildren<Renderer>(true);
         colliders = GetComponentsInChildren<Collider>(true);
         selectable = true;
+
+        UpdateOccupancyModel();
     }
 
     protected virtual void UpdateBehavior()
@@ -56,7 +60,9 @@ public abstract class BuildingBase : MonoBehaviour
 
     public virtual bool RemoveMonkey(MonkeyController m)
     {
-        return monkeys.Remove(m);
+        bool removed = monkeys.Remove(m);
+        if (removed) UpdateOccupancyModel();
+        return removed;
     }
 
     public virtual void RemoveNextMonkey()
@@ -67,13 +73,36 @@ public abstract class BuildingBase : MonoBehaviour
     // DON'T USE THIS, THIS IS ONLY TO BE USED IN MONKEYALLOC
     public virtual bool AddMonkey(MonkeyController monkey)
     {
-        // returns whether the add was succeeded
-        return monkeys.Add(monkey);
+        bool added = monkeys.Add(monkey);
+        if (added) UpdateOccupancyModel();
+        return added;
     }
     
     public virtual MonkeyController NextMonkeyToRemove()
     {
         return monkeys.MonkeyToDeallocate();
+    }
+
+    protected virtual void UpdateOccupancyModel()
+    {
+        Debug.Log("Updating occupancy model for " + gameObject.name);
+        if (occupancyModels == null || occupancyModels.Length == 0 || monkeys == null)
+            Debug.Log("No occupancy models or monkeys data found for " + gameObject.name);
+            return;
+        float fillRatio = monkeys.CountOverCapacity();
+        int modelIndex = Mathf.Clamp(
+            Mathf.FloorToInt(fillRatio * occupancyModels.Length),
+            0,
+            occupancyModels.Length - 1
+        );
+        
+        for (int i = 0; i < occupancyModels.Length; i++)
+        {
+            if (occupancyModels[i] != null)
+            {
+                occupancyModels[i].SetActive(i == modelIndex);
+            }
+        }
     }
 
     // From clickBuilding branch - glow methods now use GlowEffect from develop
