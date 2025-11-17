@@ -25,6 +25,8 @@ public class ChoosePathSystem : MonoBehaviour
         WaveSpawner.instance.PauseSpawning();
 
         choosePathMenu.SetActive(true);
+
+        ToastManager.Instance?.RequestToast("You'll earn 1 player point every wave", 4f);
     }
 
     public void HidePathMenu()
@@ -35,6 +37,8 @@ public class ChoosePathSystem : MonoBehaviour
         WaveSpawner.instance.UnpauseSpawning();
 
         choosePathMenu.SetActive(false);
+
+        ToastManager.Instance?.ForceEndCurrentToast();
 
         ToastManager.Instance?.RequestToast("Remember to upgrade path levels in the tree of life!", 2f);
     }

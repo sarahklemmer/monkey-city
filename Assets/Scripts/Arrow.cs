@@ -38,6 +38,11 @@ public class Arrow : MonoBehaviour
     {
         if (!isInitialized) return;
 
+        if (WaveSpawner.instance != null && WaveSpawner.instance.IsPaused())
+        {
+            return;
+        }
+
         if (targetEnemy != null && targetEnemy.GetCurrentHealth() > 0)
         {
             targetPosition = targetEnemy.transform.position;

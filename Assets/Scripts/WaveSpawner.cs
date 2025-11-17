@@ -121,6 +121,7 @@ public class WaveSpawner : MonoBehaviour
             yield return new WaitForSeconds(GetTimeBetweenWaves());
             
             currentWave++;
+            PathManager.instance.playerPoints += 1;
             int enemiesToSpawn = CalculateWaveSize();
             StartCoroutine(AnnounceAndStartWave(enemiesToSpawn, (currentWave % 5 == 0) && bossPrefab != null));
             yield return new WaitForSeconds(2f);
@@ -205,7 +206,7 @@ public class WaveSpawner : MonoBehaviour
         if (isBossWave)
             toastManager.RequestToast($"🚨 BOSS WAVE Incoming! Prepare Yourself! 🚨", 2.0f, 0.3f, false, false);
         else
-            toastManager.RequestToast($"Chimpanzees Incoming! Wave Size: " + enemiestoSpawn, 2.0f, 0.3f, false, false);
+            toastManager.RequestToast($"Chimpanzees Incoming! Wave {currentWave}", 2.0f, 0.3f, false, false);
         yield return new WaitForSeconds(2f);
         StartWave(enemiestoSpawn);
     }
