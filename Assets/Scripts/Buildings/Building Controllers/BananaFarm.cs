@@ -5,18 +5,19 @@ public class BananaFarm : BuildingBase
     private int level = 1;
     private const int MAX_LEVEL = 4;
     private int baseBananaProduction = 1;
+    public int bananasToProduce = 0;
     private static readonly int[] upgradeCosts = { 0, 5, 40, 100, 200 };
     
     void Awake()
     {
         base.SharedAwakeBehavior();
-        building = new(BuildingType.BananaFarm); 
+        building = new(BuildingType.BananaFarm);
         monkeys = new(2);
     }
 
     void Update()
     {
-        bananasPerDay = baseBananaProduction * monkeys.Count() * 2;
+        bananasToProduce = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count();
     }
 
     public override void OnDayCycle()
@@ -24,6 +25,19 @@ public class BananaFarm : BuildingBase
         if (monkeys != null && monkeys.Count() > 0)
         {
             BananaManager.instance.AddBananas(AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count());
+        }
+    }
+
+    public void ProduceBananas()
+    {   
+        if (BananaManager.instance != null)
+        {
+            BananaManager.instance.AddBananas(bananasToProduce);
+            Debug.Log($"BananaFarm: Produced {bananasToProduce} bananas ({baseBananaProduction} per monkey x {monkeys.Count()} monkeys)");
+        }
+        else
+        {
+            Debug.LogError("BananaFarm: BananaManager.instance is null!");
         }
     }
 

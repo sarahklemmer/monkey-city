@@ -8,7 +8,6 @@ public class MonkeyController : MonoBehaviour
     private Coroutine moveRoutine;
     public MonkeyAlloc allocation { get; private set; }
 
-    [SerializeField] private float speed = 3f;
     [SerializeField] private Material outlineMaterial;
 
     void Awake()
@@ -44,7 +43,7 @@ public class MonkeyController : MonoBehaviour
                 transform.rotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
             }
 
-            transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, target, AllMonkeyInfo.instance.GetMonkeySpeed() * Time.deltaTime);
             yield return null;
         }
 

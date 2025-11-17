@@ -108,17 +108,40 @@ public class PathManager : MonoBehaviour
 
     void IncreaseFarmerPathLevel()
     {
-        AllBananaFarmInfo.instance.IncreaseBananasPerDay(1);
+        if (farmerPathLevel % 2 == 1)
+        {
+            AllBananaFarmInfo.instance.IncreaseBananasPerDay(1);
+        }
+        else
+        {
+            //AllBananaFarmInfo.instance.IncreaseBananasPerDay(2);
+        }
     }
     
     void IncreaseWarriorPathLevel()
     {
         Debug.Log($"Warrior path upgraded to level {warriorPathLevel}!");
+        if (warriorPathLevel % 2 == 1)
+        {
+            AllArcherTowerInfo.instance.IncreaseDamagePerAttack(5);
+        }
+        else
+        {
+            //AllArcherTowerInfo.instance.IncreaseDamagePerAttack(2);
+        }
     }
     
     void IncreaseScholarPathLevel()
     {
         Debug.Log($"Scholar path upgraded to level {scholarPathLevel}!");
+        if (scholarPathLevel % 2 == 1)
+        {
+            AllMonkeyInfo.instance.IncreaseMonkeySpeed(2f);
+        }
+        else
+        {
+            //AllEnemyInfo.instance.IncreaseMaxHealth(20);
+        }
     }
 
     // Public methods to select initial path (call from UI buttons)
@@ -140,7 +163,7 @@ public class PathManager : MonoBehaviour
     public int GetPlayerPoints() => playerPoints;
 
     public void AddPoints(int amount) 
-    { 
+    {
         playerPoints += amount;
     }
 

@@ -10,7 +10,7 @@ public class ResourceBar : MonoBehaviour
     void Update()
     {
         bananaCount.text = BananaManager.instance.bananaCount.ToString();
-        int production = BuildingManager.instance.GetDailyProduction();
+        int production = BuildingManager.instance.GetBananaProduction();
         // if negative it'll have the '-' in the string, otherwise have to add a plus
         bananaProduction.text = production < 0 ? production.ToString() : "+" + production;
         bananaProduction.color = production == 0 ? Color.black : (production < 0 ? Color.red : Color.green);
