@@ -41,6 +41,7 @@ public class BananaFarm : BuildingBase
         }
         
         BananaManager.instance.AddBananas(-upgradeCost);
+        
         level++;
         
         switch (level)
