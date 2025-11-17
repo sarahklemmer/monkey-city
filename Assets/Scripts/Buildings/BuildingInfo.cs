@@ -284,7 +284,6 @@ public class BuildingInfo : MonoBehaviour
     {
         if (archer.IsMaxLevel())
         {
-            Debug.Log("Archer Tower is already max level!");
             return;
         }
 
@@ -294,6 +293,7 @@ public class BuildingInfo : MonoBehaviour
             BananaManager.instance.AddBananas(-cost);
             manager.ShowFloatingText(archer, -cost);
             archer.Upgrade();
+            PlayUpgradeEffect(archer);
             
             if (archer.GetLevel() == 3 && !wallToastShown)
             {
@@ -301,12 +301,7 @@ public class BuildingInfo : MonoBehaviour
                 ToastManager.Instance.RequestToast(wallUnlockToast, 4f);
             }
             
-            Show(archer); // Refresh the display
-            Debug.Log($"Archer Tower upgraded to level {archer.GetLevel()}!");
-        }
-        else
-        {
-            Debug.Log($"Not enough bananas to upgrade! Need {cost}, have {BananaManager.instance.GetBananas()}");
+            Hide();
         }
     }
 
@@ -321,8 +316,9 @@ public class BuildingInfo : MonoBehaviour
         int cost = farm.GetUpgradeCost();
         if (BananaManager.instance.GetBananas() >= cost)
         {
-            farm.Upgrade(); // The Upgrade method in BananaFarm already deducts bananas
-            Show(farm); // Refresh the display
+            farm.Upgrade();
+            PlayUpgradeEffect(farm);
+            Hide();
             Debug.Log($"Banana Farm upgraded to level {farm.GetLevel()}!");
         }
         else
@@ -343,14 +339,31 @@ public class BuildingInfo : MonoBehaviour
         if (BananaManager.instance.GetBananas() >= cost)
         {
             BananaManager.instance.AddBananas(-cost);
-            manager.ShowFloatingText(tree, -cost);
             tree.Upgrade();
-            Show(tree); 
+            
+            PlayUpgradeEffect(tree);
+            Hide();
             Debug.Log($"Tree of Life upgraded to level {tree.GetLevel()}! Higher building levels unlocked!");
         }
         else
         {
             Debug.Log($"Not enough bananas to upgrade! Need {cost}, have {BananaManager.instance.GetBananas()}");
+        }
+    }
+
+    private void PlayUpgradeEffect(BuildingBase building)
+    {
+        // Look for a particle system in the building's children
+        ParticleSystem upgradeEffect = building.GetComponentInChildren<ParticleSystem>();
+        
+        if (upgradeEffect != null)
+        {
+            upgradeEffect.Play();
+            Debug.Log($"[BuildingInfo] Playing upgrade effect for {building.GetType().Name}");
+        }
+        else
+        {
+            Debug.LogWarning($"[BuildingInfo] No upgrade effect found for {building.GetType().Name}");
         }
     }
 

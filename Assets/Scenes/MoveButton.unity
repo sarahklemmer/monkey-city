@@ -1096,17 +1096,17 @@ MonoBehaviour:
   m_MoveRepeatDelay: 0.5
   m_MoveRepeatRate: 0.1
   m_XRTrackingOrigin: {fileID: 0}
-  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_MiddleClickAction: {fileID: -2185481485913320682, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_RightClickAction: {fileID: -4090225696740746782, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_ActionsAsset: {fileID: 0}
+  m_PointAction: {fileID: 0}
+  m_MoveAction: {fileID: 0}
+  m_SubmitAction: {fileID: 0}
+  m_CancelAction: {fileID: 0}
+  m_LeftClickAction: {fileID: 0}
+  m_MiddleClickAction: {fileID: 0}
+  m_RightClickAction: {fileID: 0}
+  m_ScrollWheelAction: {fileID: 0}
+  m_TrackedDevicePositionAction: {fileID: 0}
+  m_TrackedDeviceOrientationAction: {fileID: 0}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
@@ -2097,7 +2097,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 1
+  m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -4922,7 +4922,7 @@ MonoBehaviour:
   m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 1
+  m_SoftShadowQuality: 0
 --- !u!108 &721384771
 Light:
   m_ObjectHideFlags: 0
@@ -5615,6 +5615,8 @@ GameObject:
   - component: {fileID: 826187537}
   - component: {fileID: 826187540}
   - component: {fileID: 826187541}
+  - component: {fileID: 826187543}
+  - component: {fileID: 826187542}
   m_Layer: 0
   m_Name: ResourceManager
   m_TagString: Untagged
@@ -5706,6 +5708,33 @@ MonoBehaviour:
   bananaCount: {fileID: 289542200}
   bananaProduction: {fileID: 2123606976}
   populationCount: {fileID: 1273323400}
+--- !u!114 &826187542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826187535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d9f585f97db94d86a5b14712dd6059f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  productionInterval: 10
+--- !u!114 &826187543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826187535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba0d99e45493f44908bae12b66545a93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseBananasPerDay: 2
+  costMultiplier: 1
 --- !u!1001 &829891010
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5801,7 +5830,7 @@ MonoBehaviour:
   priority: 0
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: 10fc4df2da32a41aaa32d77bc913491c, type: 2}
+  sharedProfile: {fileID: 0}
 --- !u!4 &832575519
 Transform:
   m_ObjectHideFlags: 0
@@ -7835,7 +7864,7 @@ MonoBehaviour:
   m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 1
+  m_SoftShadowQuality: 0
 --- !u!108 &1149406691
 Light:
   m_ObjectHideFlags: 0
@@ -9242,7 +9271,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1744986385}
   m_HandleRect: {fileID: 1744986384}
   m_Direction: 0
-  m_Value: 1.0000024
+  m_Value: 1.0000023
   m_Size: 0.625
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -9986,7 +10015,7 @@ Transform:
   m_GameObject: {fileID: 1461157589}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.862567, y: 7.432827, z: 4.3781204}
+  m_LocalPosition: {x: -5.862567, y: 7.3, z: 4.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -10260,7 +10289,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.25, y: -49.99994}
+  m_AnchoredPosition: {x: -0.25, y: -49.999878}
   m_SizeDelta: {x: 500, y: -224}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1489441448
@@ -10819,9 +10848,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff53b2b42060e47f7bacbc348b63fcb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toastText: {fileID: 0}
-  toastPanel: {fileID: 0}
-  toastCanvasGroup: {fileID: 0}
+  toastText: {fileID: 524278867}
+  toastPanel: {fileID: 952924678}
+  toastCanvasGroup: {fileID: 1619953243}
   toastAudioSource: {fileID: 0}
   toastSound: {fileID: 0}
   continuePrompt: {fileID: 692722304}

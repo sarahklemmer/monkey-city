@@ -61,16 +61,40 @@ public class BuildingListItem : MonoBehaviour
         if (costText != null)
             costText.text = data.cost.ToString() + " Banana" + (data.cost != 1 ? "s" : "");
 
-        count.text = BuildingManager.instance.GetBuildingsOfType(data.type).Count.ToString() + "/5 Built";
-        
-        if(BuildingManager.instance.GetBuildingsOfType(data.type).Count == 5) count.color = Color.red;
-        else count.color = Color.black;
+        // Only show count for buildings that aren't Tree of Life
+        if (count != null)
+        {
+            // Case-insensitive comparison to handle "Tree of Life" or "Tree Of Life"
+            if (data.buildingName.Equals("Tree of Life", System.StringComparison.OrdinalIgnoreCase) ||
+                data.buildingName.Equals("Tree Of Life", System.StringComparison.OrdinalIgnoreCase))
+            {
+                // Hide the count text for Tree of Life
+                count.gameObject.SetActive(false);
+                Debug.Log("[BuildingListItem] Hiding count for Tree of Life");
+            }
+            else
+            {
+                // Show count for other buildings
+                int buildingCount = BuildingManager.instance.GetBuildingsOfType(data.type).Count;
+                count.text = buildingCount.ToString() + "/5 Built";
+                
+                if(buildingCount == 5) 
+                    count.color = Color.red;
+                else 
+                    count.color = Color.black;
+                    
+                count.gameObject.SetActive(true);
+                Debug.Log($"[BuildingListItem] Showing count for {data.buildingName}: {count.text}");
+            }
+        }
         
         // Check immediately after setup if this should be hidden
         CheckIfShouldHide();
         
         // Subscribe to event after buildingData is set
-        if (!string.IsNullOrEmpty(buildingData.buildingName) && buildingData.buildingName == "Tree Of Life")
+        if (!string.IsNullOrEmpty(buildingData.buildingName) && 
+            (buildingData.buildingName.Equals("Tree of Life", System.StringComparison.OrdinalIgnoreCase) ||
+             buildingData.buildingName.Equals("Tree Of Life", System.StringComparison.OrdinalIgnoreCase)))
         {
             Debug.Log("Subscribing to TreeOfLife.OnTreePlaced event");
             TreeOfLife.OnTreePlaced += HandleTreePlaced;

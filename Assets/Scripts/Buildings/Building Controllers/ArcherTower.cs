@@ -34,7 +34,22 @@ public class ArcherTower : BuildingBase
     {
         base.SharedAwakeBehavior();
         building = new(BuildingType.ArcherTower);
-        monkeys = new(1); // Capacity of 1 monkey
+        monkeys = new(1);
+    
+        // Find and stop any looping particle systems
+        ParticleSystem[] allParticles = GetComponentsInChildren<ParticleSystem>(true);
+        foreach (var ps in allParticles)
+        {
+            Debug.Log($"[ArcherTower] Found ParticleSystem: {ps.gameObject.name}, isPlaying: {ps.isPlaying}, loop: {ps.main.loop}");
+        
+            // Stop any particle that's not the upgrade effect
+            if (ps != upgradeEffect && ps.main.loop)
+            {
+                Debug.Log($"[ArcherTower] Stopping looping particle: {ps.gameObject.name}");
+                ps.Stop();
+                ps.Clear();
+            }
+        }
         
         // Make sure upgrade models start disabled
         if (level1Model != null)
@@ -64,6 +79,14 @@ public class ArcherTower : BuildingBase
         }
         
         CreateRangeIndicator();
+        
+        // Log all children to see what we have
+        Debug.Log($"[ArcherTower] Tower has {transform.childCount} children:");
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            var child = transform.GetChild(i);
+            Debug.Log($"  - Child {i}: {child.name}, active: {child.gameObject.activeSelf}");
+        }
     }
 
     void Start()

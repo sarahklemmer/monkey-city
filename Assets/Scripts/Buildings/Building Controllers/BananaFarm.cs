@@ -8,6 +8,8 @@ public class BananaFarm : BuildingBase
     public int bananasToProduce = 0;
     private static readonly int[] upgradeCosts = { 0, 5, 40, 100, 200 };
     
+    [SerializeField] ParticleSystem upgradeEffect;
+    
     void Awake()
     {
         base.SharedAwakeBehavior();
@@ -17,12 +19,15 @@ public class BananaFarm : BuildingBase
 
     void Update()
     {
-        bananasToProduce = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count();
+        if (AllBananaFarmInfo.instance != null && monkeys != null)
+        {
+            bananasToProduce = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count();
+        }
     }
 
     public override void OnDayCycle()
     {
-        if (monkeys != null && monkeys.Count() > 0)
+        if (monkeys != null && monkeys.Count() > 0 && AllBananaFarmInfo.instance != null)
         {
             BananaManager.instance.AddBananas(AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count());
         }
@@ -45,15 +50,21 @@ public class BananaFarm : BuildingBase
     {
         if (level >= MAX_LEVEL)
         {
-            UnityEngine.Debug.Log($"Banana Farm is already at max level ({MAX_LEVEL})!");
+            Debug.Log($"Banana Farm is already at max level ({MAX_LEVEL})!");
             return;
         }
         
         int upgradeCost = GetUpgradeCost();
         
+        if (BananaManager.instance == null)
+        {
+            Debug.LogError("BananaManager.instance is null!");
+            return;
+        }
+        
         if (BananaManager.instance.GetBananas() < upgradeCost)
         {
-            UnityEngine.Debug.Log($"Not enough bananas! Need {upgradeCost}, have {BananaManager.instance.GetBananas()}");
+            Debug.Log($"Not enough bananas! Need {upgradeCost}, have {BananaManager.instance.GetBananas()}");
             return;
         }
         
@@ -77,7 +88,17 @@ public class BananaFarm : BuildingBase
                 break;
         }
         
-        UnityEngine.Debug.Log($"Banana Farm upgraded to level {level}! Now produces {baseBananaProduction} bananas per monkey per day.");
+        if (upgradeEffect != null)
+        {
+            upgradeEffect.Play();
+            Debug.Log("[BananaFarm] Playing upgrade effect!");
+        }
+        else
+        {
+            Debug.LogWarning("[BananaFarm] Upgrade effect is NULL!");
+        }
+        
+        Debug.Log($"Banana Farm upgraded to level {level}! Now produces {baseBananaProduction} bananas per monkey per day.");
     }
     
     public int GetLevel() => level;
