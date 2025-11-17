@@ -32,6 +32,7 @@ public class BuildingInfo : MonoBehaviour
 
     private bool shownOnce = false;
     private bool hiddenOnce = false;
+    private BuildingBase current = null;
 
     void Awake()
     {
@@ -55,6 +56,10 @@ public class BuildingInfo : MonoBehaviour
         Hide();
     }
 
+    void Update() {
+        if (current != null) DisplayBuildingInfo(current);
+    }
+
     public void Show(BuildingBase building)
     {
         GlobalInteractionLock.Lock();
@@ -66,6 +71,7 @@ public class BuildingInfo : MonoBehaviour
             return;
         }
 
+        current = building;
         shownOnce = true;
         info.SetActive(true);
         
@@ -73,7 +79,7 @@ public class BuildingInfo : MonoBehaviour
             StartCoroutine(EnableBackgroundBlockerDelayed());
         
         PositionPanelNearBuilding(building);
-        DisplayBuildingInfo(building);
+        //DisplayBuildingInfo(building);
 
         moveButton.GetComponent<Button>().onClick.RemoveAllListeners();
         if (building is not TreeOfLife)
@@ -229,7 +235,7 @@ public class BuildingInfo : MonoBehaviour
                 buildingStatsText.text = 
                     $"Level: {archer.GetLevel()}\n" +
                     $"Range: {archer.GetAttackRange():F1}m\n" +
-                    $"Damage: {archer.GetAttackDamage():F1}\n" +
+                    $"Damage: {AllArcherTowerInfo.instance.GetDamagePerAttack():F1}\n" +
                     $"Attack Speed: {archer.GetAttackCooldown():F2}s\n" +
                     $"Monkeys: {building.GetMonkeyCount()}/{building.GetMonkeyCapacity()}";
             }
@@ -246,7 +252,7 @@ public class BuildingInfo : MonoBehaviour
                 buildingStatsText.text = 
                     $"Level: {farm.GetLevel()}\n" +
                     $"Production: {totalProduction} Bananas/day\n" +
-                    $"Per Monkey: {farm.GetBananasPerDay() * 2} Bananas/day\n" +
+                    $"Per Monkey: {farm.bananasToProduce} Bananas/day\n" +
                     $"Monkeys: {building.GetMonkeyCount()}/{building.GetMonkeyCapacity()}";
             }
         }
@@ -388,6 +394,8 @@ public class BuildingInfo : MonoBehaviour
     public void Hide(bool moving = false)
     {
         if(!moving) GlobalInteractionLock.Unlock();
+        current = null;
+        Debug.Log("hiding");
 
         if (shownOnce) hiddenOnce = true;
         upgradeButton.SetActive(false);

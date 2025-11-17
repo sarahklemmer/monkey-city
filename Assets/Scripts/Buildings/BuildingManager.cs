@@ -105,7 +105,9 @@ public class BuildingManager : MonoBehaviour
 
     public int GetDailyProduction() => buildings.Sum(b => b.bananasPerDay);
 
-    public List<BuildingBase> GetBuildingsOfType(BuildingType ty) => buildings.Where(b => b.GetBuildingType() == ty).ToList(); 
+    public int GetBananaProduction() => buildings.OfType<BananaFarm>().Sum(b => b.bananasToProduce);
+
+    public List<BuildingBase> GetBuildingsOfType(BuildingType ty) => buildings.Where(b => b.GetBuildingType() == ty).ToList();
 
     // - 1 for TreeOfLife
     public int NumBuildings() => buildings.Count - 1;

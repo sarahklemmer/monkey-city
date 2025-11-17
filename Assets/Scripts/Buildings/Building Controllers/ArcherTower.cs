@@ -153,6 +153,8 @@ public class ArcherTower : BuildingBase
         // 5 ^ (level - 1) so -1, -5, -25 times number of monkeys + 1 so it still costs bananas to defend
         bananasPerDay = ((int)Math.Pow(5, level - 1)) * GetMonkeyCount() * -1;
 
+        attackDamage = AllArcherTowerInfo.instance.GetDamagePerAttack();
+
         if (!HasMonkey())
         {
             if (targetEnemy != null)
@@ -349,7 +351,7 @@ public class ArcherTower : BuildingBase
     public int GetLevel() => level;
     public bool IsMaxLevel() => level >= MAX_LEVEL;
     public float GetAttackRange() => attackRange;
-    public float GetAttackDamage() => attackDamage;
+    //public float GetAttackDamage() => attackDamage;
     public float GetAttackCooldown() => attackCooldown;
     
     public int GetUpgradeCost()
