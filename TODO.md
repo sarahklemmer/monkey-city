@@ -23,7 +23,7 @@ UX/UI:
 *DONE* display resource generation numbers
 *DONE* make monkeys walk faster
 
-
+upgrade button covers some info text
 indicators instead of text for tutorial
 make it visually clear without clicking that monkeys are in buildings
 keybinds to quick assign monkeys to nearest banana farm or archer tower
@@ -35,6 +35,7 @@ make it clearer exactly how many chimps your archer towers will kill
 Bugs:
 limit monkeys and move around monkeys
 what happens when we spawn placement indicators when there are no possible locations? obviously pressing x will fix it but that seems ass
+investigate random assertion failure "removing more bananas than we have!" from bananamanager when placing banana farm, will probably be fixed when we overhaul price scaling anyways so don't worry now but if it's still here after that we got a problem
 
 Gameplay:
 3-4 upgrades per building (each visually different)

@@ -6,6 +6,7 @@ using System.Collections;
 public class BuildingInfo : MonoBehaviour
 {
     [SerializeField] GameObject upgradeButton;
+    [SerializeField] GameObject moveButton;
     [SerializeField] GameObject info;
     [SerializeField] GameObject backgroundBlocker; 
     
@@ -72,6 +73,20 @@ public class BuildingInfo : MonoBehaviour
         
         PositionPanelNearBuilding(building);
         DisplayBuildingInfo(building);
+
+        if (building is not TreeOfLife)
+        {
+            moveButton.SetActive(true);
+            moveButton.GetComponent<Button>().onClick.AddListener(() =>
+            {   
+                Hide();
+                MoveButtonOnClick.ClickHandler(building);
+            });
+        } else
+        {
+            moveButton.SetActive(false);
+            moveButton.GetComponent<Button>().onClick.RemoveAllListeners();
+        }
 
         // Handle upgrade button for Archer Tower
         if (building is ArcherTower && upgradeButton != null)
