@@ -373,7 +373,10 @@ public class ArcherTower : BuildingBase
 
     public override void OnDestroy()
     {
-        /* do nothing */
+        if (monkeys != null)
+        {
+            monkeys.FreezeMonkeys();
+        }
     }
 
     void OnDrawGizmosSelected()
