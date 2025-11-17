@@ -3,7 +3,7 @@ using UnityEngine.Assertions;
 
 public class BuildingMonkeys
 {
-    List<MonkeyController> monkeys;
+    public List<MonkeyController> monkeys;
     public readonly int capacity;
 
     public BuildingMonkeys(int capacity)

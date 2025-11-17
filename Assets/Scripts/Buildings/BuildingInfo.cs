@@ -57,6 +57,7 @@ public class BuildingInfo : MonoBehaviour
 
     public void Show(BuildingBase building)
     {
+        GlobalInteractionLock.Lock();
         if (building == null) return;
         
         if (info == null)
@@ -79,7 +80,7 @@ public class BuildingInfo : MonoBehaviour
             moveButton.SetActive(true);
             moveButton.GetComponent<Button>().onClick.AddListener(() =>
             {   
-                Hide();
+                Hide(true);
                 MoveButtonOnClick.ClickHandler(building);
             });
         } else
@@ -384,15 +385,15 @@ public class BuildingInfo : MonoBehaviour
             backgroundBlocker.SetActive(true);
     }
 
-    public void Hide()
+    public void Hide(bool moving = false)
     {
-        Debug.Log("hiding");
+        if(!moving) GlobalInteractionLock.Unlock();
 
         if (shownOnce) hiddenOnce = true;
         upgradeButton.SetActive(false);
         if (upgradeInfoText != null)
             upgradeInfoText.gameObject.SetActive(false);
-        info.SetActive(false);
+        info.SetActive(false); 
         backgroundBlocker.SetActive(false);
         upgradeButton.GetComponent<Button>().onClick.RemoveAllListeners();
     }

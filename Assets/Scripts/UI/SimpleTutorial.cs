@@ -42,7 +42,7 @@ public class SimpleTutorial : MonoBehaviour
                 if (BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm)[0].GetMonkeyCount() > 0)
                 {
                     TextOverBuilding.instance.DisableAllText();
-                    TextOverBuilding.instance.DisplayText(BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm)[0].gameObject, "shift click me!");
+                    TextOverBuilding.instance.DisplayText(BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm)[0].gameObject, "shift click me to start the game!");
                     ++stage;
                 }
                 break;
@@ -50,9 +50,11 @@ public class SimpleTutorial : MonoBehaviour
                 if (BuildingInfo.instance.ShownAndHidden())
                 {
                     TextOverBuilding.instance.DisableAllText();
-                    ToastManager.Instance.RequestToast("you can move monkeys between any two buildings this way. Good luck!");
-                    tutorialActive = false;
-                    TimeController.instance.StartTicking();
+                    if(!GlobalInteractionLock.IsLocked()) {
+                        ToastManager.Instance.RequestToast("you can move monkeys between any two buildings by doing that. Good luck!");
+                        tutorialActive = false;
+                        TimeController.instance.StartTicking();
+                    }
                 }
                 break;
         }

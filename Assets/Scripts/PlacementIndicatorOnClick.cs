@@ -24,6 +24,7 @@ public class PlacementIndicatorOnClick : MonoBehaviour
         this.grid_y = grid_y;
         isMoving = true;
         this.existingBuilding = existingBuilding;
+        buildingType = existingBuilding.GetBuildingType();
     }
 
     void Update()
@@ -63,9 +64,11 @@ public class PlacementIndicatorOnClick : MonoBehaviour
                 Assert.IsNotNull(existingBuilding, "existing building cannot be null if we're moving!");
                 existingBuilding.transform.position = pos;
                 existingBuilding.transform.rotation = rotation;
+                existingBuilding.MoveMonkeysToPos(pos);
                 // remove and then immediately place in its new destination
                 BuildingGrid.instance.RemoveBuilding(existingBuilding.GetInternalBuilding());
                 BuildingGrid.instance.Place(grid_x, grid_y, existingBuilding.GetInternalBuilding());
+                GlobalInteractionLock.Unlock();
                 return;
             }
             //TODO: ask kyle about this or make walls not movable

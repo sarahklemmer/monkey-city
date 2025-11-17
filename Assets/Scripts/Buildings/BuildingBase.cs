@@ -85,6 +85,14 @@ public abstract class BuildingBase : MonoBehaviour
             c.enabled = visible;
         }
     }
+
+    public void MoveMonkeysToPos(Vector3 newpos)
+    {
+        foreach(MonkeyController m in monkeys.monkeys)
+        {
+            m.transform.position = newpos;
+        }
+    } 
     //START OF AI CODE
     public void MakeTransparent()
     {

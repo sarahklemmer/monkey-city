@@ -5,6 +5,7 @@ public class BuildingSelector : MonoBehaviour
     public static BuildingSelector instance;
     [SerializeField] LayerMask buildingMask;
     private bool selectionDisabled = false;
+    private bool selectionDisabledForFrame = false;
 
     BuildingBase currentlySelected = null;
     
@@ -22,9 +23,11 @@ public class BuildingSelector : MonoBehaviour
 
     void Update()
     {
-        if(selectionDisabled)
+        if(selectionDisabledForFrame)
         {
-            selectionDisabled = false;
+            selectionDisabledForFrame = false;
+            return;
+        } else if(selectionDisabled) {
             return;
         }
         // neither mouse button pressed
@@ -93,7 +96,17 @@ public class BuildingSelector : MonoBehaviour
 
     public void DisableSelectionThisFrame()
     {
-        selectionDisabled = true;
+        selectionDisabledForFrame = true;
+    }
+
+    public void DisableSelection() { 
+        selectionDisabled = true; 
+        Deselect();
+    }
+
+    public void EnableSelection()  {
+        selectionDisabled = false;
+        
     }
 
     public bool BuildingSelected() => currentlySelected == null;
