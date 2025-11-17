@@ -8875,6 +8875,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildings: []
+  floatingTextPrefab: {fileID: 1514070848066498016, guid: a16e9baec65434f6f83b3707f0a45b21, type: 3}
 --- !u!114 &1352258248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8924,14 +8925,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   upgradeButton: {fileID: 740167505}
+  moveButton: {fileID: 0}
   info: {fileID: 45756651}
   backgroundBlocker: {fileID: 1269202788}
   buildingNameText: {fileID: 83884651}
   buildingStatsText: {fileID: 1489441449}
   upgradeInfoText: {fileID: 1440316867}
+  manager: {fileID: 1352258247}
   offset: {x: 150, y: 0}
   wallUnlockToast: New defenses available! Open the Building Menu to construct walls.
-  archerTowerUpgradeCost: 300
+  archerTowerLevel2Cost: 50
+  archerTowerLevel3Cost: 120
 --- !u!1001 &1361005732
 PrefabInstance:
   m_ObjectHideFlags: 0
