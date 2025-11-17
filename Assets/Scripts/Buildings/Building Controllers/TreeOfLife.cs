@@ -1,9 +1,12 @@
+using UnityEngine;
+
 public class TreeOfLife : BuildingBase
 {
     private int level = 1;
-    private const int MAX_LEVEL = 2; // CAP AT LEVEL 2
+    private const int MAX_LEVEL = 2;
     
-    // Add this static event for hiding the UI button
+    [SerializeField] ParticleSystem upgradeEffect; 
+    
     public static event System.Action OnTreePlaced;
     
     void Awake()
@@ -15,10 +18,8 @@ public class TreeOfLife : BuildingBase
     
     void Start()
     {
-        // Notify that the tree has been placed
         NotifyTreePlaced();
         SimpleTutorial.instance.StartTutorial();
-        // unlock other buildings
         BuildingUnlock.Unlock(BuildingType.BananaFarm);
         BuildingUnlock.Unlock(BuildingType.ArcherTower);
         BuildingUnlock.Disable(BuildingType.TreeOfLife);
@@ -37,8 +38,17 @@ public class TreeOfLife : BuildingBase
             return;
         }
         
-        // Add upgrade cost logic here if needed
         level++;
+        
+        if (upgradeEffect != null)
+        {
+            upgradeEffect.Play();
+            Debug.Log("[TreeOfLife] Playing upgrade effect!");
+        }
+        else
+        {
+            Debug.LogWarning("[TreeOfLife] Upgrade effect is NULL!");
+        }
         
         UnityEngine.Debug.Log($"Tree of Life upgraded to level {level}!");
         

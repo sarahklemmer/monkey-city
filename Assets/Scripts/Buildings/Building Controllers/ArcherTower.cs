@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class ArcherTower : BuildingBase
@@ -40,7 +39,7 @@ public class ArcherTower : BuildingBase
         if (level1Model != null)
         {
             level1Model.SetActive(true);
-            Debug.Log("[ArcherTower] Level 1 model found and enabled");
+            Debug.Log($"[ArcherTower] Level 1 model '{level1Model.name}' found and enabled at position {level1Model.transform.position}");
         }
         else
         {
@@ -50,7 +49,7 @@ public class ArcherTower : BuildingBase
         if (level2Model != null)
         {
             level2Model.SetActive(false);
-            Debug.Log("[ArcherTower] Level 2 model found and disabled");
+            Debug.Log($"[ArcherTower] Level 2 model '{level2Model.name}' found and disabled at position {level2Model.transform.position}");
         }
         else
         {
@@ -64,6 +63,14 @@ public class ArcherTower : BuildingBase
         }
         
         CreateRangeIndicator();
+        
+        // Log all children to see what we have
+        Debug.Log($"[ArcherTower] Tower has {transform.childCount} children:");
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            var child = transform.GetChild(i);
+            Debug.Log($"  - Child {i}: {child.name}, active: {child.gameObject.activeSelf}");
+        }
     }
 
     void Start()
@@ -86,10 +93,11 @@ public class ArcherTower : BuildingBase
         
         GameObject rangeObj = new GameObject("RangeIndicator");
         rangeObj.transform.SetParent(transform);
-        rangeObj.transform.localPosition = circleOffset;
+        rangeObj.transform.localPosition = Vector3.zero;
+        rangeObj.transform.localRotation = Quaternion.identity;
         
         rangeIndicator = rangeObj.AddComponent<LineRenderer>();
-        rangeIndicator.useWorldSpace = false;
+        rangeIndicator.useWorldSpace = true; // Changed to world space
         rangeIndicator.loop = true;
         rangeIndicator.positionCount = circleSegments;
         rangeIndicator.startWidth = 0.08f;
@@ -128,6 +136,7 @@ public class ArcherTower : BuildingBase
         }
         
         float angleStep = 360f / circleSegments;
+        Vector3 towerPos = transform.position;
         
         for (int i = 0; i < circleSegments; i++)
         {
@@ -135,7 +144,8 @@ public class ArcherTower : BuildingBase
             float x = Mathf.Cos(angle) * attackRange;
             float z = Mathf.Sin(angle) * attackRange;
             
-            Vector3 position = new Vector3(x, 0.1f, z);
+            // Use world space position relative to tower
+            Vector3 position = towerPos + new Vector3(x, 0.01f, z) + circleOffset;
             
             rangeIndicator.SetPosition(i, position);
         }
@@ -150,9 +160,6 @@ public class ArcherTower : BuildingBase
 
     void Update()
     {
-        // 5 ^ (level - 1) so -1, -5, -25 times number of monkeys + 1 so it still costs bananas to defend
-        bananasPerDay = ((int)Math.Pow(5, level - 1)) * GetMonkeyCount() * -1;
-
         if (!HasMonkey())
         {
             if (targetEnemy != null)

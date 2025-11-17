@@ -4,8 +4,10 @@ public class BananaFarm : BuildingBase
 {
     private int level = 1;
     private const int MAX_LEVEL = 4;
-    private int baseBananaProduction = 1;
+    private int bananasPerDay = 1;
     private static readonly int[] upgradeCosts = { 0, 5, 40, 100, 200 };
+    
+    [SerializeField] ParticleSystem upgradeEffect;
     
     void Awake()
     {
@@ -14,14 +16,12 @@ public class BananaFarm : BuildingBase
         monkeys = new(2);
     }
 
-    void Update()
-    {
-        bananasPerDay = baseBananaProduction * monkeys.Count() * 2;
-    }
-
     public override void OnDayCycle()
     {
-
+        if (monkeys != null && monkeys.Count() > 0)
+        {
+            BananaManager.instance.AddBananas(bananasPerDay * monkeys.Count() * 2);
+        }
     }
 
     public void Upgrade()
@@ -41,31 +41,40 @@ public class BananaFarm : BuildingBase
         }
         
         BananaManager.instance.AddBananas(-upgradeCost);
-        
         level++;
         
         switch (level)
         {
             case 1:
-                baseBananaProduction = 1;
+                bananasPerDay = 1;
                 break;
             case 2:
-                baseBananaProduction = 2;
+                bananasPerDay = 2;
                 break;
             case 3:
-                baseBananaProduction = 3;
+                bananasPerDay = 3;
                 break;
             case 4:
-                baseBananaProduction = 5;
+                bananasPerDay = 5;
                 break;
         }
         
-        UnityEngine.Debug.Log($"Banana Farm upgraded to level {level}! Now produces {baseBananaProduction} bananas per monkey per day.");
+        if (upgradeEffect != null)
+        {
+            upgradeEffect.Play();
+            Debug.Log("[BananaFarm] Playing upgrade effect!");
+        }
+        else
+        {
+            Debug.LogWarning("[BananaFarm] Upgrade effect is NULL!");
+        }
+        
+        UnityEngine.Debug.Log($"Banana Farm upgraded to level {level}! Now produces {bananasPerDay} bananas per monkey per day.");
     }
     
     public int GetLevel() => level;
     public bool IsMaxLevel() => level >= MAX_LEVEL;
-    public int GetBananasPerDay() => baseBananaProduction;
+    public int GetBananasPerDay() => bananasPerDay;
     
     public int GetUpgradeCost()
     {

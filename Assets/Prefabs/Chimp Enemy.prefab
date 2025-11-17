@@ -164,6 +164,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: def9478f0de4d4972bb5f80e0710c6db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flashDuration: 0.15
+  flashColor: {r: 0.8490566, g: 0, b: 0, a: 1}
 --- !u!95 &3489657880135531074
 Animator:
   serializedVersion: 7
