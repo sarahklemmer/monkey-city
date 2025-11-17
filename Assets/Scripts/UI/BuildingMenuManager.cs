@@ -77,7 +77,7 @@ public class BuildingMenuManager : MonoBehaviour
         scrollableList.ClearList();
     }
 
-    void HideAllMenus()
+    public void HideAllMenus()
     {
         buildingScrollbar.SetActive(false);
         scrollableList.ClearList();

@@ -27,6 +27,7 @@ public class GlobalInteractionLock : MonoBehaviour
     public static void Lock() {
         instance.buildingToggle.SetActive(false);
         BuildingSelector.instance.DisableSelection();
+        BuildingMenuManager.instance.HideAllMenus();
         instance.locked = true;
     }
 

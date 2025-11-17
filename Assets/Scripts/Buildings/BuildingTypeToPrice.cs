@@ -22,6 +22,6 @@ public class BuildingTypeToPrice
             "basePrice dict isn't one to one with the BuildingType enum!"
         );
         // base price + (scale factor * number of buildings )
-        return basePrice[ty] + Mathf.RoundToInt(costScaleFactor * BuildingManager.instance.NumBuildings());
+        return basePrice[ty];
     }
 }

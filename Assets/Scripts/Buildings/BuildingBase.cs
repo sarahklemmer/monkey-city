@@ -31,6 +31,7 @@ public abstract class BuildingBase : MonoBehaviour
     protected virtual void OnDisable()
     {
         BuildingManager.instance.RemoveBuilding(this);
+        BuildingGrid.instance.RemoveBuilding(building);
     }
 
     protected virtual void SharedAwakeBehavior()

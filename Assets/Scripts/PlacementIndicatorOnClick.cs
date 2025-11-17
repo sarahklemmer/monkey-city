@@ -68,7 +68,6 @@ public class PlacementIndicatorOnClick : MonoBehaviour
                 // remove and then immediately place in its new destination
                 BuildingGrid.instance.RemoveBuilding(existingBuilding.GetInternalBuilding());
                 BuildingGrid.instance.Place(grid_x, grid_y, existingBuilding.GetInternalBuilding());
-                GlobalInteractionLock.Unlock();
                 return;
             }
             //TODO: ask kyle about this or make walls not movable
@@ -119,5 +118,6 @@ public class PlacementIndicatorOnClick : MonoBehaviour
         BuildingGrid.instance.DestroyBuildingPlacementIndicators();
         // if we error and exit early want the building to come back
         if(existingBuilding != null) existingBuilding.SetVisible(true);
+        if(existingBuilding != null) GlobalInteractionLock.Unlock();
     }
 }

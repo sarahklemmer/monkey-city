@@ -8,6 +8,7 @@ public class BuildingListItem : MonoBehaviour
     public Image iconImage;
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI costText;
+    public TextMeshProUGUI count;
     
     [Header("Visual Settings")]
     public Color normalColor = Color.white;
@@ -59,6 +60,11 @@ public class BuildingListItem : MonoBehaviour
             
         if (costText != null)
             costText.text = data.cost.ToString() + " Banana" + (data.cost != 1 ? "s" : "");
+
+        count.text = BuildingManager.instance.GetBuildingsOfType(data.type).Count.ToString() + "/5 Built";
+        
+        if(BuildingManager.instance.GetBuildingsOfType(data.type).Count == 5) count.color = Color.red;
+        else count.color = Color.black;
         
         // Check immediately after setup if this should be hidden
         CheckIfShouldHide();

@@ -18,6 +18,8 @@ public class PlaceBuildingButton : MonoBehaviour
         if(GlobalInteractionLock.IsLocked()) return;
 
         if (BananaManager.instance.GetBananas() < BuildingTypeToPrice.GetPrice(type)) return;
+        // can only place 5 of all types
+        if (BuildingManager.instance.GetBuildingsOfType(type).Count >= 5) return;
         
         if (type == BuildingType.Wall)
         {
