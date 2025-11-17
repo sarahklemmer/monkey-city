@@ -311,7 +311,7 @@ MonoBehaviour:
   showRangeOnSelect: 1
   rangeColor: {r: 0.5, g: 0.8, b: 1, a: 0.15}
   circleSegments: 50
-  circleOffset: {x: 0, y: 0, z: 0}
+  circleOffset: {x: 0, y: 0, z: -0.069}
 --- !u!4 &7510448052551022140 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5c7b9289eec348b39beae6cc36c3eb4, type: 3}

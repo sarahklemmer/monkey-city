@@ -375,7 +375,7 @@ public class ArcherTower : BuildingBase
     {
         if (monkeys != null)
         {
-            monkeys.FreezeMonkeys();
+            monkeys.FreeMonkeys();
         }
     }
 
