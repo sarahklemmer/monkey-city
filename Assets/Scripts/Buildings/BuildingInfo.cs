@@ -5,7 +5,6 @@ using System.Collections;
 
 public class BuildingInfo : MonoBehaviour
 {
-    [SerializeField] GameObject removeButton;
     [SerializeField] GameObject upgradeButton;
     [SerializeField] GameObject info;
     [SerializeField] GameObject backgroundBlocker; 
@@ -22,10 +21,10 @@ public class BuildingInfo : MonoBehaviour
     private bool wallToastShown = false;
     
     [Header("Upgrade Settings")]
-    [SerializeField] private int archerTowerUpgradeCost = 300;
+    [SerializeField] private int archerTowerLevel2Cost = 50;
+    [SerializeField] private int archerTowerLevel3Cost = 120;
     
     public static BuildingInfo instance;
-    private BuildingBase currentBuilding;
     private RectTransform panelRect;
     private Canvas canvas;
 
@@ -58,36 +57,14 @@ public class BuildingInfo : MonoBehaviour
     {
         if (building == null) return;
         
-        if (info == null || removeButton == null)
+        if (info == null)
         {
             Debug.LogError("BuildingInfo UI elements not assigned in Inspector!");
             return;
         }
 
         shownOnce = true;
-        currentBuilding = building;
         info.SetActive(true);
-        
-        // Check if this is a TreeOfLife - if so, hide remove button
-        if (building is TreeOfLife)
-        {
-            removeButton.SetActive(false);
-        }
-        else
-        {
-            MonkeyController victim = currentBuilding.NextMonkeyToRemove();
-
-            removeButton.SetActive(victim != null);
-            if(victim != null)
-            {                
-                Button removeBtn = removeButton.GetComponent<Button>();
-                removeBtn.onClick.RemoveAllListeners();
-                removeBtn.onClick.AddListener(() => {
-                    victim.allocation.Unassign();
-                    Hide();
-                });
-            }
-        }
         
         if (backgroundBlocker != null)
             StartCoroutine(EnableBackgroundBlockerDelayed());
@@ -95,6 +72,7 @@ public class BuildingInfo : MonoBehaviour
         PositionPanelNearBuilding(building);
         DisplayBuildingInfo(building);
 
+        // Handle upgrade button for Archer Tower
         if (building is ArcherTower && upgradeButton != null)
         {
             ArcherTower archer = building as ArcherTower;
@@ -114,10 +92,98 @@ public class BuildingInfo : MonoBehaviour
                     upgradeInfoText.text = "MAX LEVEL";
                     upgradeBtn.interactable = false;
                 }
+                else if (archer.GetLevel() == 2) // Trying to upgrade to level 3
+                {
+                    // Check if Tree of Life is level 2
+                    TreeOfLife tree = FindFirstObjectByType<TreeOfLife>();
+                    if (tree != null && tree.GetLevel() < 2)
+                    {
+                        upgradeInfoText.text = "Requires Tree of Life Level 2";
+                        upgradeBtn.interactable = false;
+                    }
+                    else
+                    {
+                        int cost = archer.GetUpgradeCost();
+                        upgradeInfoText.text = $"Upgrade Cost: {cost} Bananas\nIncreased range & faster shooting";
+                        upgradeBtn.interactable = BananaManager.instance.GetBananas() >= cost;
+                    }
+                }
+                else // Level 1 -> 2
+                {
+                    int cost = archer.GetUpgradeCost();
+                    upgradeInfoText.text = $"Upgrade Cost: {cost} Bananas\nFaster shooting";
+                    upgradeBtn.interactable = BananaManager.instance.GetBananas() >= cost;
+                }
+            }
+        }
+        // Handle upgrade button for Banana Farm
+        else if (building is BananaFarm && upgradeButton != null)
+        {
+            BananaFarm farm = building as BananaFarm;
+            upgradeButton.SetActive(true);
+            
+            Button upgradeBtn = upgradeButton.GetComponent<Button>();
+            upgradeBtn.onClick.RemoveAllListeners();
+            upgradeBtn.onClick.AddListener(() => {
+                UpgradeBananaFarm(farm);
+            });
+
+            if (upgradeInfoText != null)
+            {
+                upgradeInfoText.gameObject.SetActive(true);
+                if (farm.IsMaxLevel())
+                {
+                    upgradeInfoText.text = "MAX LEVEL";
+                    upgradeBtn.interactable = false;
+                }
+                else if (farm.GetLevel() + 1 > 2) // Trying to upgrade PAST level 2
+                {
+                    // Check if Tree of Life is level 2
+                    TreeOfLife tree = FindFirstObjectByType<TreeOfLife>();
+                    if (tree != null && tree.GetLevel() < 2)
+                    {
+                        upgradeInfoText.text = "Requires Tree of Life Level 2";
+                        upgradeBtn.interactable = false;
+                    }
+                    else
+                    {
+                        int cost = farm.GetUpgradeCost();
+                        upgradeInfoText.text = $"Upgrade Cost: {cost} Bananas\nNext: {farm.GetLevel() + 1}x production";
+                        upgradeBtn.interactable = BananaManager.instance.GetBananas() >= cost;
+                    }
+                }
                 else
                 {
-                    upgradeInfoText.text = $"Upgrade Cost: {archerTowerUpgradeCost} Bananas";
-                    upgradeBtn.interactable = BananaManager.instance.GetBananas() >= archerTowerUpgradeCost;
+                    int cost = farm.GetUpgradeCost();
+                    upgradeInfoText.text = $"Upgrade Cost: {cost} Bananas\nNext: {farm.GetLevel() + 1}x production";
+                    upgradeBtn.interactable = BananaManager.instance.GetBananas() >= cost;
+                }
+            }
+        }
+        // Handle upgrade button for Tree of Life
+        else if (building is TreeOfLife && upgradeButton != null)
+        {
+            TreeOfLife tree = building as TreeOfLife;
+            upgradeButton.SetActive(true);
+            
+            Button upgradeBtn = upgradeButton.GetComponent<Button>();
+            upgradeBtn.onClick.RemoveAllListeners();
+            upgradeBtn.onClick.AddListener(() => {
+                UpgradeTreeOfLife(tree);
+            });
+
+            if (upgradeInfoText != null)
+            {
+                upgradeInfoText.gameObject.SetActive(true);
+                if (tree.IsMaxLevel())
+                {
+                    upgradeInfoText.text = "MAX LEVEL";
+                    upgradeBtn.interactable = false;
+                }
+                else
+                {
+                    upgradeInfoText.text = $"Upgrade Cost: 100 Bananas\nUnlocks higher building levels";
+                    upgradeBtn.interactable = BananaManager.instance.GetBananas() >= 100;
                 }
             }
         }
@@ -153,24 +219,30 @@ public class BuildingInfo : MonoBehaviour
         }
         else if (building is BananaFarm)
         {
+            BananaFarm farm = building as BananaFarm;
             if (buildingNameText != null)
                 buildingNameText.text = "Banana Farm";
             
             if (buildingStatsText != null)
             {
+                int totalProduction = farm.GetBananasPerDay() * building.GetMonkeyCount() * 2;
                 buildingStatsText.text = 
-                    $"Production: {building.GetMonkeyCount() * 2} Bananas per day (2 per monkey)\n" +
+                    $"Level: {farm.GetLevel()}\n" +
+                    $"Production: {totalProduction} Bananas/day\n" +
+                    $"Per Monkey: {farm.GetBananasPerDay() * 2} Bananas/day\n" +
                     $"Monkeys: {building.GetMonkeyCount()}/{building.GetMonkeyCapacity()}";
             }
         }
         else if (building is TreeOfLife)
         {
+            TreeOfLife tree = building as TreeOfLife;
             if (buildingNameText != null)
                 buildingNameText.text = "Tree of Life";
             
             if (buildingStatsText != null)
             {
                 buildingStatsText.text =
+                    $"Level: {tree.GetLevel()}\n" +
                     "Your base - Protect at all costs!\n" +
                     $"Idle Monkeys: {building.GetMonkeyCount()}";
             }
@@ -193,21 +265,67 @@ public class BuildingInfo : MonoBehaviour
             return;
         }
 
-        if (BananaManager.instance.GetBananas() >= archerTowerUpgradeCost)
+        int cost = archer.GetUpgradeCost();
+        if (BananaManager.instance.GetBananas() >= cost)
         {
-            BananaManager.instance.RemoveBananas(archerTowerUpgradeCost);
+            BananaManager.instance.AddBananas(-cost);
             archer.Upgrade();
-            if (!wallToastShown)
+            
+            if (archer.GetLevel() == 3 && !wallToastShown)
             {
                 wallToastShown = true;
                 ToastManager.Instance.RequestToast(wallUnlockToast, 4f);
             }
-            Hide();
-            Debug.Log("Archer Tower upgraded!");
+            
+            Show(archer); // Refresh the display
+            Debug.Log($"Archer Tower upgraded to level {archer.GetLevel()}!");
         }
         else
         {
-            Debug.Log("Not enough bananas to upgrade!");
+            Debug.Log($"Not enough bananas to upgrade! Need {cost}, have {BananaManager.instance.GetBananas()}");
+        }
+    }
+
+    private void UpgradeBananaFarm(BananaFarm farm)
+    {
+        if (farm.IsMaxLevel())
+        {
+            Debug.Log("Banana Farm is already max level!");
+            return;
+        }
+
+        int cost = farm.GetUpgradeCost();
+        if (BananaManager.instance.GetBananas() >= cost)
+        {
+            farm.Upgrade(); // The Upgrade method in BananaFarm already deducts bananas
+            Show(farm); // Refresh the display
+            Debug.Log($"Banana Farm upgraded to level {farm.GetLevel()}!");
+        }
+        else
+        {
+            Debug.Log($"Not enough bananas to upgrade! Need {cost}, have {BananaManager.instance.GetBananas()}");
+        }
+    }
+
+    private void UpgradeTreeOfLife(TreeOfLife tree)
+    {
+        if (tree.IsMaxLevel())
+        {
+            Debug.Log("Tree of Life is already max level!");
+            return;
+        }
+
+        int cost = 100;
+        if (BananaManager.instance.GetBananas() >= cost)
+        {
+            BananaManager.instance.AddBananas(-cost);
+            tree.Upgrade();
+            Show(tree); // Refresh the display
+            Debug.Log($"Tree of Life upgraded to level {tree.GetLevel()}! Higher building levels unlocked!");
+        }
+        else
+        {
+            Debug.Log($"Not enough bananas to upgrade! Need {cost}, have {BananaManager.instance.GetBananas()}");
         }
     }
 
@@ -251,15 +369,13 @@ public class BuildingInfo : MonoBehaviour
     public void Hide()
     {
         Debug.Log("hiding");
-        currentBuilding = null;
 
         if (shownOnce) hiddenOnce = true;
-        removeButton.SetActive(false);
         upgradeButton.SetActive(false);
-        upgradeInfoText.gameObject.SetActive(false);
+        if (upgradeInfoText != null)
+            upgradeInfoText.gameObject.SetActive(false);
         info.SetActive(false);
         backgroundBlocker.SetActive(false);
-        removeButton.GetComponent<Button>().onClick.RemoveAllListeners();
         upgradeButton.GetComponent<Button>().onClick.RemoveAllListeners();
     }
 

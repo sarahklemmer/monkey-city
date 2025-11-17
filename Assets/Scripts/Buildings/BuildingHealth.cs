@@ -94,8 +94,15 @@ public class BuildingHealth : MonoBehaviour
 
     private void OnDestroyed()
     {
-        // TODO: Handle building destruction
+        // Call the BuildingBase's OnDestroy method to properly free monkeys
+        BuildingBase buildingBase = GetComponent<BuildingBase>();
+        if (buildingBase != null)
+        {
+            Debug.Log($"[BuildingHealth] Calling OnDestroy for {buildingBase.GetType().Name} to free monkeys");
+            buildingBase.OnDestroy();
+        }
         
+        // Now destroy the building
         Destroy(gameObject);
     }
 

@@ -20,9 +20,10 @@ UX/UI:
 *DONE* change dollar sign in menu to bananas
 *DONE* building menu flashing when new building is unlocked, building unlock system
 *DONE* make placement 2X2 instead of 1X1
+*DONE* display resource generation numbers
+*DONE* make monkeys walk faster
 
 
-make monkeys walk faster
 indicators instead of text for tutorial
 make it visually clear without clicking that monkeys are in buildings
 keybinds to quick assign monkeys to nearest banana farm or archer tower
@@ -30,10 +31,8 @@ icons or some kind of feedback for when buildings are regenerating or generating
 make tutorial directly railroady instead of text
 indicate to the player when chimps are coming 
 make it clearer exactly how many chimps your archer towers will kill
-display resource generation numbers
 
 Bugs:
-monkeys getting stuck next to buildings
 limit monkeys and move around monkeys
 
 Gameplay:
@@ -48,4 +47,4 @@ attack every 7 days and specify how many chimps are coming, ui element
 buildings have an upkeep 
 limit monkeys
 
-chimps attack from set locations or attack from set locations most of the time
+chimps attack from set locations or attack from set locations most of the tim

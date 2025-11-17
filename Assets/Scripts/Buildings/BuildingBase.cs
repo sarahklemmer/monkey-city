@@ -12,7 +12,7 @@ public abstract class BuildingBase : MonoBehaviour
     protected Renderer[] renderers;
     protected Collider[] colliders;
     public bool selectable { get; private set; }
-
+    public int bananasPerDay { get; protected set; } = 0;
     // functions to be overrode
     public abstract void OnDayCycle();
     public abstract void OnDestroy();

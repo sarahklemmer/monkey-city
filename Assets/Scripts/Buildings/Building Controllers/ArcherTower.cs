@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ArcherTower : BuildingBase
@@ -10,6 +11,14 @@ public class ArcherTower : BuildingBase
     private float attackCooldown = 1f; 
     
     [SerializeField] GameObject arrowPrefab;
+    
+    // Visual models - these should be child GameObjects in your hierarchy
+    [SerializeField] GameObject level1Model; // Assign the initial tower model
+    [SerializeField] GameObject level2Model; // Assign the level 2 visual child object
+    [SerializeField] GameObject level3Model; // Assign the level 3 visual child object
+    
+    [SerializeField] ParticleSystem upgradeEffect; // Assign sparkle particle system
+    
     private Transform firePoint;
     private float lastAttackTime;
     private EnemyAttacker targetEnemy;
@@ -17,15 +26,42 @@ public class ArcherTower : BuildingBase
     // Range indicator components
     private LineRenderer rangeIndicator;
     [SerializeField] private bool showRangeOnSelect = true;
-    [SerializeField] private Color rangeColor = new Color(0.5f, 0.8f, 1f, 0.15f); // Subtle blue with low transparency
+    [SerializeField] private Color rangeColor = new Color(0.5f, 0.8f, 1f, 0.15f);
     [SerializeField] private int circleSegments = 50;
-    [SerializeField] private Vector3 circleOffset = Vector3.zero; // Adjust if tower isn't centered
+    [SerializeField] private Vector3 circleOffset = Vector3.zero;
 
     void Awake()
     {
         base.SharedAwakeBehavior();
         building = new(BuildingType.ArcherTower);
-        monkeys = new(1);
+        monkeys = new(1); // Capacity of 1 monkey
+        
+        // Make sure upgrade models start disabled
+        if (level1Model != null)
+        {
+            level1Model.SetActive(true);
+            Debug.Log("[ArcherTower] Level 1 model found and enabled");
+        }
+        else
+        {
+            Debug.LogWarning("[ArcherTower] Level 1 model not assigned!");
+        }
+        
+        if (level2Model != null)
+        {
+            level2Model.SetActive(false);
+            Debug.Log("[ArcherTower] Level 2 model found and disabled");
+        }
+        else
+        {
+            Debug.LogWarning("[ArcherTower] Level 2 model not assigned!");
+        }
+        
+        if (level3Model != null)
+        {
+            level3Model.SetActive(false);
+            Debug.Log("[ArcherTower] Level 3 model found and disabled");
+        }
         
         CreateRangeIndicator();
     }
@@ -48,20 +84,17 @@ public class ArcherTower : BuildingBase
     {
         Debug.Log("[ArcherTower] Creating range indicator...");
         
-        // Create a new GameObject for the range indicator
         GameObject rangeObj = new GameObject("RangeIndicator");
         rangeObj.transform.SetParent(transform);
-        rangeObj.transform.localPosition = circleOffset; // Apply offset
+        rangeObj.transform.localPosition = circleOffset;
         
-        // Add and configure LineRenderer
         rangeIndicator = rangeObj.AddComponent<LineRenderer>();
         rangeIndicator.useWorldSpace = false;
         rangeIndicator.loop = true;
         rangeIndicator.positionCount = circleSegments;
-        rangeIndicator.startWidth = 0.08f;  // Thinner for subtlety
+        rangeIndicator.startWidth = 0.08f;
         rangeIndicator.endWidth = 0.08f;
         
-        // Try multiple shaders to find one that works
         Material mat = new Material(Shader.Find("Sprites/Default"));
         if (mat.shader == null || mat.shader.name == "Hidden/InternalErrorShader")
         {
@@ -78,7 +111,6 @@ public class ArcherTower : BuildingBase
         rangeIndicator.startColor = rangeColor;
         rangeIndicator.endColor = rangeColor;
         
-        // Disable shadows
         rangeIndicator.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         rangeIndicator.receiveShadows = false;
         
@@ -103,11 +135,7 @@ public class ArcherTower : BuildingBase
             float x = Mathf.Cos(angle) * attackRange;
             float z = Mathf.Sin(angle) * attackRange;
             
-            // Try 3D first (flat on ground)
-            Vector3 position = new Vector3(x, 0.1f, z); // Slightly elevated
-            
-            // If you have a 2D game, uncomment this instead:
-            // Vector3 position = new Vector3(x, z, 0);
+            Vector3 position = new Vector3(x, 0.1f, z);
             
             rangeIndicator.SetPosition(i, position);
         }
@@ -115,8 +143,25 @@ public class ArcherTower : BuildingBase
         Debug.Log($"[ArcherTower] Range circle updated: {circleSegments} points at range {attackRange}");
     }
 
+    private bool HasMonkey()
+    {
+        return monkeys != null && monkeys.Count() > 0;
+    }
+
     void Update()
     {
+        // 5 ^ (level - 1) so -1, -5, -25 times number of monkeys + 1 so it still costs bananas to defend
+        bananasPerDay = ((int)Math.Pow(5, level - 1)) * GetMonkeyCount() * -1;
+
+        if (!HasMonkey())
+        {
+            if (targetEnemy != null)
+            {
+                targetEnemy = null;
+            }
+            return;
+        }
+
         if (targetEnemy == null)
         {
             FindNearestEnemy();
@@ -136,7 +181,6 @@ public class ArcherTower : BuildingBase
         }
     }
 
-    // Call this method when the tower is selected/clicked
     public void OnSelected()
     {
         if (rangeIndicator != null && showRangeOnSelect)
@@ -145,7 +189,6 @@ public class ArcherTower : BuildingBase
         }
     }
 
-    // Call this method when the tower is deselected
     public void OnDeselected()
     {
         if (rangeIndicator != null)
@@ -154,7 +197,6 @@ public class ArcherTower : BuildingBase
         }
     }
 
-    // Optional: Always show range indicator
     public void SetRangeIndicatorVisible(bool visible)
     {
         if (rangeIndicator != null)
@@ -237,21 +279,70 @@ public class ArcherTower : BuildingBase
         switch (level)
         {
             case 2:
-                attackRange = 7f;
-                attackDamage = 15f;
-                attackCooldown = 0.8f;
+                // Level 2: Faster shooting only
+                attackCooldown = 0.7f;
+                
+                // Hide level 1 model and show level 2 model
+                if (level1Model != null)
+                {
+                    Debug.Log($"[ArcherTower] Deactivating Level 1 model: {level1Model.name}, was active: {level1Model.activeSelf}");
+                    level1Model.SetActive(false);
+                }
+                else
+                {
+                    Debug.LogWarning("[ArcherTower] Level 1 model is NULL!");
+                }
+                
+                if (level2Model != null)
+                {
+                    Debug.Log($"[ArcherTower] Activating Level 2 model: {level2Model.name}, was active: {level2Model.activeSelf}");
+                    level2Model.SetActive(true);
+                    Debug.Log($"[ArcherTower] Level 2 model is now active: {level2Model.activeSelf}");
+                    
+                    // Check if it has a renderer
+                    Renderer renderer = level2Model.GetComponentInChildren<Renderer>();
+                    if (renderer != null)
+                    {
+                        Debug.Log($"[ArcherTower] Level 2 model has renderer, enabled: {renderer.enabled}");
+                    }
+                    else
+                    {
+                        Debug.LogError("[ArcherTower] Level 2 model has NO RENDERER!");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("[ArcherTower] Level 2 model is NULL! Did you assign it in the Inspector?");
+                }
                 break;
             case 3:
-                attackRange = 10f;
-                attackDamage = 25f;
-                attackCooldown = 0.6f;
+                // Level 3: Increased range and even faster shooting
+                attackRange = 6.5f;
+                attackCooldown = 0.5f;
+                
+                // Hide level 2 model and show level 3 model
+                if (level2Model != null)
+                {
+                    level2Model.SetActive(false);
+                }
+                
+                if (level3Model != null)
+                {
+                    level3Model.SetActive(true);
+                    Debug.Log("[ArcherTower] Activating Level 3 model");
+                }
                 break;
+        }
+        
+        // Play sparkle upgrade effect
+        if (upgradeEffect != null)
+        {
+            upgradeEffect.Play();
         }
         
         // Update the range circle when upgrading
         UpdateRangeCircle();
         
-        transform.GetChild(0).gameObject.SetActive(true);
         Debug.Log($"Archer Tower upgraded to level {level}!");
     }
 
@@ -260,6 +351,18 @@ public class ArcherTower : BuildingBase
     public float GetAttackRange() => attackRange;
     public float GetAttackDamage() => attackDamage;
     public float GetAttackCooldown() => attackCooldown;
+    
+    public int GetUpgradeCost()
+    {
+        if (level >= MAX_LEVEL) return 0;
+        
+        switch (level)
+        {
+            case 1: return 50;  // Level 1 -> 2 costs 50
+            case 2: return 120; // Level 2 -> 3 costs 120
+            default: return 0;
+        }
+    }
 
     public override void OnDayCycle()
     {

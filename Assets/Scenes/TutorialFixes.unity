@@ -9209,7 +9209,8 @@ MonoBehaviour:
   upgradeInfoText: {fileID: 1440316867}
   offset: {x: 150, y: 0}
   wallUnlockToast: New defenses available! Open the Building Menu to construct walls.
-  archerTowerUpgradeCost: 300
+  archerTowerLevel2Cost: 50
+  archerTowerLevel3Cost: 120
 --- !u!1001 &1361005732
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9354,7 +9355,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1744986385}
   m_HandleRect: {fileID: 1744986384}
   m_Direction: 0
-  m_Value: 1.0000024
+  m_Value: 1.0000025
   m_Size: 0.625
   m_NumberOfSteps: 0
   m_OnValueChanged:

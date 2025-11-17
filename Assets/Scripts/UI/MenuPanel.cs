@@ -8,7 +8,7 @@ public class MenuPanel : MonoBehaviour
     private bool isVisible = false;
     void Start()
     {
-        menuPanel = this.gameObject;
+        menuPanel = gameObject;
         menuPanel.SetActive(false);
     }
 

@@ -14,25 +14,25 @@ public class EnemyWaveConfig
 public class WaveSpawner : MonoBehaviour
 {
     [Header("Wave Settings")]
-    [SerializeField] private float timeBetweenWaves = 30f;
-    [SerializeField] private float baseEnemiesPerWave = 3f;
-    [SerializeField] private float waveScalingFactor = 1.2f;
+    [SerializeField] private float timeBetweenWaves = 45f; // Increased from 30s
+    [SerializeField] private float baseEnemiesPerWave = 2f; // Reduced from 3
+    [SerializeField] private float waveScalingFactor = 1.15f; // Reduced from 1.2
     
     [Header("Enemy Types")]
     [SerializeField] private EnemyWaveConfig[] enemyTypes;
     [SerializeField] private GameObject bossPrefab;
     
     [Header("Difficulty Scaling")]
-    [SerializeField] private int bananasRequiredToStartAttacks = 50;
-    private int bananaThreshold1 = 200;
-    private int bananaThreshold2 = 500;
-    private int bananaThreshold3 = 1000;
-    private float bananaDifficultyMultiplier = 1.5f;
+    [SerializeField] private int bananasRequiredToStartAttacks = 100; // Increased from 50
+    private int bananaThreshold1 = 300; // Increased from 200
+    private int bananaThreshold2 = 800; // Increased from 500
+    private int bananaThreshold3 = 1500; // Increased from 1000
+    private float bananaDifficultyMultiplier = 1.3f; // Reduced from 1.5
     
     [Header("Wave Timing Adjustments")]
-    [SerializeField] private float timeReductionPerThreshold = 5f;
-    [SerializeField] private float minimumTimeBetweenWaves = 10f;
-    [SerializeField] private float gracePeriodAfterThreshold = 10f;
+    [SerializeField] private float timeReductionPerThreshold = 3f; // Reduced from 5f
+    [SerializeField] private float minimumTimeBetweenWaves = 20f; // Increased from 10f
+    [SerializeField] private float gracePeriodAfterThreshold = 15f; // Increased from 10f
     
     private int currentWave = 0;
     private int enemiesAlive = 0;
@@ -148,8 +148,8 @@ public class WaveSpawner : MonoBehaviour
     {
         waveActive = true;
         
-        // Check if this is a boss wave (every 5 waves)
-        bool isBossWave = (currentWave % 5 == 0) && bossPrefab != null;
+        // Check if this is a boss wave (every 7 waves instead of 5)
+        bool isBossWave = (currentWave % 7 == 0) && bossPrefab != null;
         
         if (isBossWave)
         {
@@ -196,7 +196,7 @@ public class WaveSpawner : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             SpawnEnemy();
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.8f); // Increased from 0.5s - more time between spawns
         }
     }
 
