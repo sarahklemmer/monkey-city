@@ -4,7 +4,7 @@ public class BananaFarm : BuildingBase
 {
     private int level = 1;
     private const int MAX_LEVEL = 4;
-    private int bananasPerDay = 1;
+    private int baseBananaProduction = 1;
     private static readonly int[] upgradeCosts = { 0, 5, 40, 100, 200 };
     
     void Awake()
@@ -12,6 +12,11 @@ public class BananaFarm : BuildingBase
         base.SharedAwakeBehavior();
         building = new(BuildingType.BananaFarm); 
         monkeys = new(2);
+    }
+
+    void Update()
+    {
+        bananasPerDay = baseBananaProduction * monkeys.Count() * 2;
     }
 
     public override void OnDayCycle()
@@ -44,25 +49,25 @@ public class BananaFarm : BuildingBase
         switch (level)
         {
             case 1:
-                bananasPerDay = 1;
+                baseBananaProduction = 1;
                 break;
             case 2:
-                bananasPerDay = 2;
+                baseBananaProduction = 2;
                 break;
             case 3:
-                bananasPerDay = 3;
+                baseBananaProduction = 3;
                 break;
             case 4:
-                bananasPerDay = 5;
+                baseBananaProduction = 5;
                 break;
         }
         
-        UnityEngine.Debug.Log($"Banana Farm upgraded to level {level}! Now produces {bananasPerDay} bananas per monkey per day.");
+        UnityEngine.Debug.Log($"Banana Farm upgraded to level {level}! Now produces {baseBananaProduction} bananas per monkey per day.");
     }
     
     public int GetLevel() => level;
     public bool IsMaxLevel() => level >= MAX_LEVEL;
-    public int GetBananasPerDay() => bananasPerDay;
+    public int GetBananasPerDay() => baseBananaProduction;
     
     public int GetUpgradeCost()
     {
