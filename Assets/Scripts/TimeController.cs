@@ -6,8 +6,7 @@ public class TimeController : MonoBehaviour
     private bool ticking = true;
     private bool night = false;
     public int currentDay { get; private set; }
-    [SerializeField] float minutesPerDay = 8f;
-    float secondsToDay;
+    [SerializeField]float secondsToDay = 30;
 
     public static TimeController instance;
     
@@ -21,7 +20,7 @@ public class TimeController : MonoBehaviour
         }
 
         instance = this;
-        secondsToDay = 60 * minutesPerDay;
+        secondsToDay = 30;
     }
 
     void Update()
