@@ -16,6 +16,9 @@ public abstract class BuildingBase : MonoBehaviour
     public abstract void OnDayCycle();
     public abstract void OnDestroy();
 
+    public int grid_x { get; private set; } = 0;
+    public int grid_y { get; private set; } = 0;
+
     void Update()
     {
         UpdateBehavior();
@@ -31,7 +34,7 @@ public abstract class BuildingBase : MonoBehaviour
     protected virtual void OnDisable()
     {
         BuildingManager.instance.RemoveBuilding(this);
-        BuildingGrid.instance.RemoveBuilding(building);
+        BuildingGrid.instance.RemoveBuilding(this);
     }
 
     protected virtual void SharedAwakeBehavior()
@@ -94,6 +97,12 @@ public abstract class BuildingBase : MonoBehaviour
             m.transform.position = newpos;
         }
     } 
+
+    public void SetGridCoords(int grid_x, int grid_y)
+    {
+        this.grid_x = grid_x;
+        this.grid_y = grid_y;
+    }
     //START OF AI CODE
     public void MakeTransparent()
     {

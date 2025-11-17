@@ -75,6 +75,7 @@ public class BuildingInfo : MonoBehaviour
         PositionPanelNearBuilding(building);
         DisplayBuildingInfo(building);
 
+        moveButton.GetComponent<Button>().onClick.RemoveAllListeners();
         if (building is not TreeOfLife)
         {
             moveButton.SetActive(true);
@@ -86,7 +87,6 @@ public class BuildingInfo : MonoBehaviour
         } else
         {
             moveButton.SetActive(false);
-            moveButton.GetComponent<Button>().onClick.RemoveAllListeners();
         }
 
         // Handle upgrade button for Archer Tower

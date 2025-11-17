@@ -29,7 +29,7 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.X) && !isTreeOfLifeIndicator)
+        if (Input.GetKey(KeyCode.X) && !isTreeOfLifeIndicator && !isMoving)
         {
             ReturnToNormalState();
             PlacementManager.instance.ClearCurrentBuilding();
@@ -65,8 +65,8 @@ public class PlacementIndicatorOnClick : MonoBehaviour
                 existingBuilding.transform.position = pos;
                 existingBuilding.transform.rotation = rotation;
                 existingBuilding.MoveMonkeysToPos(pos);
+                existingBuilding.SetGridCoords(grid_x, grid_y);
                 // remove and then immediately place in its new destination
-                BuildingGrid.instance.RemoveBuilding(existingBuilding.GetInternalBuilding());
                 BuildingGrid.instance.Place(grid_x, grid_y, existingBuilding.GetInternalBuilding());
                 return;
             }
@@ -89,6 +89,7 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
             BuildingGrid.instance.Place(grid_x, grid_y, placedBuilding);
             GameObject buildingObj = Instantiate(prefab, pos, rotation);
+            buildingObj.GetComponent<BuildingBase>().SetGridCoords(grid_x, grid_y);
 
             placedBuilding.SetInstance(buildingObj);
 

@@ -124,56 +124,10 @@ public class BuildingGrid : MonoBehaviour
     }
 
     // From clickBuilding: Remove building from grid by Building reference
-    public void RemoveBuilding(Building building)
+    public void RemoveBuilding(BuildingBase b)
     {
-        if (building == null) return;
-
-        // Find and clear all cells occupied by this building
-        for (int x = 0; x < GRID_SIZE; x++)
-        {
-            for (int y = 0; y < GRID_SIZE; y++)
-            {
-                if (grid[x, y] == building)
-                {
-                    grid[x, y] = null;
-                }
-            }
-        }
+        grid[b.grid_x, b.grid_y] = null;
     }
-
-    // From clickBuilding: Remove building from grid by GameObject reference
-    public void RemoveBuildingByGameObject(GameObject buildingGameObject)
-    {
-        if (buildingGameObject == null) return;
-
-        // Find the Building object that references this GameObject
-        for (int x = 0; x < GRID_SIZE; x++)
-        {
-            for (int y = 0; y < GRID_SIZE; y++)
-            {
-                if (grid[x, y] != null && grid[x, y].instance == buildingGameObject)
-                {
-                    // Found it! Now remove all cells with this Building reference
-                    Building buildingToRemove = grid[x, y];
-                    RemoveBuilding(buildingToRemove);
-                    Debug.Log($"Building removed from grid at ({x}, {y}). Cells now available for placement.");
-                    return;
-                }
-            }
-        }
-
-        Debug.LogWarning($"Could not find building {buildingGameObject.name} in grid!");
-    }
-
-    // NEW: Clear building from grid using BuildingBase component
-    public void ClearBuildingFromGrid(BuildingBase buildingBase)
-    {
-        if (buildingBase == null) return;
-        
-        // Use the existing method that works with GameObjects
-        RemoveBuildingByGameObject(buildingBase.gameObject);
-    }
-
     // don't worry about how this works, it works
     public void FrameCameraIsoTopBottom()
     {
