@@ -6,7 +6,8 @@ public abstract class BuildingBase : MonoBehaviour
     [SerializeField] private Material outlineMaterial;
     [SerializeField] private Renderer targetRenderer;
     [Header("Occupancy Models")]
-    [SerializeField] protected GameObject[] occupancyModels;
+    [SerializeField] protected GameObject[] occupancyModels; // Assign empty, partial, full meshes in inspector
+ 
     private GlowEffect glow;
     protected Building building;
     protected BuildingMonkeys monkeys;
@@ -85,22 +86,19 @@ public abstract class BuildingBase : MonoBehaviour
 
     protected virtual void UpdateOccupancyModel()
     {
-        Debug.Log("Updating occupancy model for " + gameObject.name);
+        Debug.Log("Updating occupancy model");
         if (occupancyModels == null || occupancyModels.Length == 0 || monkeys == null)
-            Debug.Log("No occupancy models or monkeys data found for " + gameObject.name);
             return;
-        float fillRatio = monkeys.CountOverCapacity();
-        int modelIndex = Mathf.Clamp(
-            Mathf.FloorToInt(fillRatio * occupancyModels.Length),
-            0,
-            occupancyModels.Length - 1
-        );
         
+    
+        float monk = monkeys.Count();
+        Debug.Log($"Monkey count: {monk}, Capacity: {monkeys.Capacity()}");
+        // Show only the correct model, hide the rest
         for (int i = 0; i < occupancyModels.Length; i++)
         {
             if (occupancyModels[i] != null)
             {
-                occupancyModels[i].SetActive(i == modelIndex);
+                occupancyModels[i].SetActive(i == monk);
             }
         }
     }

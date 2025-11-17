@@ -172,6 +172,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineMaterial: {fileID: 2100000, guid: f5ea81a833a1649e2a382c6e66bdeaba, type: 2}
   targetRenderer: {fileID: 7172548887642230123}
+  occupancyModels:
+  - {fileID: 919132149155446097, guid: f36a6b6e49c3f4249b0da892d8658f92, type: 3}
+  - {fileID: 919132149155446097, guid: e60b14cab012844f6a015b48af9cd387, type: 3}
+  - {fileID: 919132149155446097, guid: 42f206dba235f4257a33f6f5fc450ec2, type: 3}
 --- !u!65 &1000261642749383485
 BoxCollider:
   m_ObjectHideFlags: 0

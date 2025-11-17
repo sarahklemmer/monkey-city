@@ -303,6 +303,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineMaterial: {fileID: 2100000, guid: f5ea81a833a1649e2a382c6e66bdeaba, type: 2}
   targetRenderer: {fileID: 8678810773718043987}
+  occupancyModels:
+  - {fileID: 919132149155446097, guid: e9c90358f008e4b429a32afe2ab0701e, type: 3}
+  - {fileID: 919132149155446097, guid: 4f04e491522874d8989ab4ac82a6a9cd, type: 3}
+  - {fileID: 919132149155446097, guid: 5f72793aacb6542e0ab121325eed21a2, type: 3}
   arrowPrefab: {fileID: 6334997851377227509, guid: eb2a74ef0200849a580f03bc9b92561a, type: 3}
   level1Model: {fileID: 2208981387096297085}
   level2Model: {fileID: 4158359482099949380}
