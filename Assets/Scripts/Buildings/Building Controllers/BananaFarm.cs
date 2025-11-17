@@ -18,7 +18,7 @@ public class BananaFarm : BuildingBase
     {
         if (monkeys != null && monkeys.Count() > 0)
         {
-            BananaManager.instance.AddBananas(bananasPerDay * monkeys.Count());
+            BananaManager.instance.AddBananas(AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count());
         }
     }
 
