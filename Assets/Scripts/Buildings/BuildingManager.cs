@@ -6,6 +6,7 @@ public class BuildingManager : MonoBehaviour
 {
     public static BuildingManager instance;
     [SerializeField] List<BuildingBase> buildings;
+    [SerializeField] private GameObject floatingTextPrefab;
 
     void Awake()
     {
@@ -31,8 +32,48 @@ public class BuildingManager : MonoBehaviour
         foreach (BuildingBase b in buildings)
         {
             b.OnDayCycle();
+            if (b.bananasPerDay != 0)
+            {
+                ShowFloatingText(b, b.bananasPerDay);
+            }
         }
-        BananaManager.instance.AddBananas(GetDailyProduction());
+        int totalProduction = GetDailyProduction();
+        Debug.Log($"Daily banana production: {totalProduction} bananas.");
+        BananaManager.instance.AddBananas(totalProduction);
+        
+    }
+    public void ShowFloatingText(BuildingBase building, int amount)
+    {
+        if (building == null || floatingTextPrefab == null) return;
+        
+        BuildingDimensions dims = BuildingUtils.TypeToDimensions(building.GetBuildingType());
+        
+        float heightOffset = dims.height + 1.5f; 
+        
+        Vector3 spawnPos = building.transform.position;
+        spawnPos.y += heightOffset;
+        
+        GameObject textObj = Instantiate(floatingTextPrefab, spawnPos, Quaternion.identity);
+        BananaVisualization floater = textObj.GetComponent<BananaVisualization>();
+        if (floater != null)
+        {
+            floater.Initialize(amount);
+        }
+    }
+
+    public void ShowFloatingText(Vector3 position, int amount)
+    {
+        if (floatingTextPrefab == null) return;
+        
+        Vector3 spawnPos = position;
+        spawnPos.y += 2f;
+        
+        GameObject textObj = Instantiate(floatingTextPrefab, spawnPos, Quaternion.identity);
+        BananaVisualization floater = textObj.GetComponent<BananaVisualization>();
+        if (floater != null)
+        {
+            floater.Initialize(amount);
+        }
     }
 
     public void MakeBuildingsTransparent()

@@ -13,6 +13,7 @@ public class BuildingInfo : MonoBehaviour
     [SerializeField] TextMeshProUGUI buildingNameText;
     [SerializeField] TextMeshProUGUI buildingStatsText;
     [SerializeField] TextMeshProUGUI upgradeInfoText;
+    [SerializeField] BuildingManager manager;
     
     [Header("Positioning")]
     [SerializeField] Vector2 offset = new Vector2(150, 0);
@@ -269,6 +270,7 @@ public class BuildingInfo : MonoBehaviour
         if (BananaManager.instance.GetBananas() >= cost)
         {
             BananaManager.instance.AddBananas(-cost);
+            manager.ShowFloatingText(archer, -cost);
             archer.Upgrade();
             
             if (archer.GetLevel() == 3 && !wallToastShown)
@@ -319,8 +321,9 @@ public class BuildingInfo : MonoBehaviour
         if (BananaManager.instance.GetBananas() >= cost)
         {
             BananaManager.instance.AddBananas(-cost);
+            manager.ShowFloatingText(tree, -cost);
             tree.Upgrade();
-            Show(tree); // Refresh the display
+            Show(tree); 
             Debug.Log($"Tree of Life upgraded to level {tree.GetLevel()}! Higher building levels unlocked!");
         }
         else

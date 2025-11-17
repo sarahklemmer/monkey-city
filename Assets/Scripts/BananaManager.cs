@@ -30,6 +30,7 @@ public class BananaManager : MonoBehaviour
     {
         bananaCount += num;
         bananasGenerated += num;
+        Debug.Log($"Added {num} bananas. Total bananas: {bananaCount}");
     }
 
     public void RemoveBananas(int num)
