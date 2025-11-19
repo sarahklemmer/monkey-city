@@ -7,32 +7,32 @@ public class EnemyWaveConfig
 {
     public GameObject enemyPrefab;
     public int bananaThreshold;
-    public float spawnWeight = 1f; // Higher = more likely to spawn
+    public float spawnWeight = 1f;
     public string enemyName = "Enemy";
 }
 
 public class WaveSpawner : MonoBehaviour
 {
     [Header("Wave Settings")]
-    [SerializeField] private float timeBetweenWaves = 45f; // Increased from 30s
-    [SerializeField] private float baseEnemiesPerWave = 2f; // Reduced from 3
-    [SerializeField] private float waveScalingFactor = 1.15f; // Reduced from 1.2
+    [SerializeField] private int daysBetweenWaves = 4;
+    [SerializeField] private float baseEnemiesPerWave = 2f;
+    [SerializeField] private float waveScalingFactor = 1.15f;
     
     [Header("Enemy Types")]
     [SerializeField] private EnemyWaveConfig[] enemyTypes;
     [SerializeField] private GameObject bossPrefab;
     
     [Header("Difficulty Scaling")]
-    [SerializeField] private int bananasRequiredToStartAttacks = 100; // Increased from 50
-    private int bananaThreshold1 = 300; // Increased from 200
-    private int bananaThreshold2 = 800; // Increased from 500
-    private int bananaThreshold3 = 1500; // Increased from 1000
-    private float bananaDifficultyMultiplier = 1.3f; // Reduced from 1.5
+    [SerializeField] private int bananasRequiredToStartAttacks = 100;
+    private int bananaThreshold1 = 300;
+    private int bananaThreshold2 = 800;
+    private int bananaThreshold3 = 1500;
+    private float bananaDifficultyMultiplier = 1.3f;
     
     [Header("Wave Timing Adjustments")]
-    [SerializeField] private float timeReductionPerThreshold = 3f; // Reduced from 5f
-    [SerializeField] private float minimumTimeBetweenWaves = 20f; // Increased from 10f
-    [SerializeField] private float gracePeriodAfterThreshold = 15f; // Increased from 10f
+    [SerializeField] private int dayReductionPerThreshold = 1;
+    [SerializeField] private int minimumDaysBetweenWaves = 2;
+    [SerializeField] private int gracePeriodDays = 2;
     
     private ToastManager toastManager;
     private int currentWave = 0;
@@ -41,6 +41,8 @@ public class WaveSpawner : MonoBehaviour
     private bool attacksUnlocked = false;
     private bool spawningPaused = false;
     private int lastBananaThresholdCrossed = 0;
+    private int lastWaveDay = 0;
+    private int lastWarningDay = -999; // Track which day we showed warning
 
     public static WaveSpawner instance;
 
@@ -91,13 +93,14 @@ public class WaveSpawner : MonoBehaviour
                 Debug.Log("spawning paused");
                 yield return new WaitForSeconds(0.5f);
             }
-            // Check if attacks should start
+            
             if (!attacksUnlocked)
             {
                 int currentBananas = BananaManager.instance.GetBananasGenerated();
                 if (currentBananas >= bananasRequiredToStartAttacks)
                 {
                     attacksUnlocked = true;
+                    lastWaveDay = TimeController.instance.currentDay;
                     Debug.Log("⚠️ Your banana wealth has attracted attention! Enemy waves incoming!");
                 }
                 else
@@ -107,7 +110,6 @@ public class WaveSpawner : MonoBehaviour
                 }
             }
             
-            // Check if player crossed a new threshold
             int bananas = BananaManager.instance.GetBananasGenerated();
             int currentThreshold = GetCurrentThreshold(bananas);
             
@@ -115,30 +117,63 @@ public class WaveSpawner : MonoBehaviour
             {
                 lastBananaThresholdCrossed = currentThreshold;
                 Debug.Log($"⚠️ Difficulty tier {currentThreshold} reached! Stronger enemies and faster waves incoming!");
-                yield return new WaitForSeconds(gracePeriodAfterThreshold);
+                lastWaveDay = TimeController.instance.currentDay;
+                yield return new WaitForSeconds(gracePeriodDays * 30f);
             }
             
-            yield return new WaitForSeconds(GetTimeBetweenWaves());
+            int currentDay = TimeController.instance.currentDay;
+            int daysRequired = GetDaysBetweenWaves();
+            int daysSinceLastWave = currentDay - lastWaveDay;
             
-            currentWave++;
-            PathManager.instance.playerPoints += 1;
-            int enemiesToSpawn = CalculateWaveSize();
-            StartCoroutine(AnnounceAndStartWave(enemiesToSpawn, (currentWave % 5 == 0) && bossPrefab != null));
-            yield return new WaitForSeconds(2f);
-            while (enemiesAlive > 0)
+            // Show warning 1 day before wave (only once per day)
+            if (daysSinceLastWave == daysRequired - 1 && lastWarningDay != currentDay)
             {
-                yield return new WaitForSeconds(0.5f);
+                lastWarningDay = currentDay; // Mark this day as having shown the warning
+                bool isBossWave = ((currentWave + 1) % 7 == 0) && bossPrefab != null;
+                if (isBossWave)
+                {
+                    toastManager.RequestToast($"🚨 BOSS WAVE Incoming Tomorrow! Prepare Yourself! 🚨", 3.0f, 0.3f, false, false);
+                    Debug.Log($"Warning: Boss wave {currentWave + 1} incoming tomorrow!");
+                }
+                else
+                {
+                    toastManager.RequestToast($"⚠️ Wave {currentWave + 1} Incoming Tomorrow! Prepare Your Defenses!", 3.0f, 0.3f, false, false);
+                    Debug.Log($"Warning: Wave {currentWave + 1} incoming tomorrow!");
+                }
             }
             
-            waveActive = false;
-            
-            // Heal all buildings to full health after wave ends
-            HealAllBuildings();
+            if (daysSinceLastWave >= daysRequired)
+            {
+                currentWave++;
+                PathManager.instance.playerPoints += 1;
+                lastWaveDay = currentDay;
+                
+                int enemiesToSpawn = CalculateWaveSize();
+                bool isBossWave = (currentWave % 7 == 0) && bossPrefab != null;
+                
+                if (isBossWave)
+                    toastManager.RequestToast($"🚨 BOSS WAVE {currentWave} Starting NOW! 🚨", 2.0f, 0.3f, false, false);
+                else
+                    toastManager.RequestToast($"Chimpanzees Incoming! Wave {currentWave} Starting!", 2.0f, 0.3f, false, false);
+                
+                yield return new WaitForSeconds(2f);
+                StartWave(enemiesToSpawn);
+                
+                while (enemiesAlive > 0)
+                {
+                    yield return new WaitForSeconds(0.5f);
+                }
+                
+                waveActive = false;
+                HealAllBuildings();
 
-            if (currentWave == 1)
-            {
-                ChoosePathSystem.instance.ShowPathMenu();
+                if (currentWave == 1)
+                {
+                    ChoosePathSystem.instance.ShowPathMenu();
+                }
             }
+            
+            yield return new WaitForSeconds(1f);
         }
     }
 
@@ -148,6 +183,7 @@ public class WaveSpawner : MonoBehaviour
         {
             StopAllCoroutines();
             currentWave++;
+            lastWaveDay = TimeController.instance.currentDay;
             int enemiesToSpawn = CalculateWaveSize();
             StartCoroutine(AnnounceAndStartWave(enemiesToSpawn, (currentWave % 5 == 0) && bossPrefab != null));
             StartCoroutine(WaveLoop());
@@ -158,7 +194,6 @@ public class WaveSpawner : MonoBehaviour
     {
         waveActive = true;
         
-        // Check if this is a boss wave (every 7 waves instead of 5)
         bool isBossWave = (currentWave % 7 == 0) && bossPrefab != null;
         
         if (isBossWave)
@@ -169,7 +204,6 @@ public class WaveSpawner : MonoBehaviour
         else
         {
             Debug.Log($"Wave {currentWave} starting...");
-            
             StartCoroutine(SpawnEnemies(enemiesToSpawn));
         }
     }
@@ -216,13 +250,12 @@ public class WaveSpawner : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             SpawnEnemy();
-            yield return new WaitForSeconds(0.8f); // Increased from 0.5s - more time between spawns
+            yield return new WaitForSeconds(0.8f);
         }
     }
 
     private void SpawnEnemy()
     {
-        // Get available enemy types based on banana count
         int bananas = BananaManager.instance.GetBananasGenerated();
         var availableEnemies = enemyTypes.Where(e => e.bananaThreshold <= bananas).ToList();
         
@@ -232,7 +265,6 @@ public class WaveSpawner : MonoBehaviour
             return;
         }
         
-        // Weighted random selection
         float totalWeight = availableEnemies.Sum(e => e.spawnWeight);
         float randomValue = Random.Range(0f, totalWeight);
         float cumulative = 0f;
@@ -328,19 +360,19 @@ public class WaveSpawner : MonoBehaviour
         }
     }
 
-    private float GetTimeBetweenWaves()
+    private int GetDaysBetweenWaves()
     {
         int bananas = BananaManager.instance.GetBananasGenerated();
-        float timeReduction = 0f;
+        int dayReduction = 0;
         
         if (bananas >= bananaThreshold3)
-            timeReduction = timeReductionPerThreshold * 3;
+            dayReduction = dayReductionPerThreshold * 3;
         else if (bananas >= bananaThreshold2)
-            timeReduction = timeReductionPerThreshold * 2;
+            dayReduction = dayReductionPerThreshold * 2;
         else if (bananas >= bananaThreshold1)
-            timeReduction = timeReductionPerThreshold;
+            dayReduction = dayReductionPerThreshold;
         
-        return Mathf.Max(minimumTimeBetweenWaves, timeBetweenWaves - timeReduction);
+        return Mathf.Max(minimumDaysBetweenWaves, daysBetweenWaves - dayReduction);
     }
 
     private int GetCurrentThreshold(int bananas)
