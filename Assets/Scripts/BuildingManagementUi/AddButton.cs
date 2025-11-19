@@ -1,14 +1,15 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 public class AddButton : MonoBehaviour
 {
-    BuildingBase building;
-    Button button;
+    [HideInInspector] public BuildingBase building;
+    [SerializeField] Button button;
 
     void Start()
     {
-        button = GetComponent<Button>();
+        Assert.IsNotNull(button, "forgot to assign add button in the inspector!");
         button.onClick.AddListener(() => Click());
     }
 
@@ -24,9 +25,15 @@ public class AddButton : MonoBehaviour
     
     public void Click()
     {
-        // if we're a banana farm pull from archer tower and vice
-        BuildingType type = building.GetBuildingType() == BuildingType.BananaFarm ? BuildingType.ArcherTower : BuildingType.BananaFarm; 
-        BuildingBase closest = BuildingManager.instance.GetClosestBuildingOfTypeWithMonkeys(building.transform.position, type);
-        closest.NextMonkeyToRemove().StartWalkingToBuilding(building);
+        BuildingBase victim = BuildingManager.instance.GetTreeOfLife();
+        // if there's no monkeys left in the treeoflife we need to pull from the other type of building
+        if(victim.GetMonkeyCount() == 0)
+        {
+            // if we're a banana farm pull from archer tower and vice versa
+            BuildingType type = building.GetBuildingType() == BuildingType.BananaFarm ? BuildingType.ArcherTower : BuildingType.BananaFarm; 
+            victim = BuildingManager.instance.GetClosestBuildingOfTypeWithMonkeys(building.transform.position, type);
+        }
+
+        victim.NextMonkeyToRemove().StartWalkingToBuilding(building);
     }
 }

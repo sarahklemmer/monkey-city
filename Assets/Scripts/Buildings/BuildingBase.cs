@@ -28,12 +28,14 @@ public abstract class BuildingBase : MonoBehaviour
     protected virtual void OnEnable()
     {
         BuildingManager.instance.AddBuilding(this);
+        BuildingManagementUi.instance.AddBuilding(this);
         ToggleFlasher.instance.StopFlash();
     }
 
     protected virtual void OnDisable()
     {
         BuildingManager.instance.RemoveBuilding(this);
+        BuildingManagementUi.instance.RemoveBuilding(this);
         BuildingGrid.instance.RemoveBuilding(this);
     }
 
