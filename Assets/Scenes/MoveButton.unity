@@ -8239,7 +8239,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bananaCount: {fileID: 289542200}
-  playerPointCount: {fileID: 0}
+  playerPointCount: {fileID: 243820044}
   bananaProduction: {fileID: 2123606976}
   populationCount: {fileID: 1273323400}
 --- !u!114 &826187542
@@ -12937,7 +12937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   upgradeButton: {fileID: 740167505}
-  moveButton: {fileID: 0}
+  moveButton: {fileID: 1452523873}
   info: {fileID: 45756651}
   backgroundBlocker: {fileID: 1269202788}
   buildingNameText: {fileID: 83884651}
@@ -16171,7 +16171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5788679cf18b64a718d4134c602a1ff6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeBetweenWaves: 10
+  daysBetweenWaves: 4
   baseEnemiesPerWave: 3
   waveScalingFactor: 1.2
   enemyTypes:
@@ -16181,9 +16181,9 @@ MonoBehaviour:
     enemyName: 
   bossPrefab: {fileID: 0}
   bananasRequiredToStartAttacks: 15
-  timeReductionPerThreshold: 5
-  minimumTimeBetweenWaves: 10
-  gracePeriodAfterThreshold: 10
+  dayReductionPerThreshold: 1
+  minimumDaysBetweenWaves: 2
+  gracePeriodDays: 2
 --- !u!4 &1721964290
 Transform:
   m_ObjectHideFlags: 0
