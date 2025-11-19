@@ -164,6 +164,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: def9478f0de4d4972bb5f80e0710c6db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackParticle: {fileID: 1129752564372285599, guid: 93801c765fd4f2a4a81bb1b131a4b8e5, type: 3}
+  deathParticle: {fileID: 5774021493654583103, guid: 0b371b0188ff2064d985ecab308743aa, type: 3}
+  attackSound: {fileID: 8300000, guid: 93af4a12d531d4f24b49d3938c6a8965, type: 3}
+  deathSound: {fileID: 8300000, guid: bb9eba4b1acbb494ea87eb2022575441, type: 3}
+  audioSource: {fileID: 0}
+  particleStartSize: 0.1
+  particleMaxCount: 10
   flashDuration: 0.15
   flashColor: {r: 0.8490566, g: 0, b: 0, a: 1}
 --- !u!95 &3489657880135531074

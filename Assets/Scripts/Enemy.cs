@@ -15,6 +15,15 @@ public class EnemyAttacker : MonoBehaviour
     [Header("Animation")]
     private Animator animator;
     
+    [Header("Effects")]
+    [SerializeField] private ParticleSystem attackParticle;
+    [SerializeField] private ParticleSystem deathParticle;
+    [SerializeField] private AudioClip attackSound;
+    [SerializeField] private AudioClip deathSound;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private float particleStartSize = 0.1f; // Direct control of particle size
+    [SerializeField] private int particleMaxCount = 10; // Max number of particles
+    
     [Header("Damage Flash")]
     [SerializeField] private float flashDuration = 0.15f;
     [SerializeField] private Color flashColor = Color.red;
@@ -39,6 +48,16 @@ public class EnemyAttacker : MonoBehaviour
         if (animator == null)
         {
             Debug.LogWarning($"No Animator found on {gameObject.name} or its children!");
+        }
+        
+        // Setup audio source if not assigned
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
         }
         
         // Get all renderers and store original materials
@@ -170,6 +189,28 @@ public class EnemyAttacker : MonoBehaviour
                 animator.SetTrigger("Attack");
             }
             
+            // Play attack particle effect
+            if (attackParticle != null)
+            {
+                // Spawn particle at attack point (between enemy and building)
+                Vector3 attackPoint = Vector3.Lerp(transform.position, targetBuilding.transform.position, 0.7f);
+                ParticleSystem particle = Instantiate(attackParticle, attackPoint, Quaternion.LookRotation(targetBuilding.transform.position - transform.position));
+                
+                // Modify particle system settings directly
+                var main = particle.main;
+                main.startSize = particleStartSize;
+                main.maxParticles = particleMaxCount;
+                
+                particle.Play();
+                Destroy(particle.gameObject, particle.main.duration + particle.main.startLifetime.constantMax);
+            }
+            
+            // Play attack sound
+            if (attackSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(attackSound);
+            }
+            
             targetBuilding.TakeDamage(attackDamage);
             
             Vector3 directionAwayFromTarget = (transform.position - targetBuilding.transform.position).normalized;
@@ -259,13 +300,40 @@ public class EnemyAttacker : MonoBehaviour
             }
         }
         
+        // Play death particle effect
+        if (deathParticle != null)
+        {
+            ParticleSystem particle = Instantiate(deathParticle, transform.position, Quaternion.identity);
+            
+            // Modify particle system settings directly
+            var main = particle.main;
+            main.startSize = particleStartSize;
+            main.maxParticles = particleMaxCount;
+            
+            particle.Play();
+            Destroy(particle.gameObject, particle.main.duration + particle.main.startLifetime.constantMax);
+        }
+        
+        // Play death sound
+        if (deathSound != null)
+        {
+            // Create a temporary GameObject to play the sound since this object is being destroyed
+            GameObject soundObject = new GameObject("DeathSound");
+            soundObject.transform.position = transform.position;
+            AudioSource tempSource = soundObject.AddComponent<AudioSource>();
+            tempSource.clip = deathSound;
+            tempSource.spatialBlend = 0.5f; // 3D sound
+            tempSource.Play();
+            Destroy(soundObject, deathSound.length);
+        }
+        
         // Trigger death animation if you have one
         if (animator != null)
         {
             animator.SetTrigger("Die");
         }
-        // Destroy after a short delay to let death animation play
-        //Destroy(gameObject, 0.5f);
+        
+        // Destroy immediately (or use delay if you want death animation: Destroy(gameObject, 0.5f))
         Destroy(gameObject);
     }
 

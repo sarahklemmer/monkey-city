@@ -78,9 +78,11 @@ public class WaveSpawner : MonoBehaviour
 
     void Update()
     {
+        // Cheat: Press 1 to force spawn next wave
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             ForceNextWave();
+            Debug.Log("Cheat activated: Wave spawned!");
         }
     }
 
