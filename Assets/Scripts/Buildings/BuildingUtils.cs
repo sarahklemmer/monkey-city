@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//NOTE!!!! do not put anything between bananafarm and archertower or it will break the building UI on the right!
 public enum BuildingType
 {
     TreeOfLife,

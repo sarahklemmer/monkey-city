@@ -24,7 +24,6 @@ public class BuildingManager : MonoBehaviour
 
     public void RemoveBuilding(BuildingBase b) => buildings.Remove(b);
 
-
     public void AddBuilding(BuildingBase b) => buildings.Add(b);
 
     public void PassDay()
@@ -101,6 +100,22 @@ public class BuildingManager : MonoBehaviour
         }
         Debug.LogError("error, trying to get tree of life when none exists");
         return null;
+    }
+
+    public BuildingBase GetClosestBuildingOfTypeWithMonkeys(Vector3 position, BuildingType type)
+    {    
+        BuildingBase closest = null;
+        float lowestDistance = float.MaxValue;
+        foreach(BuildingBase building in buildings.Where(b => b.GetBuildingType() == type && b.GetMonkeyCount() > 0))
+        {
+            float dist = Vector3.Distance(position, building.transform.position);
+            if(dist < lowestDistance)
+            {
+                lowestDistance = dist;
+                closest = building;
+            }
+        }
+        return closest;
     }
 
     public int GetDailyProduction() => buildings.Sum(b => b.bananasPerDay);

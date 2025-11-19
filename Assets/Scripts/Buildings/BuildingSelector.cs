@@ -70,14 +70,13 @@ public class BuildingSelector : MonoBehaviour
         }
     }
 
-    void Select(BuildingBase b)
+    public void Select(BuildingBase b)
     {
         if (b == null) return;
         // deselect previous building
         Deselect();
         // we still want to deselect even if b isn't selectable as it should be like any other random press on scenery
         if (!b.selectable) return;
-        Debug.Log("selecting");
 
         // Select new building
         currentlySelected = b;
@@ -92,6 +91,11 @@ public class BuildingSelector : MonoBehaviour
         }
 
         currentlySelected = null;
+    }
+
+    public void DeselectSpecificBuilding(BuildingBase b)
+    {
+        if(currentlySelected == b) Deselect();
     }
 
     public void DisableSelectionThisFrame()
