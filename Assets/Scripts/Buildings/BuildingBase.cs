@@ -8,6 +8,7 @@ public abstract class BuildingBase : MonoBehaviour
     private GlowEffect glow;
     protected Building building;
     protected BuildingMonkeys monkeys;
+    protected BuildingVisualMonkeys monkeyVisualizer;
     protected Renderer[] renderers;
     protected Collider[] colliders;
     public bool selectable { get; private set; }
@@ -52,6 +53,7 @@ public abstract class BuildingBase : MonoBehaviour
         monkeys = new(0);
         renderers = GetComponentsInChildren<Renderer>(true);
         colliders = GetComponentsInChildren<Collider>(true);
+        monkeyVisualizer = GetComponent<BuildingVisualMonkeys>();
         selectable = true;
     }
 
@@ -60,11 +62,20 @@ public abstract class BuildingBase : MonoBehaviour
 
     }
 
-    public virtual bool RemoveMonkey(MonkeyController m) => monkeys.Remove(m);
+    public virtual bool RemoveMonkey(MonkeyController m) {
+        if(!monkeys.Remove(m)) return false;
+        if(monkeyVisualizer != null) monkeyVisualizer.SetMonkeyCount(monkeys.Count());
+        return true;
+    }
+
     public virtual void RemoveNextMonkey() => monkeys.Remove(NextMonkeyToRemove());
 
     // DON'T USE THIS, THIS IS ONLY TO BE USED IN MONKEYALLOC
-    public virtual bool AddMonkey(MonkeyController monkey) => monkeys.Add(monkey);
+    public virtual bool AddMonkey(MonkeyController monkey) {
+        if(!monkeys.Add(monkey)) return false;
+        if(monkeyVisualizer != null) monkeyVisualizer.SetMonkeyCount(monkeys.Count());
+        return true;
+    }
     // AS A REMINDER, DO NOT USE THIS!
 
     public virtual MonkeyController NextMonkeyToRemove() => monkeys.MonkeyToDeallocate();
