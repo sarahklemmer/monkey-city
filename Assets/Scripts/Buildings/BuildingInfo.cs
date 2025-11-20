@@ -6,7 +6,6 @@ using System.Collections;
 public class BuildingInfo : MonoBehaviour
 {
     [SerializeField] GameObject upgradeButton;
-    [SerializeField] GameObject moveButton;
     [SerializeField] GameObject info;
     [SerializeField] GameObject backgroundBlocker; 
     
@@ -85,21 +84,6 @@ public class BuildingInfo : MonoBehaviour
             StartCoroutine(EnableBackgroundBlockerDelayed());
         
         PositionPanelNearBuilding(building);
-        //DisplayBuildingInfo(building);
-
-        moveButton.GetComponent<Button>().onClick.RemoveAllListeners();
-        if (building is not TreeOfLife)
-        {
-            moveButton.SetActive(true);
-            moveButton.GetComponent<Button>().onClick.AddListener(() =>
-            {   
-                Hide(true);
-                MoveButtonOnClick.ClickHandler(building);
-            });
-        } else
-        {
-            moveButton.SetActive(false);
-        }
 
         // Handle upgrade button for Archer Tower
         if (building is ArcherTower && upgradeButton != null)
@@ -259,11 +243,10 @@ public class BuildingInfo : MonoBehaviour
             
             if (buildingStatsText != null)
             {
-                int totalProduction = farm.GetBananasPerDay() * building.GetMonkeyCount() * 2;
                 buildingStatsText.text = 
                     $"Level: {farm.GetLevel()}\n" +
                     $"Production: {farm.bananasToProduce * 3} Bananas/day\n" +
-                    $"Per Monkey: {(farm.bananasToProduce / building.GetMonkeyCount()) * 3} Bananas/day\n" +
+                    $"Per Monkey: {(building.GetMonkeyCount() == 0 ? 0 : (farm.bananasToProduce / building.GetMonkeyCount()) * 3)} Bananas/day\n" +
                     $"Monkeys: {building.GetMonkeyCount()}/{building.GetMonkeyCapacity()}";
             }
         }

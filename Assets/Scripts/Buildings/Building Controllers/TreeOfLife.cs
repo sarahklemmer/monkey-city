@@ -19,7 +19,8 @@ public class TreeOfLife : BuildingBase
     void Start()
     {
         NotifyTreePlaced();
-        SimpleTutorial.instance.StartTutorial();
+        //TODO: if we want a tutorial uncomment this
+        // SimpleTutorial.instance.StartTutorial();
         BuildingUnlock.Unlock(BuildingType.BananaFarm);
         BuildingUnlock.Unlock(BuildingType.ArcherTower);
         BuildingUnlock.Disable(BuildingType.TreeOfLife);
