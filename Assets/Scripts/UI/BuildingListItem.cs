@@ -45,7 +45,20 @@ public class BuildingListItem : MonoBehaviour
             TreeOfLife.OnTreePlaced -= HandleTreePlaced;
         }
     }
-    
+
+    void Update()
+    {
+        //TODO: make this sexier :D
+        // set alpha depending on whether we can purchase
+        Image[] imgs = GetComponentsInChildren<Image>();
+        foreach(Image img in imgs)
+        {                
+            Color c = img.color;
+            c.a = BuildingTypeToPrice.GetPrice(buildingData.type) <= BananaManager.instance.GetBananas() ? 1f : 0.2f;
+            img.color = c;
+        }
+    }
+
     public void Setup(BuildingData data)
     {
         buildingData = data;
