@@ -67,7 +67,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9a0307e6ea7cc4d8c8d97945cda5c74f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7184227649281738612}
   m_SourcePrefab: {fileID: 100100000, guid: 9a0307e6ea7cc4d8c8d97945cda5c74f, type: 3}
 --- !u!4 &1614848387461828060 stripped
 Transform:
@@ -79,6 +82,21 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 9a0307e6ea7cc4d8c8d97945cda5c74f, type: 3}
   m_PrefabInstance: {fileID: 1289051420942346807}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7184227649281738612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099460974124078950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee5ecf495495f46329419d5cd96b09d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 0.08
+  walkSpeed: 3
+  offsetDegrees: 0
 --- !u!1001 &1851122790184284986
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -378,13 +396,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9a0307e6ea7cc4d8c8d97945cda5c74f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5536737740427520430}
   m_SourcePrefab: {fileID: 100100000, guid: 9a0307e6ea7cc4d8c8d97945cda5c74f, type: 3}
 --- !u!1 &5183512742182266398 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 9a0307e6ea7cc4d8c8d97945cda5c74f, type: 3}
   m_PrefabInstance: {fileID: 5417514455849311055}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5536737740427520430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5183512742182266398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee5ecf495495f46329419d5cd96b09d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 0.08
+  walkSpeed: 3
+  offsetDegrees: 180
 --- !u!4 &5522637778938789028 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9a0307e6ea7cc4d8c8d97945cda5c74f, type: 3}
