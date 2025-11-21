@@ -8,7 +8,7 @@ public abstract class BuildingBase : MonoBehaviour
     private GlowEffect glow;
     protected Building building;
     protected BuildingMonkeys monkeys;
-    protected BuildingVisualMonkeys monkeyVisualizer;
+    protected VisualMonkeys monkeyVisualizer;
     protected Renderer[] renderers;
     protected Collider[] colliders;
     public bool selectable { get; private set; }
@@ -53,7 +53,7 @@ public abstract class BuildingBase : MonoBehaviour
         monkeys = new(0);
         renderers = GetComponentsInChildren<Renderer>(true);
         colliders = GetComponentsInChildren<Collider>(true);
-        monkeyVisualizer = GetComponent<BuildingVisualMonkeys>();
+        monkeyVisualizer = GetComponent<VisualMonkeys>();
         selectable = true;
     }
 
