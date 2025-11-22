@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Assertions;
-using System.Linq;
+using System.Collections.Generic;
 
 public class BuildingHealth : MonoBehaviour
 {
@@ -15,8 +15,13 @@ public class BuildingHealth : MonoBehaviour
     private Coroutine regenCoroutine;
 
     [SerializeField] private Renderer buildingRenderer;
-    [SerializeField] private Color fullHealthColor = Color.white;
-    [SerializeField] private Color lowHealthColor = Color.red;
+    
+    [Header("Damage Tint Settings")]
+    [SerializeField] private Color damageColor = Color.red;
+    [SerializeField] [Range(0f, 1f)] private float maxDamageTint = 0.4f;
+    [SerializeField] [Range(1f, 5f)] private float damageSeverity = 1.5f;
+    
+    private Dictionary<int, Color> originalColors = new Dictionary<int, Color>();
 
     void Awake()
     {
@@ -27,7 +32,38 @@ public class BuildingHealth : MonoBehaviour
 
     void Start()
     {
+        StoreOriginalColors();
         UpdateVisuals();
+    }
+
+    private void StoreOriginalColors()
+    {
+        if (buildingRenderer == null) return;
+        
+        Material[] materials = buildingRenderer.materials;
+        
+        for (int i = 0; i < materials.Length; i++)
+        {
+            Material mat = materials[i];
+            
+            if (mat.name.Contains("Outline") || mat.name.Contains("Glow"))
+            {
+                continue;
+            }
+            
+            Color originalColor = Color.white;
+            
+            if (mat.HasProperty("_BaseColor"))
+            {
+                originalColor = mat.GetColor("_BaseColor");
+            }
+            else if (mat.HasProperty("_Color"))
+            {
+                originalColor = mat.GetColor("_Color");
+            }
+            
+            originalColors[i] = originalColor;
+        }
     }
 
     public void TakeDamage(float damage)
@@ -67,7 +103,6 @@ public class BuildingHealth : MonoBehaviour
         while (currentHealth < maxHealth && isRegenerating)
         {
             currentHealth = Mathf.Min(maxHealth, currentHealth + regenRate * Time.deltaTime);
-
             UpdateVisuals();
             yield return null;
         }
@@ -78,31 +113,51 @@ public class BuildingHealth : MonoBehaviour
 
     private void UpdateVisuals()
     {
+        if (buildingRenderer == null) return;
+        
         float healthPercent = currentHealth / maxHealth;
-        Color targetColor = Color.Lerp(lowHealthColor, fullHealthColor, healthPercent);
-        //the last one is the glow material
-        foreach (Material mat in buildingRenderer.materials.SkipLast(1))
+        float damageAmount = 1f - healthPercent;
+        float adjustedDamage = Mathf.Pow(damageAmount, 1f / damageSeverity);
+        float tintAmount = adjustedDamage * maxDamageTint;
+        
+        Material[] materials = buildingRenderer.materials;
+        
+        for (int i = 0; i < materials.Length; i++)
         {
-            if (mat.HasProperty("_Color"))
+            Material mat = materials[i];
+            
+            if (mat.name.Contains("Outline") || mat.name.Contains("Glow"))
+            {
+                continue;
+            }
+            
+            if (!originalColors.ContainsKey(i))
+            {
+                continue;
+            }
+            
+            Color originalColor = originalColors[i];
+            Color targetColor = Color.Lerp(originalColor, damageColor, tintAmount);
+            
+            if (mat.HasProperty("_BaseColor"))
+            {
+                mat.SetColor("_BaseColor", targetColor);
+            }
+            else if (mat.HasProperty("_Color"))
             {
                 mat.SetColor("_Color", targetColor);
             }
-            
-            mat.SetColor("_Color", targetColor);
         }
     }
 
     private void OnDestroyed()
     {
-        // Call the BuildingBase's OnDestroy method to properly free monkeys
         BuildingBase buildingBase = GetComponent<BuildingBase>();
         if (buildingBase != null)
         {
-            Debug.Log($"[BuildingHealth] Calling OnDestroy for {buildingBase.GetType().Name} to free monkeys");
             buildingBase.OnDestroy();
         }
         
-        // Now destroy the building
         Destroy(gameObject);
     }
 
@@ -124,7 +179,6 @@ public class BuildingHealth : MonoBehaviour
         currentHealth = maxHealth;
         UpdateVisuals();
         
-        // Stop any ongoing regeneration
         if (regenCoroutine != null)
         {
             StopCoroutine(regenCoroutine);
