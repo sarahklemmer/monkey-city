@@ -19,6 +19,13 @@ public class TreeOfLife : BuildingBase
     void Start()
     {
         NotifyTreePlaced();
+        
+        // Play building placement sound
+        if (BuildingSoundManager.instance != null)
+        {
+            BuildingSoundManager.instance.PlayBuildingPlacedSound();
+        }
+        
         //TODO: if we want a tutorial uncomment this
         // SimpleTutorial.instance.StartTutorial();
         BuildingUnlock.Unlock(BuildingType.BananaFarm);
@@ -40,6 +47,12 @@ public class TreeOfLife : BuildingBase
         }
         
         level++;
+        
+        // Play upgrade sound
+        if (BuildingSoundManager.instance != null)
+        {
+            BuildingSoundManager.instance.PlayUpgradeSound();
+        }
         
         if (upgradeEffect != null)
         {

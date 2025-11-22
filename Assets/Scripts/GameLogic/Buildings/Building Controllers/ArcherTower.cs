@@ -13,11 +13,11 @@ public class ArcherTower : BuildingBase
     [SerializeField] GameObject arrowPrefab;
     
     // Visual models - these should be child GameObjects in your hierarchy
-    [SerializeField] GameObject level1Model; // Assign the initial tower model
-    [SerializeField] GameObject level2Model; // Assign the level 2 visual child object
-    [SerializeField] GameObject level3Model; // Assign the level 3 visual child object
+    [SerializeField] GameObject level1Model;
+    [SerializeField] GameObject level2Model;
+    [SerializeField] GameObject level3Model;
     
-    [SerializeField] ParticleSystem upgradeEffect; // Assign sparkle particle system
+    [SerializeField] ParticleSystem upgradeEffect;
     
     private Transform firePoint;
     private float lastAttackTime;
@@ -40,73 +40,38 @@ public class ArcherTower : BuildingBase
         ParticleSystem[] allParticles = GetComponentsInChildren<ParticleSystem>(true);
         foreach (var ps in allParticles)
         {
-            Debug.Log($"[ArcherTower] Found ParticleSystem: {ps.gameObject.name}, isPlaying: {ps.isPlaying}, loop: {ps.main.loop}");
-        
-            // Stop any particle that's not the upgrade effect
             if (ps != upgradeEffect && ps.main.loop)
             {
-                Debug.Log($"[ArcherTower] Stopping looping particle: {ps.gameObject.name}");
                 ps.Stop();
                 ps.Clear();
             }
         }
         
         // Make sure upgrade models start disabled
-        if (level1Model != null)
-        {
-            level1Model.SetActive(true);
-            Debug.Log("[ArcherTower] Level 1 model found and enabled");
-        }
-        else
-        {
-            Debug.LogWarning("[ArcherTower] Level 1 model not assigned!");
-        }
-        
-        if (level2Model != null)
-        {
-            level2Model.SetActive(false);
-            Debug.Log("[ArcherTower] Level 2 model found and disabled");
-        }
-        else
-        {
-            Debug.LogWarning("[ArcherTower] Level 2 model not assigned!");
-        }
-        
-        if (level3Model != null)
-        {
-            level3Model.SetActive(false);
-            Debug.Log("[ArcherTower] Level 3 model found and disabled");
-        }
+        if (level1Model != null) level1Model.SetActive(true);
+        if (level2Model != null) level2Model.SetActive(false);
+        if (level3Model != null) level3Model.SetActive(false);
         
         CreateRangeIndicator();
-        
-        // Log all children to see what we have
-        Debug.Log($"[ArcherTower] Tower has {transform.childCount} children:");
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            var child = transform.GetChild(i);
-            Debug.Log($"  - Child {i}: {child.name}, active: {child.gameObject.activeSelf}");
-        }
     }
 
     void Start()
     {
+        // Play building placement sound
+        if (BuildingSoundManager.instance != null)
+        {
+            BuildingSoundManager.instance.PlayBuildingPlacedSound();
+        }
+        
         // ALWAYS show range indicator for testing
         if (rangeIndicator != null)
         {
             rangeIndicator.enabled = true;
-            Debug.Log("[ArcherTower] Range indicator enabled!");
-        }
-        else
-        {
-            Debug.LogError("[ArcherTower] Range indicator is NULL!");
         }
     }
 
     private void CreateRangeIndicator()
     {
-        Debug.Log("[ArcherTower] Creating range indicator...");
-        
         GameObject rangeObj = new GameObject("RangeIndicator");
         rangeObj.transform.SetParent(transform);
         rangeObj.transform.localPosition = circleOffset;
@@ -121,34 +86,25 @@ public class ArcherTower : BuildingBase
         Material mat = new Material(Shader.Find("Sprites/Default"));
         if (mat.shader == null || mat.shader.name == "Hidden/InternalErrorShader")
         {
-            Debug.LogWarning("[ArcherTower] Sprites/Default not found, trying Unlit/Color");
             mat = new Material(Shader.Find("Unlit/Color"));
         }
         if (mat.shader == null || mat.shader.name == "Hidden/InternalErrorShader")
         {
-            Debug.LogWarning("[ArcherTower] Unlit/Color not found, trying Particles/Standard Unlit");
             mat = new Material(Shader.Find("Particles/Standard Unlit"));
         }
         
         rangeIndicator.material = mat;
         rangeIndicator.startColor = rangeColor;
         rangeIndicator.endColor = rangeColor;
-        
         rangeIndicator.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         rangeIndicator.receiveShadows = false;
         
         UpdateRangeCircle();
-        
-        Debug.Log($"[ArcherTower] Range indicator created with {circleSegments} segments, range: {attackRange}");
     }
 
     private void UpdateRangeCircle()
     {
-        if (rangeIndicator == null)
-        {
-            Debug.LogError("[ArcherTower] Cannot update range circle - rangeIndicator is null!");
-            return;
-        }
+        if (rangeIndicator == null) return;
         
         float angleStep = 360f / circleSegments;
         
@@ -157,13 +113,9 @@ public class ArcherTower : BuildingBase
             float angle = i * angleStep * Mathf.Deg2Rad;
             float x = Mathf.Cos(angle) * attackRange;
             float z = Mathf.Sin(angle) * attackRange;
-            
             Vector3 position = new Vector3(x, 0.1f, z);
-            
             rangeIndicator.SetPosition(i, position);
         }
-        
-        Debug.Log($"[ArcherTower] Range circle updated: {circleSegments} points at range {attackRange}");
     }
 
     private bool HasMonkey()
@@ -173,17 +125,12 @@ public class ArcherTower : BuildingBase
 
     void Update()
     {
-        // 5 ^ (level - 1) so -1, -5, -25 times number of monkeys + 1 so it still costs bananas to defend
         bananasPerDay = ((int)Math.Pow(5, level - 1)) * GetMonkeyCount() * -1;
-
         attackDamage = AllArcherTowerInfo.instance.GetDamagePerAttack();
 
         if (!HasMonkey())
         {
-            if (targetEnemy != null)
-            {
-                targetEnemy = null;
-            }
+            if (targetEnemy != null) targetEnemy = null;
             return;
         }
 
@@ -272,26 +219,19 @@ public class ArcherTower : BuildingBase
     private void SpawnArrow()
     {
         Vector3 spawnPos = firePoint != null ? firePoint.position : transform.position + Vector3.up;
-        Debug.Log($"[ArcherTower] Spawning arrow at {spawnPos}");
         
         if (arrowPrefab == null)
         {
-            Debug.LogError("[ArcherTower] Arrow prefab is NULL! Assign it in the Inspector!");
+            Debug.LogError("[ArcherTower] Arrow prefab is NULL!");
             return;
         }
         
         GameObject arrow = Instantiate(arrowPrefab, spawnPos, Quaternion.identity);
-        Debug.Log($"[ArcherTower] Arrow instantiated: {arrow.name}");
-        
         Arrow arrowScript = arrow.GetComponent<Arrow>();
+        
         if (arrowScript != null && targetEnemy != null)
         {
             arrowScript.Initialize(targetEnemy, attackDamage);
-            Debug.Log($"[ArcherTower] Arrow initialized with target: {targetEnemy.name}, damage: {attackDamage}");
-        }
-        else
-        {
-            Debug.LogError($"[ArcherTower] Arrow script: {arrowScript}, Target: {targetEnemy}");
         }
     }
 
@@ -301,71 +241,32 @@ public class ArcherTower : BuildingBase
         
         level++;
         
+        // Play upgrade sound
+        if (BuildingSoundManager.instance != null)
+        {
+            BuildingSoundManager.instance.PlayUpgradeSound();
+        }
+        
         switch (level)
         {
             case 2:
-                // Level 2: Faster shooting only
                 attackCooldown = 0.7f;
-                
-                // Hide level 1 model and show level 2 model
-                if (level1Model != null)
-                {
-                    Debug.Log($"[ArcherTower] Deactivating Level 1 model: {level1Model.name}, was active: {level1Model.activeSelf}");
-                    level1Model.SetActive(false);
-                }
-                else
-                {
-                    Debug.LogWarning("[ArcherTower] Level 1 model is NULL!");
-                }
-                
-                if (level2Model != null)
-                {
-                    Debug.Log($"[ArcherTower] Activating Level 2 model: {level2Model.name}, was active: {level2Model.activeSelf}");
-                    level2Model.SetActive(true);
-                    Debug.Log($"[ArcherTower] Level 2 model is now active: {level2Model.activeSelf}");
-                    
-                    // Check if it has a renderer
-                    Renderer renderer = level2Model.GetComponentInChildren<Renderer>();
-                    if (renderer != null)
-                    {
-                        Debug.Log($"[ArcherTower] Level 2 model has renderer, enabled: {renderer.enabled}");
-                    }
-                    else
-                    {
-                        Debug.LogError("[ArcherTower] Level 2 model has NO RENDERER!");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("[ArcherTower] Level 2 model is NULL! Did you assign it in the Inspector?");
-                }
+                if (level1Model != null) level1Model.SetActive(false);
+                if (level2Model != null) level2Model.SetActive(true);
                 break;
             case 3:
-                // Level 3: Increased range and even faster shooting
                 attackRange = 6.5f;
                 attackCooldown = 0.5f;
-                
-                // Hide level 2 model and show level 3 model
-                if (level2Model != null)
-                {
-                    level2Model.SetActive(false);
-                }
-                
-                if (level3Model != null)
-                {
-                    level3Model.SetActive(true);
-                    Debug.Log("[ArcherTower] Activating Level 3 model");
-                }
+                if (level2Model != null) level2Model.SetActive(false);
+                if (level3Model != null) level3Model.SetActive(true);
                 break;
         }
         
-        // Play sparkle upgrade effect
         if (upgradeEffect != null)
         {
             upgradeEffect.Play();
         }
         
-        // Update the range circle when upgrading
         UpdateRangeCircle();
         
         Debug.Log($"Archer Tower upgraded to level {level}!");
@@ -374,7 +275,6 @@ public class ArcherTower : BuildingBase
     public int GetLevel() => level;
     public bool IsMaxLevel() => level >= MAX_LEVEL;
     public float GetAttackRange() => attackRange;
-    //public float GetAttackDamage() => attackDamage;
     public float GetAttackCooldown() => attackCooldown;
     
     public int GetUpgradeCost()
@@ -383,8 +283,8 @@ public class ArcherTower : BuildingBase
         
         switch (level)
         {
-            case 1: return 50;  // Level 1 -> 2 costs 50
-            case 2: return 120; // Level 2 -> 3 costs 120
+            case 1: return 50;
+            case 2: return 120;
             default: return 0;
         }
     }

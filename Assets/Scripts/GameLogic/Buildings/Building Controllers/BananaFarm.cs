@@ -17,6 +17,17 @@ public class BananaFarm : BuildingBase
         building = new(BuildingType.BananaFarm);
         monkeys = new(2);
     }
+    
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        
+        // Play building placement sound when enabled
+        if (BuildingSoundManager.instance != null)
+        {
+            BuildingSoundManager.instance.PlayBuildingPlacedSound();
+        }
+    }
 
     void Update()
     {
@@ -72,6 +83,12 @@ public class BananaFarm : BuildingBase
         BananaManager.instance.AddBananas(-upgradeCost);
         
         level++;
+        
+        // Play upgrade sound
+        if (BuildingSoundManager.instance != null)
+        {
+            BuildingSoundManager.instance.PlayUpgradeSound();
+        }
         
         // building level is used as a multiplier for the banana production
         switch (level)

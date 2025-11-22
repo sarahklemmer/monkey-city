@@ -169,8 +169,8 @@ MonoBehaviour:
   attackSound: {fileID: 8300000, guid: 93af4a12d531d4f24b49d3938c6a8965, type: 3}
   deathSound: {fileID: 8300000, guid: bb9eba4b1acbb494ea87eb2022575441, type: 3}
   audioSource: {fileID: 0}
-  particleStartSize: 0.1
-  particleMaxCount: 10
+  particleStartSize: 0.001
+  particleMaxCount: 5
   flashDuration: 0.15
   flashColor: {r: 0.8490566, g: 0, b: 0, a: 1}
 --- !u!95 &3489657880135531074
