@@ -15,7 +15,6 @@ public class PlaceBuildingButton : MonoBehaviour
     public void OnClick()
     {
         Assert.IsTrue(initialized, "trying to click non initialized button");
-        if(GlobalInteractionLock.IsLocked()) return;
 
         if (BananaManager.instance.GetBananas() < BuildingTypeToPrice.GetPrice(type)) return;
         // can only place 5 of all types

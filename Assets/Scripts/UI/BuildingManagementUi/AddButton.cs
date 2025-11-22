@@ -18,7 +18,6 @@ public class AddButton : MonoBehaviour
         // just for future proofing if you can put all monkeys in a building make it so that getmonkeycount is 
         // less than the total population
         button.interactable = 
-            !GlobalInteractionLock.IsLocked() && 
             building.CanAllocate() && 
             building.GetMonkeyCount() < PopulationManager.instance.population;
     }

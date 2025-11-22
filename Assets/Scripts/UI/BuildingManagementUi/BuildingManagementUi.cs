@@ -10,10 +10,7 @@ public class BuildingManagementUi : MonoBehaviour
     //TODO: get rid of this and add a script that just sets the icon based on building type
     [SerializeField] Sprite archerTowerIcon;
 
-    // We track all currently spawned UI elements
     private readonly Dictionary<BuildingBase, GameObject> uiLookup = new();
-
-    // Reference to the scroll UI's content transform
     private Transform content;
 
     public static BuildingManagementUi instance;
@@ -34,11 +31,8 @@ public class BuildingManagementUi : MonoBehaviour
     {
         Assert.IsNotNull(BuildingUIElement, "BuildingUIElement prefab is not assigned!");
 
-        // UI element must not be active (otherwise it flashes onscreen at start)
-        Assert.IsFalse(BuildingUIElement.activeSelf,
-            "BuildingUIElement prefab must be disabled in the inspector!");
+        Assert.IsFalse(BuildingUIElement.activeSelf, "BuildingUIElement prefab must be disabled in the inspector!");
 
-        // content must be the first child of our Viewport
         ScrollRect scroll = GetComponentInChildren<ScrollRect>();
         Assert.IsNotNull(scroll, "BuildingManagementUi requires a ScrollRect child.");
 

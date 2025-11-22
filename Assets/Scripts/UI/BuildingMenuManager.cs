@@ -17,6 +17,7 @@ public class BuildingMenuManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject buildingScrollbar;
     [SerializeField] private ScrollableList scrollableList; // Changed from UIElements.ScrollView
+    [SerializeField] private Transform disableInteractivityRoot;
 
     public BuildingData[] allBuildings;
     public Toggle toggle;
@@ -56,6 +57,8 @@ public class BuildingMenuManager : MonoBehaviour
 
         if (isOn)
         {
+            // trust me :D
+            if(disableInteractivityRoot != null) UIInteractabilityManager.instance.DisableInteractivityExcept(disableInteractivityRoot);
             // Show scrollbar and populate with banana buildings
             buildingScrollbar.SetActive(true);
             scrollableList.PopulateList(GetUnlockedBuildings());
@@ -64,6 +67,7 @@ public class BuildingMenuManager : MonoBehaviour
         }
         else
         {
+            if(disableInteractivityRoot != null) UIInteractabilityManager.instance.EnableInteractivity();
             // Hide scrollbar and clear list
             buildingScrollbar.SetActive(false);
             scrollableList.ClearList();

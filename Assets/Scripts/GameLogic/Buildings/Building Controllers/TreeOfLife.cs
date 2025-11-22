@@ -42,7 +42,7 @@ public class TreeOfLife : BuildingBase
     {
         if (level >= MAX_LEVEL)
         {
-            UnityEngine.Debug.Log($"Tree of Life is already at max level ({MAX_LEVEL})!");
+            Debug.Log($"Tree of Life is already at max level ({MAX_LEVEL})!");
             return;
         }
         
@@ -64,7 +64,7 @@ public class TreeOfLife : BuildingBase
             Debug.LogWarning("[TreeOfLife] Upgrade effect is NULL!");
         }
         
-        UnityEngine.Debug.Log($"Tree of Life upgraded to level {level}!");
+        Debug.Log($"Tree of Life upgraded to level {level}!");
         
         // You can add visual changes or stat improvements here
         // For example:
@@ -83,7 +83,6 @@ public class TreeOfLife : BuildingBase
 
     public override void OnDestroy()
     {
-        //TODO: make restarting MUCH more polished
-        SceneLoader.instance.ReloadScene();
+        DeathScreen.instance.ShowDeathScreen();
     }
 }

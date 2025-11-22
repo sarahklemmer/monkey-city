@@ -3,3 +3,4 @@ The block in BuildingBase marked "AI code" that handles making the buildings opa
 DayNightToggle is all written by chatgpt
 the move button is from https://www.flaticon.com/authors/md-tanvirul-haque and is free for use
 large chunks of BuildingManagementUi.cs are written by chatgpt
+UiInteractibilityManager.cs is pure ai slop

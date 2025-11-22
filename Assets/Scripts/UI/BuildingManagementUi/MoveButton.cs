@@ -13,11 +13,6 @@ public class MoveButton : MonoBehaviour
         button.onClick.AddListener(() => Click());
     }
 
-    void Update()
-    {
-        button.interactable = !GlobalInteractionLock.IsLocked();
-    }
-    
     public void Click()
     {
         MoveButtonOnClick.ClickHandler(building);

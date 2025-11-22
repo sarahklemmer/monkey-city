@@ -15,11 +15,8 @@ public class RemoveButton : MonoBehaviour
 
     void Update()
     {
-        button.interactable = 
-            !GlobalInteractionLock.IsLocked() &&
-            building.NextMonkeyToRemove() != null;
+        button.interactable = building.NextMonkeyToRemove() != null;
     }
-    
     public void Click()
     {
         // just go back to the tree of llife

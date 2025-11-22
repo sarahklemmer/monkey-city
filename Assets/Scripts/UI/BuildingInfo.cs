@@ -62,7 +62,7 @@ public class BuildingInfo : MonoBehaviour
 
     public void Show(BuildingBase building)
     {
-        GlobalInteractionLock.Lock();
+        UIInteractabilityManager.instance.DisableInteractivityExcept(gameObject.transform);
         if (building == null) return;
         
         if (info == null)
@@ -398,9 +398,9 @@ public class BuildingInfo : MonoBehaviour
             backgroundBlocker.SetActive(true);
     }
 
+    // we keep the var "moving" here cause removing it will fuck up the scene
     public void Hide(bool moving = false)
     {
-        if(!moving) GlobalInteractionLock.Unlock();
         current = null;
         Debug.Log("hiding");
 

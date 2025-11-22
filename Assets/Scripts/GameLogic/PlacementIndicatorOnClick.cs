@@ -119,6 +119,6 @@ public class PlacementIndicatorOnClick : MonoBehaviour
         BuildingGrid.instance.DestroyBuildingPlacementIndicators();
         // if we error and exit early want the building to come back
         if(existingBuilding != null) existingBuilding.SetVisible(true);
-        if(existingBuilding != null) GlobalInteractionLock.Unlock();
+        if(existingBuilding != null) UIInteractabilityManager.instance.EnableInteractivity();
     }
 }
