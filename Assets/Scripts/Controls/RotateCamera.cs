@@ -21,31 +21,31 @@ public class RotateCamera : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A) )
         {
             currentLeftSpeed = Mathf.Min(currentLeftSpeed + holdAcceleration * Time.deltaTime, maxRotationSpeed);
             RotateCameraLeft(currentLeftSpeed * Time.deltaTime);
         }
-        else if (Input.GetKeyUp(KeyCode.LeftArrow))
+        else if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.A))
         {
             currentLeftSpeed = 0f;
         }
 
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
         {
             currentRightSpeed = Mathf.Min(currentRightSpeed + holdAcceleration * Time.deltaTime, maxRotationSpeed);
             RotateCameraRight(currentRightSpeed * Time.deltaTime);
         }
-        else if (Input.GetKeyUp(KeyCode.RightArrow))
+        else if (Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.D))
         {
             currentRightSpeed = 0f;
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A) )
         {
             currentLeftSpeed = baseRotationSpeed;
         }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
         {
             currentRightSpeed = baseRotationSpeed;
         }

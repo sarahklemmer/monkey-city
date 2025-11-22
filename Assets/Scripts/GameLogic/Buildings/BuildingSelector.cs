@@ -59,12 +59,6 @@ public class BuildingSelector : MonoBehaviour
         else if (leftClick)
         {
             if (clicked == null) Deselect();
-            // shift click shows info
-            else if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-            {
-                BuildingInfo.instance.Show(clicked);
-                return;
-            }
             // select if we didn't JUST place something
             else Select(clicked);
         }
