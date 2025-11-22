@@ -7,7 +7,7 @@ public abstract class BuildingBase : MonoBehaviour
     [SerializeField] private Renderer targetRenderer;
     private GlowEffect glow;
     protected Building building;
-    protected BuildingMonkeys monkeys;
+    public BuildingMonkeys monkeys {get; protected set; }
     protected VisualMonkeys monkeyVisualizer;
     protected Renderer[] renderers;
     protected Collider[] colliders;

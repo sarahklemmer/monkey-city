@@ -6,9 +6,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Toggle))]
 public class ToggleFlasher : MonoBehaviour
 {
-    // i hate this...
-    [SerializeField] private Image flashingImage;
-
+    private Image flashingImage;
     bool active = false;
     public static ToggleFlasher instance;
 
@@ -25,7 +23,9 @@ public class ToggleFlasher : MonoBehaviour
     }
 
     void Start()
-    {
+    {   
+        flashingImage = GetComponentInChildren<Image>();
+        Assert.IsNotNull(flashingImage, "no image on the toggle");
         StartFlash();
     }
 

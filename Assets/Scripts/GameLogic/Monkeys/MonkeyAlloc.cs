@@ -14,16 +14,17 @@ public class MonkeyAlloc : MonoBehaviour
         this.self = self;
     }
 
-    public void Assign(BuildingBase next)
+    public bool Assign(BuildingBase next)
     {
         Assert.IsNotNull(self, "trying to use uninitialized MonkeyAlloc!");
-        if (next == null) return;
+        if (next == null) return false;
         // try to add self to building
-        if (!next.AddMonkey(self)) return;
+        if (!next.AddMonkey(self)) return false;
         current = next;
         GetComponent<Renderer>().enabled = false;
         GetComponent<Collider>().enabled = false;
         transform.GetChild(0).gameObject.SetActive(false);
+        return true;
 
     }
     

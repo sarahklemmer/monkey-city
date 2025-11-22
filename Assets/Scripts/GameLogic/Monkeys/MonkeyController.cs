@@ -33,6 +33,7 @@ public class MonkeyController : MonoBehaviour
         // always deallocate on walk, either we're leaving a building or we're not allocated and it just
         // does nothing
         allocation.Unassign();
+        buildingTarget.monkeys.StartWalking(this);
         // we'll be walking ianto buildings anyways so this 0.05 is fine i think
         while (Vector3.Distance(transform.position, target) > 0.05f)
         {
@@ -50,11 +51,8 @@ public class MonkeyController : MonoBehaviour
         transform.position = target;
         moveRoutine = null;
 
-        if (!buildingTarget.CanAllocate()) StartWalkingToBuilding(BuildingManager.instance.GetTreeOfLife());
-        else
-        {
-            allocation.Assign(buildingTarget);
-        }
+        // if alloc fails just walk back home type shit
+        if (!allocation.Assign(buildingTarget)) StartWalkingToBuilding(BuildingManager.instance.GetTreeOfLife());
     }
     
     public void EnableGlow()  => glow.SetGlow(true);

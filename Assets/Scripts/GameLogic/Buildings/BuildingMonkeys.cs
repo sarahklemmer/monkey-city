@@ -4,6 +4,7 @@ using UnityEngine.Assertions;
 public class BuildingMonkeys
 {
     public List<MonkeyController> monkeys;
+    private HashSet<MonkeyController> enRoute = new();
     public readonly int capacity;
 
     public BuildingMonkeys(int capacity)
@@ -17,12 +18,14 @@ public class BuildingMonkeys
 
     public bool CanAllocate()
     {
-        return monkeys.Count < capacity;
+        enRoute.RemoveWhere(m => m == null || m.allocation == null || m.allocation.Allocated());
+        return monkeys.Count + enRoute.Count < capacity;
     }
 
     public bool Add(MonkeyController m)
     {
-        if (m == null || !CanAllocate() || monkeys.Contains(m)) return false;
+        if (m == null || monkeys.Contains(m) || count >= capacity) return false;
+        enRoute.Remove(m);
         monkeys.Add(m);
         return true;
     }
@@ -31,6 +34,7 @@ public class BuildingMonkeys
     {
         if (m == null || !monkeys.Contains(m)) return false;
         monkeys.Remove(m);
+        enRoute.Remove(m);
         return true;
     }
 
@@ -51,6 +55,8 @@ public class BuildingMonkeys
         }
         Assert.IsTrue(monkeys.Count == 0, "didn't properly free all monkeys!");
     }
+
+    public void StartWalking(MonkeyController m) { enRoute.Add(m); }
 
     public int Count() => monkeys.Count;
     public int Capacity() => capacity;

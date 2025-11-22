@@ -98,7 +98,6 @@ public class BuildingManager : MonoBehaviour
         {
             if (b is TreeOfLife) return b;
         }
-        Debug.LogError("error, trying to get tree of life when none exists");
         return null;
     }
 
