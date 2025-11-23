@@ -15,6 +15,12 @@ public class UpgradeButton : MonoBehaviour
 
     void Update()
     {
+        if(building == null)
+        {
+            button.interactable = false;
+            return;
+        }
+
         if(building.GetBuildingType() == BuildingType.BananaFarm)
         {
             BananaFarm farm = building as BananaFarm;
@@ -29,14 +35,11 @@ public class UpgradeButton : MonoBehaviour
     public void Click()
     {
         if(building.GetBuildingType() == BuildingType.BananaFarm)
-        {
-            BananaFarm farm = building as BananaFarm;
-            UpgradeBananaFarm(farm);
-        } else if(building.GetBuildingType() == BuildingType.ArcherTower)
-        {
-            ArcherTower archer = building as ArcherTower;
-            UpgradeArcherTower(archer);
-        }
+            UpgradeBananaFarm(building as BananaFarm);
+        else if(building.GetBuildingType() == BuildingType.ArcherTower)
+            UpgradeArcherTower(building as ArcherTower);
+
+        BuildingInfo.instance.PlayUpgradeEffect(building);
     }
 
     private void UpgradeArcherTower(ArcherTower archer)

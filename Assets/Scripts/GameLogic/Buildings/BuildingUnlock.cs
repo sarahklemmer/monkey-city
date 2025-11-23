@@ -16,4 +16,8 @@ public class BuildingUnlock
     {
         if (unlocked.Contains(type)) unlocked.Remove(type);
     }
+    public static void Reset()
+    {
+        unlocked = new HashSet<BuildingType> { BuildingType.TreeOfLife };
+    }
 }

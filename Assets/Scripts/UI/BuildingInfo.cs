@@ -345,7 +345,7 @@ public class BuildingInfo : MonoBehaviour
         }
     }
 
-    private void PlayUpgradeEffect(BuildingBase building)
+    public void PlayUpgradeEffect(BuildingBase building)
     {
         // Look for a particle system in the building's children
         ParticleSystem upgradeEffect = building.GetComponentInChildren<ParticleSystem>();

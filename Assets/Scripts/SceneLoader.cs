@@ -20,6 +20,7 @@ public class SceneLoader : MonoBehaviour
 
     public void ReloadScene()
     {
+        BuildingUnlock.Reset();
         Scene scene = SceneManager.GetActiveScene();
         Assert.IsTrue(scene.IsValid(), "gameplayScene invalild!");
         SceneManager.LoadScene(scene.name);
