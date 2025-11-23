@@ -111,8 +111,9 @@ MonoBehaviour:
   regenDelay: 60
   regenRate: 5
   buildingRenderer: {fileID: 5895750745506057238}
-  fullHealthColor: {r: 1, g: 1, b: 1, a: 1}
-  lowHealthColor: {r: 1, g: 0, b: 0, a: 1}
+  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  maxDamageTint: 0.4
+  damageSeverity: 1.5
 --- !u!114 &4780387905846191280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,7 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineMaterial: {fileID: 2100000, guid: f5ea81a833a1649e2a382c6e66bdeaba, type: 2}
   targetRenderer: {fileID: 5895750745506057238}
-  upgradeEffect: {fileID: 1783276646780061819, guid: 1c0520325bd5b534188c40bef406dc5c, type: 3}
+  upgradeEffect: {fileID: 8329717401594489330}
 --- !u!65 &1101005632740349539
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -214,5 +215,10 @@ PrefabInstance:
 --- !u!4 &8329717401594489229 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1783276646780061700, guid: 1c0520325bd5b534188c40bef406dc5c, type: 3}
+  m_PrefabInstance: {fileID: 7720965750927565193}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &8329717401594489330 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1783276646780061819, guid: 1c0520325bd5b534188c40bef406dc5c, type: 3}
   m_PrefabInstance: {fileID: 7720965750927565193}
   m_PrefabAsset: {fileID: 0}

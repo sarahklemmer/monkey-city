@@ -13331,6 +13331,7 @@ GameObject:
   - component: {fileID: 1352258249}
   - component: {fileID: 1352258248}
   - component: {fileID: 1352258250}
+  - component: {fileID: 1352258251}
   m_Layer: 0
   m_Name: BuildingManager
   m_TagString: Untagged
@@ -13427,6 +13428,23 @@ MonoBehaviour:
   wallUnlockToast: New defenses available! Open the Building Menu to construct walls.
   archerTowerLevel2Cost: 50
   archerTowerLevel3Cost: 120
+--- !u!114 &1352258251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1352258245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d34456f549f247d1802e795f5f0bdc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildingPlacedSound: {fileID: 8300000, guid: ee646d8d67c984c98941025ccb1e4213, type: 3}
+  upgradeSound: {fileID: 8300000, guid: 5f2717350630c45c8ab9ca7937be8618, type: 3}
+  audioSource: {fileID: 0}
+  buildVolume: 0.7
+  upgradeVolume: 0.8
 --- !u!1001 &1361005732
 PrefabInstance:
   m_ObjectHideFlags: 0

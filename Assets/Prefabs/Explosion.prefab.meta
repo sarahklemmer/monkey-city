@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 77fca061beccd5f46853425eb0a761bd
-AssemblyDefinitionImporter:
+guid: 1c0520325bd5b534188c40bef406dc5c
+PrefabImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
@@ -10,5 +10,5 @@ AssetOrigin:
   productId: 185515
   packageName: Star Pack - Advanced Sparkle System
   packageVersion: 2.0
-  assetPath: Assets/Andtech/Star Pack/Editor/Andtech.StarPack.Editor.asmdef
+  assetPath: Assets/Andtech/Star Pack/Samples/Star Pack Demo/Prefabs/Explosion.prefab
   uploadId: 427451
