@@ -265,8 +265,9 @@ MonoBehaviour:
   regenDelay: 60
   regenRate: 5
   buildingRenderer: {fileID: 1040639374665117630}
-  fullHealthColor: {r: 1, g: 1, b: 1, a: 1}
-  lowHealthColor: {r: 1, g: 0, b: 0, a: 1}
+  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  maxDamageTint: 0.4
+  damageSeverity: 1.5
 --- !u!114 &2597630291742618197
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,7 +284,7 @@ MonoBehaviour:
   targetRenderer: {fileID: 7172548887642230123}
   bananasToProduce: 0
   buildingLevel: 1
-  upgradeEffect: {fileID: 0}
+  upgradeEffect: {fileID: 7224678362119518233}
 --- !u!65 &1000261642749383485
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -483,6 +484,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1c0520325bd5b534188c40bef406dc5c, type: 3}
+--- !u!198 &7224678362119518233 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1783276646780061819, guid: 1c0520325bd5b534188c40bef406dc5c, type: 3}
+  m_PrefabInstance: {fileID: 9006159220978413666}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7224678362119518310 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1783276646780061700, guid: 1c0520325bd5b534188c40bef406dc5c, type: 3}
