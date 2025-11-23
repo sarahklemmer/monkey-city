@@ -6,6 +6,7 @@ public class AddButton : MonoBehaviour
 {
     [HideInInspector] public BuildingBase building;
     [SerializeField] Button button;
+    BuildingBase victim;
 
     void Start()
     {
@@ -15,16 +16,8 @@ public class AddButton : MonoBehaviour
 
     void Update()
     {
-        // just for future proofing if you can put all monkeys in a building make it so that getmonkeycount is 
-        // less than the total population
-        button.interactable = 
-            building.CanAllocate() && 
-            building.GetMonkeyCount() < PopulationManager.instance.population;
-    }
-    
-    public void Click()
-    {
-        BuildingBase victim = BuildingManager.instance.GetTreeOfLife();
+        victim = BuildingManager.instance.GetTreeOfLife();
+        if(victim == null) return;
         // if there's no monkeys left in the treeoflife we need to pull from the other type of building
         if(victim.GetMonkeyCount() == 0)
         {
@@ -33,6 +26,13 @@ public class AddButton : MonoBehaviour
             victim = BuildingManager.instance.GetClosestBuildingOfTypeWithMonkeys(building.transform.position, type);
         }
 
+        button.interactable = building.CanAllocate() && victim != null;
+    }
+    
+    public void Click()
+    {
+        Assert.IsNotNull(victim, "somehow victim is none in click");
+        if(victim == null) return;
         victim.NextMonkeyToRemove().StartWalkingToBuilding(building);
     }
 }
