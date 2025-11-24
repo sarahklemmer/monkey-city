@@ -62,7 +62,7 @@ public class BuildingMenuManager : MonoBehaviour
             // Show scrollbar and populate with banana buildings
             buildingScrollbar.SetActive(true);
             scrollableList.PopulateList(GetUnlockedBuildings());
-
+            BuildingManager.instance.MakeBuildingsOpaque();
             BuildingGrid.instance.DestroyBuildingPlacementIndicators();
         }
         else

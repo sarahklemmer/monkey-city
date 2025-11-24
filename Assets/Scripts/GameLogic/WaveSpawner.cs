@@ -44,6 +44,8 @@ public class WaveSpawner : MonoBehaviour
     private int lastWaveDay = 0;
     private int lastWarningDay = -999; // Track which day we showed warning
 
+    [SerializeField] private int currentBananas = 0;
+
     public static WaveSpawner instance;
 
     void Awake()
@@ -98,7 +100,7 @@ public class WaveSpawner : MonoBehaviour
             
             if (!attacksUnlocked)
             {
-                int currentBananas = BananaManager.instance.GetBananasGenerated();
+                currentBananas = BananaManager.instance.GetBananasGenerated();
                 if (currentBananas >= bananasRequiredToStartAttacks)
                 {
                     attacksUnlocked = true;
@@ -169,11 +171,10 @@ public class WaveSpawner : MonoBehaviour
                 waveActive = false;
                 HealAllBuildings();
 
-            PathManager.instance.playerPoints += 1;
-
-            if (currentWave == 1)
-            {
-                ChoosePathSystem.instance.ShowPathMenu();
+                if (currentWave == 1)
+                {
+                    ChoosePathSystem.instance.ShowPathMenu();
+                }
             }
             
             yield return new WaitForSeconds(1f);

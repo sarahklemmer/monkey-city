@@ -176,6 +176,25 @@ public class EnemyAttacker : MonoBehaviour
         targetBuilding = closest;
     }
 
+    public void UpdateTargetBuilding(BuildingHealth preferredTarget = null)
+    {
+        if (preferredTarget != null && preferredTarget.GetCurrentHealth() > 0)
+        {
+            float preferredDistance = Vector3.Distance(transform.position, preferredTarget.transform.position);
+            float currentDistance = targetBuilding != null
+                ? Vector3.Distance(transform.position, targetBuilding.transform.position)
+                : float.MaxValue;
+
+            if (preferredDistance <= currentDistance || targetBuilding == null)
+            {
+                targetBuilding = preferredTarget;
+                return;
+            }
+        }
+
+        FindNearestBuilding();
+    }
+
     private void AttackBuilding()
     {
         if (targetBuilding != null)
