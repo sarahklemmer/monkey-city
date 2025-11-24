@@ -121,7 +121,6 @@ public class WaveSpawner : MonoBehaviour
             yield return new WaitForSeconds(GetTimeBetweenWaves());
             
             currentWave++;
-            PathManager.instance.playerPoints += 1;
             int enemiesToSpawn = CalculateWaveSize();
             StartCoroutine(AnnounceAndStartWave(enemiesToSpawn, (currentWave % 5 == 0) && bossPrefab != null));
             yield return new WaitForSeconds(2f);
@@ -134,6 +133,8 @@ public class WaveSpawner : MonoBehaviour
             
             // Heal all buildings to full health after wave ends
             HealAllBuildings();
+
+            PathManager.instance.playerPoints += 1;
 
             if (currentWave == 1)
             {

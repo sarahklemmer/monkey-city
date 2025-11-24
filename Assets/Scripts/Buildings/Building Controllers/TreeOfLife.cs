@@ -70,6 +70,15 @@ public class TreeOfLife : BuildingBase
     public override void OnDestroy()
     {
         //TODO: make restarting MUCH more polished
+        if (BuildingGrid.instance != null)
+        {
+            BuildingGrid.instance.ResetTreeOfLifeFlag();
+        }
+        else
+        {
+            BuildingUnlock.Unlock(BuildingType.TreeOfLife);
+        }
+
         SceneLoader.instance.ReloadScene();
     }
 }

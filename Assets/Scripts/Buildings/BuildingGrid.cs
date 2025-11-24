@@ -40,6 +40,8 @@ public class BuildingGrid : MonoBehaviour
         transform.localScale = new Vector3(GRID_SIZE / BASE_PLANE_SIZE, 1, GRID_SIZE / BASE_PLANE_SIZE);
         // move indicators parent to the center of the grid
         placementIndicatorsParent.transform.position = transform.position;
+
+        BuildingUnlock.Reset();
     }
 
     void Start()
@@ -266,6 +268,10 @@ public class BuildingGrid : MonoBehaviour
     private IEnumerator RestartSceneAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
+
+        treeOfLifePlaced = false;
+        BuildingUnlock.Reset();
+
         if (SceneLoader.instance != null)
         {
             SceneLoader.instance.ReloadScene();
@@ -274,5 +280,11 @@ public class BuildingGrid : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
+    }
+
+    public void ResetTreeOfLifeFlag()
+    {
+        treeOfLifePlaced = false;
+        BuildingUnlock.Unlock(BuildingType.TreeOfLife);
     }
 }

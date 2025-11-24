@@ -16,4 +16,10 @@ public class BuildingUnlock
     {
         if (unlocked.Contains(type)) unlocked.Remove(type);
     }
+
+    public static void Reset()
+    {
+        unlocked.Clear();
+        unlocked.Add(BuildingType.TreeOfLife);
+    }
 }
