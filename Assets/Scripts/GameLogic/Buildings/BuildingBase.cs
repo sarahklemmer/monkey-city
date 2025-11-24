@@ -11,7 +11,9 @@ public abstract class BuildingBase : MonoBehaviour
     protected VisualMonkeys monkeyVisualizer;
     protected Renderer[] renderers;
     protected Collider[] colliders;
+    private bool SharedAwakeBehaviorCalled = false;
     public bool selectable { get; private set; }
+    public bool canContainMonkeys { get; protected set; } = true;
     public int bananasPerDay { get; protected set; } = 0;
     // functions to be overrode
     public abstract void OnDayCycle();
@@ -22,6 +24,7 @@ public abstract class BuildingBase : MonoBehaviour
 
     void Update()
     {
+        Assert.IsTrue(SharedAwakeBehaviorCalled, "forgot to call sharedawakebehavior in class that extends buildingbase");
         UpdateBehavior();
     }
 
@@ -31,6 +34,8 @@ public abstract class BuildingBase : MonoBehaviour
         BuildingManager.instance.AddBuilding(this);
         BuildingManagementUi.instance.AddBuilding(this);
         ToggleFlasher.instance.StopFlash();
+        if(building.health == null) building.health = GetComponent<BuildingHealth>();
+        building.health.SetBuilding(this);
     }
 
     protected virtual void OnDisable()
@@ -40,8 +45,14 @@ public abstract class BuildingBase : MonoBehaviour
         BuildingGrid.instance.RemoveBuilding(this);
     }
 
+    public virtual void OnTakeDamage()
+    {
+        
+    }
+
     protected virtual void SharedAwakeBehavior()
     {
+        SharedAwakeBehaviorCalled = true;
         Assert.IsTrue(
             gameObject.layer == LayerMask.NameToLayer("Building"),
             $"{gameObject.name} MUST be on the 'Building' layer, but is currently on '{LayerMask.LayerToName(gameObject.layer)}'"

@@ -29,6 +29,10 @@ public class UpgradeButton : MonoBehaviour
         {
             ArcherTower archer = building as ArcherTower;
             button.interactable = !archer.IsMaxLevel() && BananaManager.instance.GetBananas() >= archer.GetUpgradeCost();
+        } else
+        {
+            //TODO: update this when we add upgrades for traps (if we add upgrades for traps)
+            button.interactable = false;
         }
     }
     

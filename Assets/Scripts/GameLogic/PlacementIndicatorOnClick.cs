@@ -91,13 +91,14 @@ public class PlacementIndicatorOnClick : MonoBehaviour
             GameObject buildingObj = Instantiate(prefab, pos, rotation);
             buildingObj.GetComponent<BuildingBase>().SetGridCoords(grid_x, grid_y);
 
-            placedBuilding.SetInstance(buildingObj);
-
             // TODO: incorporate BuildingHealth into BuildingBase, this is here for now
             if (buildingObj.GetComponent<BuildingHealth>() == null)
             {
                 buildingObj.AddComponent<BuildingHealth>();
             }
+
+            placedBuilding.SetInstance(buildingObj);
+
 
             // spawn monkeys if treeoflife
             if (buildingType == BuildingType.TreeOfLife) PopulationManager.instance.AddToPopulation(5);

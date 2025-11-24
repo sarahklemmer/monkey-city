@@ -13,6 +13,7 @@ public class BuildingHealth : MonoBehaviour
     private float lastDamageTime;
     private bool isRegenerating = false;
     private Coroutine regenCoroutine;
+    private BuildingBase building = null;
 
     [SerializeField] private Renderer buildingRenderer;
     [SerializeField] private Color fullHealthColor = Color.white;
@@ -30,9 +31,10 @@ public class BuildingHealth : MonoBehaviour
         UpdateVisuals();
     }
 
-    public void TakeDamage(float damage)
+    // now returns the amount of damage the chimp should take
+    public float TakeDamage(float damage)
     {
-        if (currentHealth <= 0) return; 
+        if (currentHealth <= 0) return 0; 
 
         currentHealth = Mathf.Max(0, currentHealth - damage);
         lastDamageTime = Time.time;
@@ -53,6 +55,8 @@ public class BuildingHealth : MonoBehaviour
         {
             regenCoroutine = StartCoroutine(CheckForRegeneration());
         }
+        if(building.GetBuildingType() == BuildingType.SpikeTrap) return (building as SpikeTrap).damageMultiplier * damage;
+        return 0;
     }
 
     private IEnumerator CheckForRegeneration()
@@ -106,8 +110,10 @@ public class BuildingHealth : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public void SetBuilding(BuildingBase b) => building = b;
     public float GetCurrentHealth() => currentHealth;
     public float GetMaxHealth() => maxHealth;
+    public void SetMaxHealth(float h) => maxHealth = h;
     public float GetHealthPercent() => currentHealth / maxHealth;
     public bool IsRegenerating() => isRegenerating;
     public float GetTimeSinceLastDamage() => Time.time - lastDamageTime;

@@ -22,4 +22,10 @@ public class RemoveButton : MonoBehaviour
         // just go back to the tree of llife
         building.NextMonkeyToRemove().StartWalkingToBuilding(BuildingManager.instance.GetTreeOfLife());
     }
+
+    public void PermanentlyRemoveButton()
+    {
+        Destroy(button.gameObject);
+        enabled = false;
+    }
 }
