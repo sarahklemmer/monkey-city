@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ToggleFlasher : MonoBehaviour
 {
     private Image flashingImage;
-    bool active = false;
+    public bool active {get; private set;} = false;
     public static ToggleFlasher instance;
 
     void Awake()

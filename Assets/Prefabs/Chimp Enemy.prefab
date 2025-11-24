@@ -228,7 +228,8 @@ MonoBehaviour:
   deathParticle: {fileID: 184145475336953999}
   attackSound: {fileID: 8300000, guid: 93af4a12d531d4f24b49d3938c6a8965, type: 3}
   deathSound: {fileID: 8300000, guid: bb9eba4b1acbb494ea87eb2022575441, type: 3}
-  audioSource: {fileID: 0}
+  attackVolume: 0.1
+  deathVolume: 0.05
   particleStartSize: 0.0001
   particleMaxCount: 5
   flashDuration: 0.15
