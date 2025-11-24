@@ -1,5 +1,6 @@
 using UnityEngine.Assertions;
 using UnityEngine;
+using System.Linq;
 
 public class PlacementIndicatorOnClick : MonoBehaviour
 {
@@ -68,6 +69,7 @@ public class PlacementIndicatorOnClick : MonoBehaviour
                 existingBuilding.SetGridCoords(grid_x, grid_y);
                 // remove and then immediately place in its new destination
                 BuildingGrid.instance.Place(grid_x, grid_y, existingBuilding.GetInternalBuilding());
+                NotifyEnemiesOfBuildingMoved();
                 return;
             }
             //TODO: ask kyle about this or make walls not movable
@@ -107,6 +109,10 @@ public class PlacementIndicatorOnClick : MonoBehaviour
             
             BuildingMenuManager.instance.UpdatePrices();
             PlacementManager.instance.RefreshPlacementIndicators();
+            BuildingHealth newBuildingHealth = buildingObj.GetComponent<BuildingHealth>();
+            NotifyEnemiesOfNewBuilding(newBuildingHealth);
+
+
         }
         finally
         {
@@ -121,5 +127,31 @@ public class PlacementIndicatorOnClick : MonoBehaviour
         // if we error and exit early want the building to come back
         if(existingBuilding != null) existingBuilding.SetVisible(true);
         if(existingBuilding != null) UIInteractabilityManager.instance.EnableInteractivity();
+    }
+
+    private void NotifyEnemiesOfNewBuilding(BuildingHealth newBuilding)
+    {
+        if (newBuilding == null) return;
+
+        EnemyAttacker[] enemies = Object.FindObjectsByType<EnemyAttacker>(FindObjectsSortMode.None);
+        if (enemies == null || enemies.Length == 0) return;
+
+        foreach (var enemy in enemies)
+        {
+            if (enemy == null) continue;
+            enemy.UpdateTargetBuilding(newBuilding);
+        }
+    }
+
+    private void NotifyEnemiesOfBuildingMoved()
+    {
+        EnemyAttacker[] enemies = Object.FindObjectsByType<EnemyAttacker>(FindObjectsSortMode.None);
+        if (enemies == null || enemies.Length == 0) return;
+
+        foreach (var enemy in enemies)
+        {
+            if (enemy == null) continue;
+            enemy.UpdateTargetBuilding();
+        }
     }
 }
