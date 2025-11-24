@@ -308,7 +308,6 @@ public class BuildingInfo : MonoBehaviour
     {
         if (farm.IsMaxLevel())
         {
-            Debug.Log("Banana Farm is already max level!");
             return;
         }
 
@@ -318,11 +317,6 @@ public class BuildingInfo : MonoBehaviour
             farm.Upgrade();
             PlayUpgradeEffect(farm);
             Hide();
-            Debug.Log($"Banana Farm upgraded to level {farm.GetLevel()}!");
-        }
-        else
-        {
-            Debug.Log($"Not enough bananas to upgrade! Need {cost}, have {BananaManager.instance.GetBananas()}");
         }
     }
 
@@ -330,7 +324,6 @@ public class BuildingInfo : MonoBehaviour
     {
         if (tree.IsMaxLevel())
         {
-            Debug.Log("Tree of Life is already max level!");
             return;
         }
 
@@ -342,23 +335,16 @@ public class BuildingInfo : MonoBehaviour
             
             PlayUpgradeEffect(tree);
             Hide();
-            Debug.Log($"Tree of Life upgraded to level {tree.GetLevel()}! Higher building levels unlocked!");
-        }
-        else
-        {
-            Debug.Log($"Not enough bananas to upgrade! Need {cost}, have {BananaManager.instance.GetBananas()}");
         }
     }
 
     public void PlayUpgradeEffect(BuildingBase building)
     {
-        // Look for a particle system in the building's children
         ParticleSystem upgradeEffect = building.GetComponentInChildren<ParticleSystem>();
         
         if (upgradeEffect != null)
         {
             upgradeEffect.Play();
-            Debug.Log($"[BuildingInfo] Playing upgrade effect for {building.GetType().Name}");
         }
         else
         {
@@ -407,7 +393,6 @@ public class BuildingInfo : MonoBehaviour
     {
         if(current != null) UIInteractabilityManager.instance.EnableInteractivity();
         current = null;
-        Debug.Log("hiding");
 
         if (shownOnce) hiddenOnce = true;
         upgradeButton.SetActive(false);

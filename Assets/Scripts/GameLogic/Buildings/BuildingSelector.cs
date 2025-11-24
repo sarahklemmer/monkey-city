@@ -8,6 +8,7 @@ public class BuildingSelector : MonoBehaviour
     private bool selectionDisabledForFrame = false;
 
     BuildingBase currentlySelected = null;
+    MonkeyController selectedMonkey = null;
     
     void Awake()
     {
@@ -30,7 +31,7 @@ public class BuildingSelector : MonoBehaviour
         } else if(selectionDisabled) {
             return;
         }
-        // neither mouse button pressed
+
         bool leftClick = Input.GetMouseButtonDown(0);
         bool rightClick = Input.GetMouseButtonDown(1);
 
@@ -42,39 +43,55 @@ public class BuildingSelector : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 1000f, buildingMask))
             clicked = hit.collider.GetComponentInParent<BuildingBase>();
         
-        // right click, building selected, and right clicked another building
-        if (rightClick && clicked != null && currentlySelected != null)
-        {   
-            if (clicked == currentlySelected) return; // ignore if same building
-            if (!clicked.CanAllocate()) return;       // building is full or unavailable
-
-            // remove next monkey and send them to the building we clicked
-            MonkeyController victim = currentlySelected.NextMonkeyToRemove();
-            // no monkeys 
-            if (victim == null) return;
-            currentlySelected.RemoveMonkey(victim);
-            victim.StartWalkingToBuilding(clicked);
-        }
-        // left click for selecting
-        else if (leftClick)
+        if (rightClick && clicked != null)
         {
-            if (clicked == null) Deselect();
-            // select if we didn't JUST place something
-            else Select(clicked);
+            BuildingInfo.instance.Show(clicked);
+            return;
+        }
+        
+        if (leftClick)
+        {
+            if (clicked != null)
+            {
+                if (currentlySelected != null && selectedMonkey != null)
+                {
+                    if (clicked != currentlySelected && clicked.CanAllocate())
+                    {
+                        currentlySelected.RemoveMonkey(selectedMonkey);
+                        selectedMonkey.StartWalkingToBuilding(clicked);
+                        Deselect();
+                        return;
+                    }
+                }
+
+                Select(clicked);
+            }
+            else
+            {
+                Deselect();
+            }
         }
     }
 
     public void Select(BuildingBase b)
     {
         if (b == null) return;
-        // deselect previous building
+        
         Deselect();
-        // we still want to deselect even if b isn't selectable as it should be like any other random press on scenery
+        
         if (!b.selectable) return;
 
-        // Select new building
         currentlySelected = b;
         currentlySelected.EnableGlow();
+
+        if (currentlySelected.GetMonkeyCount() > 0)
+        {
+            selectedMonkey = currentlySelected.monkeys.MonkeyToDeallocate();
+            if (selectedMonkey != null)
+            {
+                selectedMonkey.EnableGlow();
+            }
+        }
     }
 
     public void Deselect()
@@ -82,6 +99,12 @@ public class BuildingSelector : MonoBehaviour
         if (currentlySelected != null)
         {
             currentlySelected.DisableGlow();
+        }
+
+        if (selectedMonkey != null)
+        {
+            selectedMonkey.DisableGlow();
+            selectedMonkey = null;
         }
 
         currentlySelected = null;
@@ -104,7 +127,6 @@ public class BuildingSelector : MonoBehaviour
 
     public void EnableSelection()  {
         selectionDisabled = false;
-        
     }
 
     public bool BuildingSelected() => currentlySelected == null;
