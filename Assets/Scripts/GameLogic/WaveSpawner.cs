@@ -45,6 +45,7 @@ public class WaveSpawner : MonoBehaviour
     private int lastWarningDay = -999;
     private bool firstTowerPlaced = false;
     private bool firstWaveTriggered = false;
+    private ArcherTower firstArcherTower = null;
 
     [SerializeField] private int currentBananas = 0;
 
@@ -106,7 +107,7 @@ public class WaveSpawner : MonoBehaviour
                     lastWaveDay = TimeController.instance.currentDay;
                     
                     yield return new WaitForSeconds(2f);
-                    StartWave(1);
+                    StartFirstWave();
                     
                     while (enemiesAlive > 0)
                     {
@@ -215,6 +216,22 @@ public class WaveSpawner : MonoBehaviour
         }
     }
 
+    private void StartFirstWave()
+    {
+        waveActive = true;
+        
+        if (firstArcherTower != null)
+        {
+            Vector3 spawnPosition = GetNearestPerimeterPosition(firstArcherTower.transform.position);
+            SpawnEnemyAt(spawnPosition);
+        }
+        else
+        {
+            Vector3 spawnPosition = GetRandomPerimeterPosition();
+            SpawnEnemyAt(spawnPosition);
+        }
+    }
+
     private void StartWave(int enemiesToSpawn)
     {
         waveActive = true;
@@ -253,7 +270,6 @@ public class WaveSpawner : MonoBehaviour
         
         waveSize *= bananaMultiplier;
         
-        
         return Mathf.CeilToInt(waveSize);
     }
 
@@ -278,6 +294,12 @@ public class WaveSpawner : MonoBehaviour
 
     private void SpawnEnemy()
     {
+        Vector3 spawnPosition = GetRandomPerimeterPosition();
+        SpawnEnemyAt(spawnPosition);
+    }
+
+    private void SpawnEnemyAt(Vector3 spawnPosition)
+    {
         int bananas = BananaManager.instance.GetBananasGenerated();
         var availableEnemies = enemyTypes.Where(e => e.bananaThreshold <= bananas).ToList();
         
@@ -301,17 +323,11 @@ public class WaveSpawner : MonoBehaviour
             }
         }
         
-        Vector3 spawnPosition = GetRandomPerimeterPosition();
         GameObject spawnedEnemy = Instantiate(selectedPrefab, spawnPosition, Quaternion.identity);
         
         EnemyAttacker attacker = spawnedEnemy.GetComponent<EnemyAttacker>();
         if (attacker != null)
         {
-            if (currentWave == 1)
-            {
-                attacker.SetPriorityTargetToFirstTower();
-            }
-            
             enemiesAlive++;
             spawnedEnemy.AddComponent<EnemyDeathTracker>().Initialize(this);
         }
@@ -328,6 +344,36 @@ public class WaveSpawner : MonoBehaviour
             enemiesAlive++;
             boss.AddComponent<EnemyDeathTracker>().Initialize(this);
         }
+    }
+
+    private Vector3 GetNearestPerimeterPosition(Vector3 targetPosition)
+    {
+        int gridSize = BuildingGrid.instance.GetGridSize();
+        float halfSize = gridSize / 2f;
+        float spawnDistance = 1.3f;
+        
+        Vector3[] perimeterPositions = new Vector3[]
+        {
+            new Vector3(0, 0, halfSize * spawnDistance),
+            new Vector3(halfSize * spawnDistance, 0, 0),
+            new Vector3(0, 0, -halfSize * spawnDistance),
+            new Vector3(-halfSize * spawnDistance, 0, 0)
+        };
+        
+        Vector3 nearestPosition = perimeterPositions[0];
+        float nearestDistance = Vector3.Distance(targetPosition, nearestPosition);
+        
+        for (int i = 1; i < perimeterPositions.Length; i++)
+        {
+            float distance = Vector3.Distance(targetPosition, perimeterPositions[i]);
+            if (distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                nearestPosition = perimeterPositions[i];
+            }
+        }
+        
+        return nearestPosition;
     }
 
     private Vector3 GetRandomPerimeterPosition()
@@ -418,11 +464,12 @@ public class WaveSpawner : MonoBehaviour
     public void UnpauseSpawning() { spawningPaused = false; }
     public bool IsPaused() => spawningPaused;
     
-    public void OnFirstTowerPlaced()
+    public void OnFirstTowerPlaced(ArcherTower tower)
     {
         if (!firstTowerPlaced)
         {
             firstTowerPlaced = true;
+            firstArcherTower = tower;
         }
     }
 }

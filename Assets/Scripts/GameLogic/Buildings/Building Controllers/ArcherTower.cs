@@ -64,7 +64,7 @@ public class ArcherTower : BuildingBase
     
         if (WaveSpawner.instance != null)
         {
-            WaveSpawner.instance.OnFirstTowerPlaced();
+            WaveSpawner.instance.OnFirstTowerPlaced(this);
         }
     
         if (rangeIndicator != null)
