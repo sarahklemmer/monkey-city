@@ -115,7 +115,6 @@ public class TitleScreenManager : MonoBehaviour
         if (enableFakeGameplay)
         {
             SetupFakeGameplay();
-            MakeTreeOfLifeInvincible();
             StartCoroutine(SpawnFakeEnemies());
         }
     }
@@ -413,18 +412,6 @@ public class TitleScreenManager : MonoBehaviour
         }
     }
 
-    private void MakeTreeOfLifeInvincible()
-    {
-        if (treeOfLife != null)
-        {
-            BuildingHealth health = treeOfLife.GetComponent<BuildingHealth>();
-            if (health != null)
-            {
-                Destroy(health);
-            }
-        }
-    }
-
     private IEnumerator SpawnFakeEnemies()
     {
         yield return new WaitForSeconds(5f);
@@ -436,8 +423,9 @@ public class TitleScreenManager : MonoBehaviour
                 for (int i = 0; i < enemiesPerWave; i++)
                 {
                     Vector3 spawnPos = GetRandomPerimeterPosition();
-                    Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
-                    yield return new WaitForSeconds(0.5f);
+                    GameObject enemyObj = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+
+                    yield return new WaitForSeconds(3f); 
                 }
             }
             
@@ -478,5 +466,28 @@ public class TitleScreenManager : MonoBehaviour
         }
         
         return new Vector3(x, 0, z);
+    }
+}
+
+public class TitleScreenInvincible : MonoBehaviour
+{
+    private BuildingHealth buildingHealth;
+    private float minHealth = 1f;
+    
+    public void Initialize(BuildingHealth health)
+    {
+        buildingHealth = health;
+    }
+    
+    void LateUpdate()
+    {
+        if (buildingHealth != null)
+        {
+            if (buildingHealth.GetCurrentHealth() < minHealth)
+            {
+                float maxHealth = buildingHealth.GetMaxHealth();
+                buildingHealth.SetHealth(maxHealth * 0.5f);
+            }
+        }
     }
 }
