@@ -4,3 +4,4 @@ DayNightToggle is all written by chatgpt
 the move button is from https://www.flaticon.com/authors/md-tanvirul-haque and is free for use
 large chunks of BuildingManagementUi.cs are written by chatgpt
 UiInteractibilityManager.cs is pure ai slop
+placeholder spiketrap (free) is from https://www.fab.com/listings/8b8eb6de-9f5a-4f81-b610-79cfd07d1961

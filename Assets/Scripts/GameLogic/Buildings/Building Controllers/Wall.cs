@@ -7,6 +7,7 @@ public class Wall : BuildingBase
         base.SharedAwakeBehavior();
         building = new(BuildingType.Wall);
         monkeys = new(0);
+        canContainMonkeys = false;
     }
 
     public override void OnDayCycle()

@@ -503,6 +503,7 @@ GameObject:
   - component: {fileID: 45756655}
   - component: {fileID: 45756654}
   - component: {fileID: 45756653}
+  - component: {fileID: 45756656}
   m_Layer: 5
   m_Name: BuildingInfoPanel
   m_TagString: Untagged
@@ -587,6 +588,30 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 45756651}
   m_CullTransparentMesh: 1
+--- !u!114 &45756656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 45756651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5663f67e2a1a14648a99b99ce77c6d7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  upgradeButton: {fileID: 740167505}
+  info: {fileID: 45756651}
+  backgroundBlocker: {fileID: 1269202788}
+  buildingNameText: {fileID: 83884651}
+  buildingStatsText: {fileID: 1489441449}
+  upgradeInfoText: {fileID: 1440316867}
+  treeOfLifeExtraUI: {fileID: 258453041}
+  manager: {fileID: 1352258247}
+  offset: {x: 150, y: 0}
+  wallUnlockToast: New defenses available! Open the Building Menu to construct walls.
+  archerTowerLevel2Cost: 50
+  archerTowerLevel3Cost: 120
 --- !u!1001 &82026374
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7305,10 +7330,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1352258250}
+      - m_Target: {fileID: 45756656}
         m_TargetAssemblyTypeName: BuildingInfo, Assembly-CSharp
         m_MethodName: Hide
-        m_Mode: 6
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -8415,6 +8440,11 @@ MonoBehaviour:
     cost: 4
     description: 
     type: 2
+  - buildingName: Spike Trap
+    icon: {fileID: 21300000, guid: 3bf9e6551d633478fa7ff42f4c1c9e46, type: 3}
+    cost: 8
+    description: 
+    type: 3
   toggle: {fileID: 262339076}
   background: {fileID: 1823082126}
   normalColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
@@ -12236,10 +12266,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1352258250}
+      - m_Target: {fileID: 45756656}
         m_TargetAssemblyTypeName: BuildingInfo, Assembly-CSharp
         m_MethodName: Hide
-        m_Mode: 6
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -13123,7 +13153,7 @@ GameObject:
   - component: {fileID: 1352258247}
   - component: {fileID: 1352258249}
   - component: {fileID: 1352258248}
-  - component: {fileID: 1352258250}
+  - component: {fileID: 1352258251}
   m_Layer: 0
   m_Name: BuildingManager
   m_TagString: Untagged
@@ -13179,8 +13209,10 @@ MonoBehaviour:
     value: {fileID: 5391114834010811843, guid: 831bb9b9f0757455faef862cf28f2c6f, type: 3}
   - key: 2
     value: {fileID: 7165693314679942278, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
-  - key: 3
+  - key: 4
     value: {fileID: 2507090468085796351, guid: dd92244a58dee420db7196eef52e57d6, type: 3}
+  - key: 3
+    value: {fileID: 8127945173937545073, guid: 72a779d82b67843cabf386b691791fa8, type: 3}
 --- !u!114 &1352258249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13196,7 +13228,7 @@ MonoBehaviour:
   buildingMask:
     serializedVersion: 2
     m_Bits: 128
---- !u!114 &1352258250
+--- !u!114 &1352258251
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13205,21 +13237,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1352258245}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5663f67e2a1a14648a99b99ce77c6d7e, type: 3}
+  m_Script: {fileID: 11500000, guid: 8e36b2726f58a4473a9b2910e629beef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  upgradeButton: {fileID: 740167505}
-  info: {fileID: 45756651}
-  backgroundBlocker: {fileID: 1269202788}
-  buildingNameText: {fileID: 83884651}
-  buildingStatsText: {fileID: 1489441449}
-  upgradeInfoText: {fileID: 1440316867}
-  treeOfLifeExtraUI: {fileID: 258453041}
-  manager: {fileID: 1352258247}
-  offset: {x: 150, y: 0}
-  wallUnlockToast: New defenses available! Open the Building Menu to construct walls.
-  archerTowerLevel2Cost: 50
-  archerTowerLevel3Cost: 120
 --- !u!1001 &1361005732
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13364,8 +13384,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1744986385}
   m_HandleRect: {fileID: 1744986384}
   m_Direction: 0
-  m_Value: 1.0000005
-  m_Size: 0.625
+  m_Value: 1.0000004
+  m_Size: 0.62500006
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -17812,6 +17832,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuildingUIElement: {fileID: 4528023583183745444, guid: 9e2fda4be46ec49a8a970e9a35aac80a, type: 3}
   archerTowerIcon: {fileID: 21300000, guid: 3bf9e6551d633478fa7ff42f4c1c9e46, type: 3}
+  spikeTrapIcon: {fileID: 0}
 --- !u!114 &1870509367
 MonoBehaviour:
   m_ObjectHideFlags: 0

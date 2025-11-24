@@ -9,6 +9,7 @@ public class BuildingManagementUi : MonoBehaviour
     [SerializeField] GameObject BuildingUIElement;
     //TODO: get rid of this and add a script that just sets the icon based on building type
     [SerializeField] Sprite archerTowerIcon;
+    [SerializeField] Sprite spikeTrapIcon;
 
     private readonly Dictionary<BuildingBase, GameObject> uiLookup = new();
     private Transform content;
@@ -45,10 +46,8 @@ public class BuildingManagementUi : MonoBehaviour
     {
         
         Assert.IsNotNull(building);
+        if(building is TreeOfLife) return;
         Assert.IsFalse(uiLookup.ContainsKey(building), $"Building {building.name} already has a UI element!");
-
-        // only add banana farms and archer towers
-        if(building.GetBuildingType() != BuildingType.ArcherTower && building.GetBuildingType() != BuildingType.BananaFarm) return;
 
         GameObject ui = Instantiate(BuildingUIElement, content);
         ui.SetActive(true);
@@ -59,6 +58,7 @@ public class BuildingManagementUi : MonoBehaviour
 
         //TODO: set icon for building type more robustly
         if(building.GetBuildingType() == BuildingType.ArcherTower) ui.transform.Find("Icon").GetComponent<Image>().sprite = archerTowerIcon;
+        else if(building.GetBuildingType() == BuildingType.SpikeTrap) ui.transform.Find("Icon").GetComponent<Image>().sprite = spikeTrapIcon;
 
         ReorderByType();
     }
@@ -66,12 +66,9 @@ public class BuildingManagementUi : MonoBehaviour
     public void RemoveBuilding(BuildingBase building)
     {
         Assert.IsNotNull(building);
+        if(building is TreeOfLife) return;
 
-        // only remove banana farms and archer towers
-        if(building.GetBuildingType() != BuildingType.ArcherTower && building.GetBuildingType() != BuildingType.BananaFarm) return;
-
-        Assert.IsTrue(uiLookup.ContainsKey(building),
-            $"Attempted to remove building UI for {building.name}, but none exists!");
+        Assert.IsTrue(uiLookup.ContainsKey(building), $"Attempted to remove building UI for {building.name}, but none exists!");
 
         Destroy(uiLookup[building]);
         uiLookup.Remove(building);
@@ -82,25 +79,38 @@ public class BuildingManagementUi : MonoBehaviour
     private void AssignBuildingToButtons(GameObject ui, BuildingBase building)
     {
         AddButton add = ui.GetComponentInChildren<AddButton>(true);
+        RemoveButton remove = ui.GetComponentInChildren<RemoveButton>(true);
+        
         InfoButton info = ui.GetComponentInChildren<InfoButton>(true);
         MoveButton move = ui.GetComponentInChildren<MoveButton>(true);
-        RemoveButton remove = ui.GetComponentInChildren<RemoveButton>(true);
+        
         UpgradeButton upgrade = ui.GetComponentInChildren<UpgradeButton>(true);
         SelectBuildingOnHover selectionEffect = ui.GetComponent<SelectBuildingOnHover>();
-
-        Assert.IsNotNull(add, "AddButton missing from prefab!");
+        
         Assert.IsNotNull(info, "InfoButton missing from prefab!");
         Assert.IsNotNull(move, "MoveButton missing from prefab!");
-        Assert.IsNotNull(remove, "RemoveButton missing from prefab!");
+        
         Assert.IsNotNull(upgrade, "UpgradeButton missing from prefab!");
         Assert.IsNotNull(selectionEffect, "SelectBuildingOnhover missing from prefab!");
 
-        add.building = building;
+        Assert.IsNotNull(add, "AddButton missing from prefab!");
+        Assert.IsNotNull(remove, "RemoveButton missing from prefab!");
+        
         info.building = building;
         move.building = building;
-        remove.building = building;
+        
         upgrade.building = building;
         selectionEffect.building = building;
+
+        if(building.canContainMonkeys)
+        {
+            add.building = building;
+            remove.building = building;
+        } else
+        {
+            add.PermanentlyRemoveButton();
+            remove.PermanentlyRemoveButton();
+        }
     }
 
     private void ReorderByType()

@@ -203,7 +203,8 @@ public class EnemyAttacker : MonoBehaviour
                 audioSource.PlayOneShot(attackSound);
             }
             
-            targetBuilding.TakeDamage(attackDamage);
+            float blowback = targetBuilding.TakeDamage(attackDamage);
+            if(blowback > 0) TakeDamage(blowback);
             
             Vector3 directionAwayFromTarget = (transform.position - targetBuilding.transform.position).normalized;
             recoilStartPos = transform.position;

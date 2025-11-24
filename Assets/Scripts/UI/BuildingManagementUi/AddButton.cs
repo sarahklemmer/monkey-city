@@ -35,4 +35,10 @@ public class AddButton : MonoBehaviour
         if(victim == null) return;
         victim.NextMonkeyToRemove().StartWalkingToBuilding(building);
     }
+
+    public void PermanentlyRemoveButton()
+    {
+        Destroy(button.gameObject);
+        enabled = false;
+    }
 }

@@ -264,6 +264,11 @@ public class BuildingInfo : MonoBehaviour
                     $"Idle Monkeys: {building.GetMonkeyCount()}";
             }
         }
+        else if (building is SpikeTrap)
+        {
+            buildingNameText.text = "Spike Trap";
+            buildingStatsText.text = "A spike trap to distract attacking chimps, it can buy your archer towers time and will hurt chimps as they attack it.";
+        }
         else
         {
             if (buildingNameText != null)
@@ -398,9 +403,9 @@ public class BuildingInfo : MonoBehaviour
             backgroundBlocker.SetActive(true);
     }
 
-    // we keep the var "moving" here cause removing it will fuck up the scene
-    public void Hide(bool moving = false)
+    public void Hide()
     {
+        if(current != null) UIInteractabilityManager.instance.EnableInteractivity();
         current = null;
         Debug.Log("hiding");
 

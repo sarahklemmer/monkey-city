@@ -9,6 +9,7 @@ public class BuildingTypeToPrice
         { BuildingType.TreeOfLife, 0 },
         { BuildingType.BananaFarm, 1 },
         { BuildingType.ArcherTower, 4 },
+        { BuildingType.SpikeTrap, 8},
         { BuildingType.Wall, 2 }
     };
 
