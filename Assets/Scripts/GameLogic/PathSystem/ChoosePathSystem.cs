@@ -5,6 +5,7 @@ public class ChoosePathSystem : MonoBehaviour
     public static ChoosePathSystem instance;
 
     [SerializeField] private GameObject choosePathMenu;
+    [SerializeField] private GameObject playerPointDisplay;
 
     void Awake()
     {
@@ -17,9 +18,16 @@ public class ChoosePathSystem : MonoBehaviour
         instance = this;
     }
 
+    void Start()
+    {
+        if (playerPointDisplay != null)
+        {
+            playerPointDisplay.SetActive(false);
+        }
+    }
+
     public void ShowPathMenu()
     {
-        // pause the game features
         TimeController.instance.StopTicking();
         BananaProductionTimer.instance.StopProduction();
         WaveSpawner.instance.PauseSpawning();
@@ -34,6 +42,11 @@ public class ChoosePathSystem : MonoBehaviour
         WaveSpawner.instance.UnpauseSpawning();
 
         choosePathMenu.SetActive(false);
+
+        if (playerPointDisplay != null)
+        {
+            playerPointDisplay.SetActive(true);
+        }
 
         ToastManager.Instance?.ForceEndCurrentToast();
 
@@ -58,4 +71,3 @@ public class ChoosePathSystem : MonoBehaviour
         HidePathMenu();
     }
 }
-
