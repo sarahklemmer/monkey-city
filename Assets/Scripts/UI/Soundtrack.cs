@@ -46,7 +46,11 @@ public class Soundtrack : MonoBehaviour
 
     public void PlaySoundtrack()
     {
-        if (source == null) return;
+        if (source == null)
+        {
+            source = Camera.main?.GetComponent<AudioSource>();
+            if (source == null) return;
+        }
         if (source.clip == null)
         {
             Debug.LogWarning("Soundtrack: No AudioClip assigned.");
@@ -72,6 +76,7 @@ public class Soundtrack : MonoBehaviour
 
     public void ToggleSoundtrack()
     {
+        VolumeButton.instance.ToggleVolume();
         if (source.isPlaying) source.Stop();
         else source.Play();
     }
