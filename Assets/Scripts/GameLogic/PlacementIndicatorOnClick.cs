@@ -101,7 +101,7 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
 
             // spawn monkeys if treeoflife
-            if (buildingType == BuildingType.TreeOfLife) PopulationManager.instance.AddToPopulation(5);
+            if (buildingType == BuildingType.TreeOfLife) PopulationManager.instance.AddToPopulation(1);
             // otherwise pay for building
             else BananaManager.instance.RemoveBananas(BuildingTypeToPrice.GetPrice(buildingType));
             
