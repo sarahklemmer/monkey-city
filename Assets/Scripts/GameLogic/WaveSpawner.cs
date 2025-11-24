@@ -113,6 +113,11 @@ public class WaveSpawner : MonoBehaviour
                     {
                         yield return new WaitForSeconds(0.5f);
                     }
+
+                    if (enemiesAlive == 0)
+                    {
+                        PathManager.instance.playerPoints += 1;
+                    }
                     
                     waveActive = false;
                     HealAllBuildings();
@@ -171,7 +176,6 @@ public class WaveSpawner : MonoBehaviour
             if (daysSinceLastWave >= daysRequired)
             {
                 currentWave++;
-                PathManager.instance.playerPoints += 1;
                 lastWaveDay = currentDay;
                 
                 int enemiesToSpawn = CalculateWaveSize();
@@ -188,6 +192,10 @@ public class WaveSpawner : MonoBehaviour
                 while (enemiesAlive > 0)
                 {
                     yield return new WaitForSeconds(0.5f);
+                }
+                if (enemiesAlive == 0)
+                {
+                    PathManager.instance.playerPoints += 1;
                 }
                 
                 waveActive = false;

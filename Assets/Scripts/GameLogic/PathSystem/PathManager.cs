@@ -19,6 +19,8 @@ public class PathManager : MonoBehaviour
 
     public PathType currentPathType = PathType.Farmer;
 
+    public bool pathSelected = false;
+
     [SerializeField] private float discountFactor = 0.5f;
     [SerializeField] public int playerPoints = 0;
 
@@ -163,18 +165,21 @@ public class PathManager : MonoBehaviour
     public void SelectFarmerPath()
     {
         currentPathType = PathType.Farmer;
+        pathSelected = true;
         ToastManager.Instance?.RequestToast("Farmer path selected!", 2f);
     }
 
     public void SelectWarriorPath()
     {
         currentPathType = PathType.Warrior;
+        pathSelected = true;
         ToastManager.Instance?.RequestToast("Warrior path selected!", 2f);
     }
 
     public void SelectScholarPath()
     {
         currentPathType = PathType.Scholar;
+        pathSelected = true;
         ToastManager.Instance?.RequestToast("Scholar path selected!", 2f);
     }
     

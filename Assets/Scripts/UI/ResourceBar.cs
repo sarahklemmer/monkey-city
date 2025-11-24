@@ -11,7 +11,7 @@ public class ResourceBar : MonoBehaviour
 
     void Start()
     {
-        populationCount.text = "";
+        populationCount.text = "0";
     }
 
     void Update()

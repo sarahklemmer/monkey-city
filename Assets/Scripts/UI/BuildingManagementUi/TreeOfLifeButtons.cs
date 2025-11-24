@@ -3,9 +3,10 @@ using UnityEngine.UI;
 
 public class TreeOfLifeButtons : MonoBehaviour
 {
-    [SerializeField] GameObject pathButton;
+    [SerializeField] GameObject pathButtonObj;
     [SerializeField] GameObject upgradeButtonObj;
     Button upgradeButton;
+    Button pathButton;
 
     const int TREE_OF_LIFE_UPGRADE_COST = 100;
 
@@ -14,10 +15,12 @@ public class TreeOfLifeButtons : MonoBehaviour
 
     void Start()
     {
-        pathButton.SetActive(false);
+        pathButtonObj.SetActive(false);
         upgradeButtonObj.SetActive(false);
         upgradeButton = upgradeButtonObj.GetComponent<Button>();
+        pathButton = pathButtonObj.GetComponent<Button>();
         upgradeButton.interactable = false;
+        pathButton.interactable = false;
     }
 
     void Update()
@@ -30,7 +33,7 @@ public class TreeOfLifeButtons : MonoBehaviour
         }
 
         upgradeButtonObj.SetActive(true);
-        pathButton.SetActive(true);
+        pathButtonObj.SetActive(true);
 
         if (!listenerAdded)
         {
@@ -42,6 +45,10 @@ public class TreeOfLifeButtons : MonoBehaviour
             tree != null &&
             !tree.IsMaxLevel() &&
             BananaManager.instance.GetBananas() >= TREE_OF_LIFE_UPGRADE_COST;
+
+        pathButton.interactable =
+            tree != null &&
+            PathManager.instance.pathSelected;
     }
 
     void UpgradeTreeOfLife()
