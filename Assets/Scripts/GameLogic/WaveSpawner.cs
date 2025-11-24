@@ -42,7 +42,7 @@ public class WaveSpawner : MonoBehaviour
     private bool spawningPaused = false;
     private int lastBananaThresholdCrossed = 0;
     private int lastWaveDay = 0;
-    private int lastWarningDay = -999; // Track which day we showed warning
+    private int lastWarningDay = -999;
 
     public static WaveSpawner instance;
 
@@ -78,7 +78,6 @@ public class WaveSpawner : MonoBehaviour
 
     void Update()
     {
-        // Cheat: Press 1 to force spawn next wave
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             ForceNextWave();
@@ -127,10 +126,9 @@ public class WaveSpawner : MonoBehaviour
             int daysRequired = GetDaysBetweenWaves();
             int daysSinceLastWave = currentDay - lastWaveDay;
             
-            // Show warning 1 day before wave (only once per day)
             if (daysSinceLastWave == daysRequired - 1 && lastWarningDay != currentDay)
             {
-                lastWarningDay = currentDay; // Mark this day as having shown the warning
+                lastWarningDay = currentDay; 
                 bool isBossWave = ((currentWave + 1) % 7 == 0) && bossPrefab != null;
                 if (isBossWave)
                 {
@@ -310,35 +308,36 @@ public class WaveSpawner : MonoBehaviour
     {
         int gridSize = BuildingGrid.instance.GetGridSize();
         float halfSize = gridSize / 2f;
-        
+        float spawnDistance = 1.3f;
+    
         int edge = Random.Range(0, 4);
-        
+    
         float x, z;
-        
+    
         switch (edge)
         {
             case 0:
                 x = Random.Range(-halfSize, halfSize);
-                z = halfSize;
+                z = halfSize * spawnDistance;
                 break;
             case 1:
-                x = halfSize;
+                x = halfSize * spawnDistance;
                 z = Random.Range(-halfSize, halfSize);
                 break;
             case 2:
                 x = Random.Range(-halfSize, halfSize);
-                z = -halfSize;
+                z = -halfSize * spawnDistance;
                 break;
             case 3:
-                x = -halfSize;
+                x = -halfSize * spawnDistance;
                 z = Random.Range(-halfSize, halfSize);
                 break;
             default:
                 x = 0;
-                z = halfSize;
+                z = halfSize * spawnDistance;
                 break;
         }
-        
+    
         return new Vector3(x, 0, z);
     }
 

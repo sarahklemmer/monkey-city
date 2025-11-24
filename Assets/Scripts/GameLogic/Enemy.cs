@@ -49,7 +49,6 @@ public class EnemyAttacker : MonoBehaviour
     private float currentHealth;
     private bool isWalking = false;
 
-    // Dedicated sources we control
     private AudioSource attackSource;
     private AudioSource deathSource;
 
@@ -58,12 +57,10 @@ public class EnemyAttacker : MonoBehaviour
         currentHealth = maxHealth;
         animator = GetComponentInChildren<Animator>();
 
-        // Disable ANY other audio sources on this enemy so we can't be "hearing the wrong one".
         var existingSources = GetComponentsInChildren<AudioSource>(true);
         foreach (var s in existingSources)
             s.enabled = false;
 
-        // Create dedicated sources
         attackSource = gameObject.AddComponent<AudioSource>();
         deathSource  = gameObject.AddComponent<AudioSource>();
 
@@ -72,7 +69,6 @@ public class EnemyAttacker : MonoBehaviour
         attackSource.loop = false;
         deathSource.loop  = false;
 
-        // 2D so distance falloff doesn't mask volume changes
         attackSource.spatialBlend = 0f;
         deathSource.spatialBlend  = 0f;
 
@@ -214,9 +210,7 @@ public class EnemyAttacker : MonoBehaviour
 
         if (attackSound != null && attackSource != null)
         {
-            // This is the ONLY place attack sounds come from now.
             attackSource.PlayOneShot(attackSound, attackVolume);
-            // Debug.Log($"ATTACK vol used = {attackVolume}");
         }
 
         float blowback = targetBuilding.TakeDamage(attackDamage);
@@ -304,17 +298,15 @@ public class EnemyAttacker : MonoBehaviour
 
         if (deathSound != null)
         {
-            // Play on temp GO so Destroy(gameObject) doesn't kill the sound.
             GameObject soundObject = new GameObject("EnemyDeathSound");
             soundObject.transform.position = transform.position;
 
             AudioSource temp = soundObject.AddComponent<AudioSource>();
-            temp.spatialBlend = 0f; // 2D
+            temp.spatialBlend = 0f;
             temp.playOnAwake = false;
             temp.loop = false;
 
             temp.PlayOneShot(deathSound, deathVolume);
-            // Debug.Log($"DEATH vol used = {deathVolume}");
 
             Destroy(soundObject, deathSound.length + 0.1f);
         }
