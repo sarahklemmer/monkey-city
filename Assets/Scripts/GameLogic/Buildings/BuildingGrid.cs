@@ -213,12 +213,16 @@ public class BuildingGrid : MonoBehaviour
                     ind.GetComponent<PlacementIndicatorOnClick>().InitializeWithExistingBuilding(buildingToMove, x, y);
             }
         }
+
+        if (placementIndicatorsParent.childCount == 0)
+        {
+            BuildingManager.instance.MakeBuildingsOpaque();
+        }
     }
     
     public void DestroyBuildingPlacementIndicators()
     {
         xToolTip.enabled = false;
-        BuildingManager.instance.MakeBuildingsOpaque();
         foreach (Transform child in placementIndicatorsParent) Destroy(child.gameObject);
     }
 
