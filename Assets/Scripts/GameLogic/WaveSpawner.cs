@@ -102,6 +102,7 @@ public class WaveSpawner : MonoBehaviour
             {
                 if (firstTowerPlaced)
                 {
+                    toastManager.RequestToast($"Man the archer tower, an enemy is attacking!", 2.0f, 0.3f, false, false);
                     firstWaveTriggered = true;
                     currentWave++;
                     lastWaveDay = TimeController.instance.currentDay;
