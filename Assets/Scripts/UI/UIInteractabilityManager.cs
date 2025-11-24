@@ -64,7 +64,7 @@ public class UIInteractabilityManager : MonoBehaviour
         UnpauseGame();
     }
 
-    public void DisableInteractivityExcept(Transform exceptionRoot)
+    public void DisableInteractivityExcept(Transform exceptionRoot, bool pauseGame = true)
     {   
         DisableLastExceptionIgnoringParentGroups();
         if(exceptionRoot != null)
@@ -74,7 +74,7 @@ public class UIInteractabilityManager : MonoBehaviour
             lastException.ignoreParentGroups = true;
             lastException.interactable = true;
         }
-        DisableInteractivityInternal();
+        DisableInteractivityInternal(pauseGame);
     }
 
     private void DisableLastExceptionIgnoringParentGroups()
@@ -83,9 +83,9 @@ public class UIInteractabilityManager : MonoBehaviour
         lastException = null;
     }
 
-    private void DisableInteractivityInternal()
+    private void DisableInteractivityInternal(bool pauseGame = true)
     {
-        PauseGame();
+        if(pauseGame) PauseGame();
         cg.interactable = false;
     }
 

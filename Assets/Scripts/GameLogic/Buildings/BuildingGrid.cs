@@ -163,6 +163,10 @@ public class BuildingGrid : MonoBehaviour
 
         // 1.4f just makes it look better trust
         cam.orthographicSize = ((maxV - minV) * 0.5f + 0.25f) * 1.4f;
+
+        //TODO: this fucking blows
+        cam.transform.position = new Vector3(-20f, 28, -24.5f);
+        cam.transform.rotation = Quaternion.Euler(40.55f, 45, 0);
     }
 
     //NOT optimal, use sliding window or smth
@@ -196,9 +200,9 @@ public class BuildingGrid : MonoBehaviour
         int w = dimensions.width;
         int h = dimensions.height;
 
-        for (int x = 0; x <= GRID_SIZE - w; x+=2)
+        for (int x = 2; x <= GRID_SIZE - w; x+=2)
         {
-            for (int y = 0; y <= GRID_SIZE - h; y+=2)
+            for (int y = 2; y <= GRID_SIZE - h; y+=2)
             {
                 if (!AreaFree(x, y, w, h)) continue;
                 
@@ -210,6 +214,11 @@ public class BuildingGrid : MonoBehaviour
                 else
                     ind.GetComponent<PlacementIndicatorOnClick>().InitializeWithExistingBuilding(buildingToMove, x, y);
             }
+        }
+
+        if (placementIndicatorsParent.childCount == 0)
+        {
+            BuildingManager.instance.MakeBuildingsOpaque();
         }
     }
     

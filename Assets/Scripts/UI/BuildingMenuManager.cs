@@ -57,8 +57,7 @@ public class BuildingMenuManager : MonoBehaviour
 
         if (isOn)
         {
-            // trust me :D
-            if(disableInteractivityRoot != null) UIInteractabilityManager.instance.DisableInteractivityExcept(disableInteractivityRoot);
+            UIInteractabilityManager.instance.DisableInteractivityExcept(disableInteractivityRoot, false);
             // Show scrollbar and populate with banana buildings
             buildingScrollbar.SetActive(true);
             scrollableList.PopulateList(GetUnlockedBuildings());
@@ -67,7 +66,7 @@ public class BuildingMenuManager : MonoBehaviour
         }
         else
         {
-            if(disableInteractivityRoot != null) UIInteractabilityManager.instance.EnableInteractivity();
+            UIInteractabilityManager.instance.EnableInteractivity();
             // Hide scrollbar and clear list
             buildingScrollbar.SetActive(false);
             scrollableList.ClearList();
@@ -76,6 +75,7 @@ public class BuildingMenuManager : MonoBehaviour
     
     public void ForceCloseMenu()
     {
+        UIInteractabilityManager.instance.EnableInteractivity();
         toggle.isOn = false;
         buildingScrollbar.SetActive(false);
         scrollableList.ClearList();
@@ -83,6 +83,7 @@ public class BuildingMenuManager : MonoBehaviour
 
     public void HideAllMenus()
     {
+        UIInteractabilityManager.instance.EnableInteractivity();
         buildingScrollbar.SetActive(false);
         scrollableList.ClearList();
         

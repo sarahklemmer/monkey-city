@@ -31,6 +31,7 @@ public class TreeOfLife : BuildingBase
         BuildingUnlock.Unlock(BuildingType.BananaFarm);
         BuildingUnlock.Unlock(BuildingType.ArcherTower);
         BuildingUnlock.Disable(BuildingType.TreeOfLife);
+        Soundtrack.instance.PlaySoundtrack();
     }
     
     public void NotifyTreePlaced()

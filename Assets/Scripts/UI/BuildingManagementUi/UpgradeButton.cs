@@ -6,6 +6,7 @@ public class UpgradeButton : MonoBehaviour
 {
     [HideInInspector] public BuildingBase building;
     [SerializeField] Button button;
+    bool upgradeToastSpawned = false;
 
     void Start()
     {
@@ -33,6 +34,11 @@ public class UpgradeButton : MonoBehaviour
         {
             //TODO: update this when we add upgrades for traps (if we add upgrades for traps)
             button.interactable = false;
+        }
+
+        if(button.interactable && !upgradeToastSpawned && BuildingManager.instance.GetTreeOfLife() != null) {
+            upgradeToastSpawned = true;
+            ToastManager.Instance.RequestToast("You've earned enough bananas to upgrade a building! Click a green arrow on the right to upgrade");
         }
     }
     
