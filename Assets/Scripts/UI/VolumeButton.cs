@@ -21,6 +21,6 @@ public class VolumeButton : MonoBehaviour
 
     public void ToggleVolume()
     {
-        thisImage.sprite = Soundtrack.instance.Playing() ? offImage : onImage;
+        thisImage.sprite = AudioManager.IsMuted(false) ? offImage : onImage;
     }
 }

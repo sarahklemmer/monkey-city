@@ -6723,7 +6723,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundtrack: {fileID: 8300000, guid: a66a0bb436cc34becb0dfe96e5a7d0fc, type: 3}
-  playOnStart: 0
+  playOnStart: 1
   volume: 0.7
 --- !u!4 &546682279
 Transform:
@@ -7642,7 +7642,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1973447234, guid: 9fcf6e2ac4bb240669841469315937dd, type: 3}
+  m_Sprite: {fileID: 103304150, guid: 9fcf6e2ac4bb240669841469315937dd, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8018,7 +8018,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 494a92ac420a148da9b4307fcbb293d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  muteButton: {fileID: 0}
+  muteButton: {fileID: 513683574}
 --- !u!1 &683479094
 GameObject:
   m_ObjectHideFlags: 0

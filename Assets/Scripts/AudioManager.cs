@@ -4,11 +4,11 @@ using UnityEngine.UI;
 public class AudioManager : MonoBehaviour
 {
     public Button muteButton;
-    private bool isMuted = false;
+    public static bool isMuted = false;
 
     void Start()
     {
-        muteButton.onClick.AddListener(ToggleMute);
+        // muteButton.onClick.AddListener(ToggleMute);
     }
 
     public void ToggleMute()
@@ -19,5 +19,13 @@ public class AudioManager : MonoBehaviour
         {
             audioSource.mute = isMuted;
         }
+        VolumeButton.instance.ToggleVolume();
+        Debug.Log("Toggled");
+    }
+
+    public static bool IsMuted(bool dummy)
+    {
+        dummy = isMuted;
+        return dummy;
     }
 }
