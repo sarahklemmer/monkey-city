@@ -41,6 +41,7 @@ public class EnemyAttacker : MonoBehaviour
     [SerializeField] private EnemyHealthBar healthBar;
 
     private BuildingHealth targetBuilding;
+    private BuildingHealth priorityTarget; // First tower for tutorial wave
     private float lastAttackTime;
     private bool isRecoiling = false;
     private Vector3 recoilStartPos;
@@ -89,6 +90,39 @@ public class EnemyAttacker : MonoBehaviour
         }
     }
 
+    // Called by WaveSpawner for tutorial wave
+    public void SetPriorityTargetToFirstTower()
+    {
+        // Find all towers (ArcherTower or similar building types)
+        BuildingHealth[] allBuildings = FindObjectsByType<BuildingHealth>(FindObjectsSortMode.None);
+        BuildingHealth firstTower = null;
+        float closestDistance = float.MaxValue;
+        
+        foreach (BuildingHealth building in allBuildings)
+        {
+            if (building.GetCurrentHealth() <= 0) continue;
+            
+            // Check if it's an ArcherTower (or add other tower types here)
+            ArcherTower tower = building.GetComponent<ArcherTower>();
+            if (tower != null)
+            {
+                float distance = Vector3.Distance(transform.position, building.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    firstTower = building;
+                }
+            }
+        }
+        
+        if (firstTower != null)
+        {
+            priorityTarget = firstTower;
+            targetBuilding = firstTower;
+            Debug.Log("Tutorial chimp targeting first tower!");
+        }
+    }
+
     void Update()
     {
         if (WaveSpawner.instance != null && WaveSpawner.instance.IsPaused())
@@ -110,6 +144,20 @@ public class EnemyAttacker : MonoBehaviour
                 transform.position = Vector3.Lerp(recoilStartPos, recoilTargetPos, recoilCurve);
             }
             return;
+        }
+
+        // If we have a priority target (first tower), stick to it until it's destroyed
+        if (priorityTarget != null)
+        {
+            if (priorityTarget.GetCurrentHealth() <= 0)
+            {
+                priorityTarget = null;
+                targetBuilding = null;
+            }
+            else
+            {
+                targetBuilding = priorityTarget;
+            }
         }
 
         if (targetBuilding == null)

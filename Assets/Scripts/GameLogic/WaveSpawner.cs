@@ -43,6 +43,8 @@ public class WaveSpawner : MonoBehaviour
     private int lastBananaThresholdCrossed = 0;
     private int lastWaveDay = 0;
     private int lastWarningDay = -999;
+    private bool firstTowerPlaced = false;
+    private bool firstWaveTriggered = false;
 
     public static WaveSpawner instance;
 
@@ -81,7 +83,6 @@ public class WaveSpawner : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             ForceNextWave();
-            Debug.Log("Cheat activated: Wave spawned!");
         }
     }
 
@@ -91,8 +92,34 @@ public class WaveSpawner : MonoBehaviour
         {
             while (spawningPaused)
             {
-                Debug.Log("spawning paused");
                 yield return new WaitForSeconds(0.5f);
+            }
+            
+            if (currentWave == 0 && !firstWaveTriggered)
+            {
+                if (firstTowerPlaced)
+                {
+                    firstWaveTriggered = true;
+                    currentWave++;
+                    lastWaveDay = TimeController.instance.currentDay;
+                    
+                    yield return new WaitForSeconds(2f);
+                    StartWave(1);
+                    
+                    while (enemiesAlive > 0)
+                    {
+                        yield return new WaitForSeconds(0.5f);
+                    }
+                    
+                    waveActive = false;
+                    HealAllBuildings();
+                    ChoosePathSystem.instance.ShowPathMenu();
+                }
+                else
+                {
+                    yield return new WaitForSeconds(0.5f);
+                    continue;
+                }
             }
             
             if (!attacksUnlocked)
@@ -102,7 +129,6 @@ public class WaveSpawner : MonoBehaviour
                 {
                     attacksUnlocked = true;
                     lastWaveDay = TimeController.instance.currentDay;
-                    Debug.Log("⚠️ Your banana wealth has attracted attention! Enemy waves incoming!");
                 }
                 else
                 {
@@ -117,7 +143,6 @@ public class WaveSpawner : MonoBehaviour
             if (currentThreshold > lastBananaThresholdCrossed)
             {
                 lastBananaThresholdCrossed = currentThreshold;
-                Debug.Log($"⚠️ Difficulty tier {currentThreshold} reached! Stronger enemies and faster waves incoming!");
                 lastWaveDay = TimeController.instance.currentDay;
                 yield return new WaitForSeconds(gracePeriodDays * 30f);
             }
@@ -132,13 +157,11 @@ public class WaveSpawner : MonoBehaviour
                 bool isBossWave = ((currentWave + 1) % 7 == 0) && bossPrefab != null;
                 if (isBossWave)
                 {
-                    toastManager.RequestToast($"🚨 BOSS WAVE Incoming Tomorrow! Prepare Yourself! 🚨", 3.0f, 0.3f, false, false);
-                    Debug.Log($"Warning: Boss wave {currentWave + 1} incoming tomorrow!");
+                    toastManager.RequestToast($"BOSS WAVE Incoming Tomorrow! Prepare Yourself!", 3.0f, 0.3f, false, false);
                 }
                 else
                 {
-                    toastManager.RequestToast($"⚠️ Wave {currentWave + 1} Incoming Tomorrow! Prepare Your Defenses!", 3.0f, 0.3f, false, false);
-                    Debug.Log($"Warning: Wave {currentWave + 1} incoming tomorrow!");
+                    toastManager.RequestToast($"Wave {currentWave + 1} Incoming Tomorrow! Prepare Your Defenses!", 3.0f, 0.3f, false, false);
                 }
             }
             
@@ -152,7 +175,7 @@ public class WaveSpawner : MonoBehaviour
                 bool isBossWave = (currentWave % 7 == 0) && bossPrefab != null;
                 
                 if (isBossWave)
-                    toastManager.RequestToast($"🚨 BOSS WAVE {currentWave} Starting NOW! 🚨", 2.0f, 0.3f, false, false);
+                    toastManager.RequestToast($"BOSS WAVE {currentWave} Starting NOW!", 2.0f, 0.3f, false, false);
                 else
                     toastManager.RequestToast($"Chimpanzees Incoming! Wave {currentWave} Starting!", 2.0f, 0.3f, false, false);
                 
@@ -166,11 +189,6 @@ public class WaveSpawner : MonoBehaviour
                 
                 waveActive = false;
                 HealAllBuildings();
-
-                if (currentWave == 1)
-                {
-                    ChoosePathSystem.instance.ShowPathMenu();
-                }
             }
             
             yield return new WaitForSeconds(1f);
@@ -198,12 +216,10 @@ public class WaveSpawner : MonoBehaviour
         
         if (isBossWave)
         {
-            Debug.Log($"🚨 BOSS WAVE {currentWave}! 🚨");
             SpawnBoss();
         }
         else
         {
-            Debug.Log($"Wave {currentWave} starting...");
             StartCoroutine(SpawnEnemies(enemiesToSpawn));
         }
     }
@@ -230,7 +246,6 @@ public class WaveSpawner : MonoBehaviour
         
         waveSize *= bananaMultiplier;
         
-        Debug.Log($"Wave size: Base={baseEnemiesPerWave * Mathf.Pow(waveScalingFactor, currentWave - 1):F1}, Banana multiplier={bananaMultiplier:F1}, Final={Mathf.CeilToInt(waveSize)}");
         
         return Mathf.CeilToInt(waveSize);
     }
@@ -238,7 +253,7 @@ public class WaveSpawner : MonoBehaviour
     IEnumerator AnnounceAndStartWave(int enemiestoSpawn, bool isBossWave)
     {
         if (isBossWave)
-            toastManager.RequestToast($"🚨 BOSS WAVE Incoming! Prepare Yourself! 🚨", 2.0f, 0.3f, false, false);
+            toastManager.RequestToast($"BOSS WAVE Incoming! Prepare Yourself!", 2.0f, 0.3f, false, false);
         else
             toastManager.RequestToast($"Chimpanzees Incoming! Wave {currentWave}", 2.0f, 0.3f, false, false);
         yield return new WaitForSeconds(2f);
@@ -261,7 +276,6 @@ public class WaveSpawner : MonoBehaviour
         
         if (availableEnemies.Count == 0)
         {
-            Debug.LogWarning("No available enemy types for current banana count!");
             return;
         }
         
@@ -286,6 +300,11 @@ public class WaveSpawner : MonoBehaviour
         EnemyAttacker attacker = spawnedEnemy.GetComponent<EnemyAttacker>();
         if (attacker != null)
         {
+            if (currentWave == 1)
+            {
+                attacker.SetPriorityTargetToFirstTower();
+            }
+            
             enemiesAlive++;
             spawnedEnemy.AddComponent<EnemyDeathTracker>().Initialize(this);
         }
@@ -354,11 +373,6 @@ public class WaveSpawner : MonoBehaviour
                 healedCount++;
             }
         }
-        
-        if (healedCount > 0)
-        {
-            Debug.Log($"✨ Wave cleared! All {healedCount} buildings restored to full health!");
-        }
     }
 
     private int GetDaysBetweenWaves()
@@ -396,6 +410,14 @@ public class WaveSpawner : MonoBehaviour
     public void PauseSpawning() { spawningPaused = true; }
     public void UnpauseSpawning() { spawningPaused = false; }
     public bool IsPaused() => spawningPaused;
+    
+    public void OnFirstTowerPlaced()
+    {
+        if (!firstTowerPlaced)
+        {
+            firstTowerPlaced = true;
+        }
+    }
 }
 
 public class EnemyDeathTracker : MonoBehaviour

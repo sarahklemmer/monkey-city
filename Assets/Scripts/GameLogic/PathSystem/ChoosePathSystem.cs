@@ -25,13 +25,10 @@ public class ChoosePathSystem : MonoBehaviour
         WaveSpawner.instance.PauseSpawning();
 
         choosePathMenu.SetActive(true);
-
-        ToastManager.Instance?.RequestToast("You'll earn 1 player point every wave", 4f);
     }
 
     public void HidePathMenu()
     {
-        // resumes the game features
         TimeController.instance.StartTicking();
         BananaProductionTimer.instance.StartProduction();
         WaveSpawner.instance.UnpauseSpawning();

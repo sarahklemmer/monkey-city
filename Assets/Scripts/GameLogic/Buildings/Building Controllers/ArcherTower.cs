@@ -57,13 +57,16 @@ public class ArcherTower : BuildingBase
 
     void Start()
     {
-        // Play building placement sound
         if (BuildingSoundManager.instance != null)
         {
             BuildingSoundManager.instance.PlayBuildingPlacedSound();
         }
-        
-        // ALWAYS show range indicator for testing
+    
+        if (WaveSpawner.instance != null)
+        {
+            WaveSpawner.instance.OnFirstTowerPlaced();
+        }
+    
         if (rangeIndicator != null)
         {
             rangeIndicator.enabled = true;
