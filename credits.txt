@@ -5,3 +5,6 @@ the move button is from https://www.flaticon.com/authors/md-tanvirul-haque and i
 large chunks of BuildingManagementUi.cs are written by chatgpt
 UiInteractibilityManager.cs is pure ai slop
 placeholder spiketrap (free) is from https://www.fab.com/listings/8b8eb6de-9f5a-4f81-b610-79cfd07d1961
+Attack and death particle is from https://assetstore.unity.com/packages/vfx/particles/essential-2d-particle-fx-starter-pack-for-platformer-games-324653 and is free for use
+Leaf model is https://sketchfab.com/3d-models/single-leaf-002c974f7dec492a940abddab3104bab and is free to use 
+Upgrade particle is https://assetstore.unity.com/packages/vfx/particles/star-pack-advanced-sparkle-system-185515 and free for use
