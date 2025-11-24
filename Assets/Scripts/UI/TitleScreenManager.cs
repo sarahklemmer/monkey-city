@@ -55,12 +55,13 @@ public class TitleScreenManager : MonoBehaviour
 
     void Start()
     {
+        DisableAllAudio();
+        
         if (leftLeaf != null)
             leftLeafStartPos = leftLeaf.position;
         if (rightLeaf != null)
             rightLeafStartPos = rightLeaf.position;
         
-        // Set up camera rotation target (Tree of Life) - this is for 3D preview only
         if (treeOfLife != null)
         {
             previewCameraTarget = treeOfLife;
@@ -89,7 +90,6 @@ public class TitleScreenManager : MonoBehaviour
             }
         }
         
-        // Initialize transition overlay - start fully black
         if (transitionOverlay != null)
         {
             transitionOverlay.gameObject.SetActive(true);
@@ -98,7 +98,6 @@ public class TitleScreenManager : MonoBehaviour
             transitionOverlay.color = color;
         }
         
-        // Initialize UI elements (these should be in Canvas/UI space)
         if (titleImage != null)
             titleImage.alpha = 0;
         
@@ -116,14 +115,23 @@ public class TitleScreenManager : MonoBehaviour
         if (enableFakeGameplay)
         {
             SetupFakeGameplay();
-            MakeTreeOfLifeInvincible();
             StartCoroutine(SpawnFakeEnemies());
         }
     }
 
+    private void DisableAllAudio()
+    {
+        AudioSource[] allAudioSources = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
+        foreach (AudioSource audioSource in allAudioSources)
+        {
+            audioSource.mute = true;
+        }
+        
+        AudioListener.volume = 0f;
+    }
+
     private IEnumerator PlayIntroSequence()
     {
-        // Fade in from black at the start
         yield return StartCoroutine(FadeInFromBlack());
         
         yield return new WaitForSeconds(0.5f);
@@ -153,7 +161,6 @@ public class TitleScreenManager : MonoBehaviour
     {
         if (transitionOverlay == null) yield break;
         
-        Debug.Log("Fading in from black...");
         float elapsed = 0f;
         
         while (elapsed < transitionDuration)
@@ -169,17 +176,13 @@ public class TitleScreenManager : MonoBehaviour
             yield return null;
         }
         
-        // Ensure it's fully transparent
         Color finalColor = transitionOverlay.color;
         finalColor.a = 0f;
         transitionOverlay.color = finalColor;
-        
-        Debug.Log("Fade in complete!");
     }
 
     private IEnumerator AnimateLeaves()
     {
-        Debug.Log("Starting leaf animation");
         float elapsed = 0f;
         
         while (elapsed < leafAnimationDuration)
@@ -203,7 +206,6 @@ public class TitleScreenManager : MonoBehaviour
             yield return null;
         }
         
-        Debug.Log("Leaf animation complete, destroying leaves");
         if (leftLeaf != null)
             Destroy(leftLeaf.gameObject);
         if (rightLeaf != null)
@@ -214,11 +216,9 @@ public class TitleScreenManager : MonoBehaviour
     {
         if (titleImage == null)
         {
-            Debug.LogError("Title Image is not assigned!");
             yield break;
         }
         
-        Debug.Log("Starting to fade in title");
         float elapsed = 0f;
         
         while (elapsed < titleFadeDuration)
@@ -229,7 +229,6 @@ public class TitleScreenManager : MonoBehaviour
         }
         
         titleImage.alpha = 1;
-        Debug.Log("Title fade complete!");
     }
 
     private IEnumerator FadeInPlayButton()
@@ -240,7 +239,6 @@ public class TitleScreenManager : MonoBehaviour
             yield break;
         }
         
-        Debug.Log("Starting to fade in play button");
         float elapsed = 0f;
         
         while (elapsed < buttonFadeDuration)
@@ -252,7 +250,6 @@ public class TitleScreenManager : MonoBehaviour
         
         playButtonGroup.alpha = 1;
         playButtonGroup.interactable = true;
-        Debug.Log("Play button fade complete!");
     }
 
     private IEnumerator RotateCamera()
@@ -298,7 +295,6 @@ public class TitleScreenManager : MonoBehaviour
 
     private IEnumerator FadeTransitionToGame()
     {
-        Debug.Log("Starting fade transition to game scene...");
         
         if (transitionOverlay == null)
         {
@@ -306,7 +302,6 @@ public class TitleScreenManager : MonoBehaviour
             yield break;
         }
         
-        // Fade out UI elements
         if (titleImage != null)
         {
             StartCoroutine(FadeOutUI(titleImage, transitionDuration * 0.5f));
@@ -318,16 +313,13 @@ public class TitleScreenManager : MonoBehaviour
         
         yield return new WaitForSeconds(transitionDuration * 0.3f);
         
-        // Make sure overlay is active and visible
         transitionOverlay.gameObject.SetActive(true);
         transitionOverlay.enabled = true;
         Color startColor = transitionOverlay.color;
         startColor.a = 0;
         transitionOverlay.color = startColor;
         
-        Debug.Log("Starting fade to black...");
         
-        // Fade to black
         float elapsed = 0f;
         while (elapsed < transitionDuration)
         {
@@ -339,19 +331,16 @@ public class TitleScreenManager : MonoBehaviour
             color.a = Mathf.Lerp(0f, 1f, curved);
             transitionOverlay.color = color;
             
-            Debug.Log($"Fading... Alpha: {color.a}");
-            
             yield return null;
         }
         
-        // Make sure it's fully black
         Color finalColor = transitionOverlay.color;
         finalColor.a = 1f;
         transitionOverlay.color = finalColor;
         
-        Debug.Log($"Fade complete! Loading scene: {gameSceneName}");
+        yield return new WaitForSeconds(0.2f);
         
-        yield return new WaitForSeconds(0.2f); // Brief pause on black screen
+        AudioListener.volume = 1f;
         
         UnityEngine.SceneManagement.SceneManager.LoadScene(gameSceneName);
     }
@@ -421,21 +410,6 @@ public class TitleScreenManager : MonoBehaviour
                 }
             }
         }
-        
-        Debug.Log($"Setup complete: Manned {farms.Length} farms and {towers.Length} towers");
-    }
-
-    private void MakeTreeOfLifeInvincible()
-    {
-        if (treeOfLife != null)
-        {
-            BuildingHealth health = treeOfLife.GetComponent<BuildingHealth>();
-            if (health != null)
-            {
-                Destroy(health);
-                Debug.Log("Tree of Life made invincible for title screen");
-            }
-        }
     }
 
     private IEnumerator SpawnFakeEnemies()
@@ -449,8 +423,9 @@ public class TitleScreenManager : MonoBehaviour
                 for (int i = 0; i < enemiesPerWave; i++)
                 {
                     Vector3 spawnPos = GetRandomPerimeterPosition();
-                    Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
-                    yield return new WaitForSeconds(0.5f);
+                    GameObject enemyObj = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+
+                    yield return new WaitForSeconds(3f); 
                 }
             }
             
@@ -491,5 +466,28 @@ public class TitleScreenManager : MonoBehaviour
         }
         
         return new Vector3(x, 0, z);
+    }
+}
+
+public class TitleScreenInvincible : MonoBehaviour
+{
+    private BuildingHealth buildingHealth;
+    private float minHealth = 1f;
+    
+    public void Initialize(BuildingHealth health)
+    {
+        buildingHealth = health;
+    }
+    
+    void LateUpdate()
+    {
+        if (buildingHealth != null)
+        {
+            if (buildingHealth.GetCurrentHealth() < minHealth)
+            {
+                float maxHealth = buildingHealth.GetMaxHealth();
+                buildingHealth.SetHealth(maxHealth * 0.5f);
+            }
+        }
     }
 }

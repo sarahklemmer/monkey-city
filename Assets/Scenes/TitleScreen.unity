@@ -1322,6 +1322,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BananaFarm (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 1739785594879192215, guid: 14e9ff15787b84263bf85f4f4244722a, type: 3}
+      propertyPath: maxHealth
+      value: 1000
+      objectReference: {fileID: 0}
     - target: {fileID: 2178118394621793489, guid: 14e9ff15787b84263bf85f4f4244722a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.37
@@ -3684,6 +3688,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BananaFarm (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1739785594879192215, guid: 14e9ff15787b84263bf85f4f4244722a, type: 3}
+      propertyPath: maxHealth
+      value: 1000
+      objectReference: {fileID: 0}
     - target: {fileID: 2178118394621793489, guid: 14e9ff15787b84263bf85f4f4244722a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.38
@@ -3799,6 +3807,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3433763991557326540, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
+      propertyPath: maxHealth
+      value: 10000
+      objectReference: {fileID: 0}
     - target: {fileID: 7165693314679942278, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_Name
       value: Archer tower (2)
@@ -4303,6 +4315,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3433763991557326540, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
+      propertyPath: maxHealth
+      value: 10000
+      objectReference: {fileID: 0}
     - target: {fileID: 7165693314679942278, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_Name
       value: Archer tower (1)
@@ -4871,6 +4887,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BananaFarm
       objectReference: {fileID: 0}
+    - target: {fileID: 1739785594879192215, guid: 14e9ff15787b84263bf85f4f4244722a, type: 3}
+      propertyPath: maxHealth
+      value: 1000
+      objectReference: {fileID: 0}
     - target: {fileID: 2178118394621793489, guid: 14e9ff15787b84263bf85f4f4244722a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.16
@@ -5301,7 +5321,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  gameSceneName: Graphics
+  gameSceneName: TreeButtons
 --- !u!4 &1130828980
 Transform:
   m_ObjectHideFlags: 0
@@ -8160,6 +8180,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3433763991557326540, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
+      propertyPath: maxHealth
+      value: 10000
+      objectReference: {fileID: 0}
     - target: {fileID: 7165693314679942278, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_Name
       value: Archer tower
