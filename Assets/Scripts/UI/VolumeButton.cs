@@ -6,16 +6,21 @@ public class VolumeButton : MonoBehaviour
     [SerializeField] Sprite onImage;
     [SerializeField] Sprite offImage;
     Image thisImage;
+    public static VolumeButton instance;
 
-    void Start()
+    void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
         thisImage = GetComponent<Image>();
     }
 
-    void Update()
+    public void ToggleVolume()
     {
-        if(BuildingManager.instance.GetTreeOfLife() == null) return;
-        // this isn't backwards, it's to toggle music on/off
         thisImage.sprite = Soundtrack.instance.Playing() ? offImage : onImage;
     }
 }

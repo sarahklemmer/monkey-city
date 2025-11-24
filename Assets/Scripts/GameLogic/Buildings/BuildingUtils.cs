@@ -28,7 +28,7 @@ public class BuildingUtils
 {
     private static Dictionary<BuildingType, BuildingDimensions> typeToDimensions = new()
     {
-        { BuildingType.TreeOfLife, new BuildingDimensions(4, 4) },
+        { BuildingType.TreeOfLife, new BuildingDimensions(6, 6) },
         { BuildingType.BananaFarm, new BuildingDimensions(1, 1) },
         { BuildingType.ArcherTower, new BuildingDimensions(1, 1) },
         { BuildingType.SpikeTrap, new BuildingDimensions(1, 1) },
