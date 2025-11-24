@@ -11,9 +11,15 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/TutorialPlus.unity
     guid: 3d5e4f79e8b9d4e1e91d055016a91ad7
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MoveButton.unity
     guid: e79a57fd652524995a6c203f1fb9f593
+  - enabled: 1
+    path: Assets/Scenes/TitleScreen.unity
+    guid: 0fbd7ed73f52b4bcf91a81ac45101172
+  - enabled: 1
+    path: Assets/Scenes/Graphics.unity
+    guid: b3a924fb98a324708816b617d4b54eba
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
