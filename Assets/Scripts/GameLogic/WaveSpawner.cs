@@ -169,10 +169,11 @@ public class WaveSpawner : MonoBehaviour
                 waveActive = false;
                 HealAllBuildings();
 
-                if (currentWave == 1)
-                {
-                    ChoosePathSystem.instance.ShowPathMenu();
-                }
+            PathManager.instance.playerPoints += 1;
+
+            if (currentWave == 1)
+            {
+                ChoosePathSystem.instance.ShowPathMenu();
             }
             
             yield return new WaitForSeconds(1f);
