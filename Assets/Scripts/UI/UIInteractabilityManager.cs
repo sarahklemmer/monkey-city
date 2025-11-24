@@ -35,6 +35,8 @@ public class UIInteractabilityManager : MonoBehaviour
         cg.alpha = 0f;
         cg.interactable = false;
         cg.blocksRaycasts = false;
+
+        PauseGame();
     }
 
     public void EnableUI()
@@ -45,6 +47,8 @@ public class UIInteractabilityManager : MonoBehaviour
         cg.alpha = defaultAlpha;
         cg.interactable = true;
         cg.blocksRaycasts = true;
+
+        UnpauseGame();
     }
 
     public void DisableInteractivity()
@@ -57,6 +61,7 @@ public class UIInteractabilityManager : MonoBehaviour
     {
         DisableLastExceptionIgnoringParentGroups();
         cg.interactable = true;
+        UnpauseGame();
     }
 
     public void DisableInteractivityExcept(Transform exceptionRoot)
@@ -80,6 +85,21 @@ public class UIInteractabilityManager : MonoBehaviour
 
     private void DisableInteractivityInternal()
     {
+        PauseGame();
         cg.interactable = false;
+    }
+
+    private void PauseGame()
+    {
+        TimeController.instance.StopTicking();
+        BananaProductionTimer.instance.StopProduction();
+        WaveSpawner.instance.PauseSpawning();
+    }
+
+    private void UnpauseGame()
+    {
+        TimeController.instance.StartTicking();
+        BananaProductionTimer.instance.StartProduction();
+        WaveSpawner.instance.UnpauseSpawning();
     }
 }

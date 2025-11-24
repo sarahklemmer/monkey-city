@@ -83,6 +83,9 @@ public class TreeOfLife : BuildingBase
 
     public override void OnDestroy()
     {
+        TimeController.instance.StopTicking();
+        BananaProductionTimer.instance.StopProduction();
+        WaveSpawner.instance.PauseSpawning();
         DeathScreen.instance.ShowDeathScreen();
     }
 }
