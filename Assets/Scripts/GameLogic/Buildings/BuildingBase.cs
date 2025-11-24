@@ -112,6 +112,7 @@ public abstract class BuildingBase : MonoBehaviour
         {
             c.enabled = visible;
         }
+        if(monkeyVisualizer != null) monkeyVisualizer.SetMonkeyCount(monkeys.Count());
     }
 
     public void MoveMonkeysToPos(Vector3 newpos)
