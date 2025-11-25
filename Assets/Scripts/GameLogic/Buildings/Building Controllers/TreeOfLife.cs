@@ -12,7 +12,7 @@ public class TreeOfLife : BuildingBase
     void Awake()
     {
         base.SharedAwakeBehavior();
-        building = new(BuildingType.TreeOfLife); 
+        type = BuildingType.TreeOfLife;
         monkeys = new(999);
     }
     
@@ -25,6 +25,8 @@ public class TreeOfLife : BuildingBase
         {
             BuildingSoundManager.instance.PlayBuildingPlacedSound();
         }
+
+        PopulationManager.instance.AddToPopulation(1);
         
         //TODO: if we want a tutorial uncomment this
         // SimpleTutorial.instance.StartTutorial();

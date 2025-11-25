@@ -6,7 +6,6 @@ public abstract class BuildingBase : MonoBehaviour
     [SerializeField] private Material outlineMaterial;
     [SerializeField] private Renderer targetRenderer;
     private GlowEffect glow;
-    protected Building building;
     public BuildingMonkeys monkeys {get; protected set; }
     protected VisualMonkeys monkeyVisualizer;
     protected Renderer[] renderers;
@@ -18,6 +17,8 @@ public abstract class BuildingBase : MonoBehaviour
     // functions to be overrode
     public abstract void OnDayCycle();
     public abstract void OnDestroy();
+    public BuildingType type {get; protected set;}
+    public BuildingHealth health;
 
     public int grid_x { get; private set; } = 0;
     public int grid_y { get; private set; } = 0;
@@ -34,8 +35,8 @@ public abstract class BuildingBase : MonoBehaviour
         BuildingManager.instance.AddBuilding(this);
         BuildingManagementUi.instance.AddBuilding(this);
         ToggleFlasher.instance.StopFlash();
-        if(building.health == null) building.health = GetComponent<BuildingHealth>();
-        building.health.SetBuilding(this);
+        if(health == null) health = GetComponent<BuildingHealth>();
+        health.SetBuilding(this);
     }
 
     protected virtual void OnDisable()
@@ -98,8 +99,7 @@ public abstract class BuildingBase : MonoBehaviour
     public virtual int GetMonkeyCapacity() => monkeys.capacity;
     public bool CanAllocate() => monkeys.CanAllocate();
 
-    public BuildingType GetBuildingType() => building.type;
-    public Building GetInternalBuilding() => building;
+    public BuildingType GetBuildingType() => type;
 
     public void SetVisible(bool visible)
     {

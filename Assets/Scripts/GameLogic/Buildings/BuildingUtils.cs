@@ -46,30 +46,30 @@ public class BuildingUtils
     }
 }
 
-public class Building
-{
-    public readonly BuildingType type;
-    public GameObject instance;
-    public BuildingHealth health;
+// public class Building
+// {
+//     public readonly BuildingType type;
+//     public GameObject instance;
+//     public BuildingHealth health;
 
-    public Building(BuildingType in_type)
-    {
-        type = in_type;
-    }
+//     public Building(BuildingType in_type)
+//     {
+//         type = in_type;
+//     }
 
-    public void SetInstance(GameObject obj)
-    {
-        instance = obj;
-        health = obj.GetComponent<BuildingHealth>();
+//     public void SetInstance(GameObject obj)
+//     {
+//         instance = obj;
+//         health = obj.GetComponent<BuildingHealth>();
         
-        if (health == null)
-        {
-            Debug.LogWarning($"Building of type {type} does not have BuildingHealth component!");
-        }
-    }
+//         if (health == null)
+//         {
+//             Debug.LogWarning($"Building of type {type} does not have BuildingHealth component!");
+//         }
+//     }
 
-    public bool IsDestroyed()
-    {
-        return instance == null || (health != null && health.GetCurrentHealth() <= 0);
-    }
-}
+//     public bool IsDestroyed()
+//     {
+//         return instance == null || (health != null && health.GetCurrentHealth() <= 0);
+//     }
+// }

@@ -7,6 +7,6 @@ public class MoveButtonOnClick : MonoBehaviour
         building.SetVisible(false);
         BuildingGrid.instance.RemoveBuilding(building);
 
-        BuildingGrid.instance.SpawnBuildingPlacementIndicators(building.GetInternalBuilding(), building);
+        BuildingGrid.instance.SpawnBuildingPlacementIndicators(building.type, building);
     }
 }

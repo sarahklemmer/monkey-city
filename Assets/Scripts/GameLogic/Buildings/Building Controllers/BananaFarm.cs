@@ -14,7 +14,7 @@ public class BananaFarm : BuildingBase
     void Awake()
     {
         base.SharedAwakeBehavior();
-        building = new(BuildingType.BananaFarm);
+        type = BuildingType.BananaFarm;
         monkeys = new(2);
     }
     

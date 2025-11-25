@@ -22,7 +22,7 @@ public class BuildingGrid : MonoBehaviour
 
     [SerializeField] int GRID_SIZE = 20;
     const float BASE_PLANE_SIZE = 10f;
-    private Building[,] grid;
+    private BuildingType?[,] grid;
     private bool treeOfLifePlaced = false;
 
     void Awake()
@@ -36,7 +36,7 @@ public class BuildingGrid : MonoBehaviour
 
         instance = this;
 
-        grid = new Building[GRID_SIZE, GRID_SIZE];
+        grid = new BuildingType?[GRID_SIZE, GRID_SIZE];
         transform.localScale = new Vector3(GRID_SIZE / BASE_PLANE_SIZE, 1, GRID_SIZE / BASE_PLANE_SIZE);
         // move indicators parent to the center of the grid
         placementIndicatorsParent.transform.position = transform.position;
@@ -84,10 +84,10 @@ public class BuildingGrid : MonoBehaviour
 
 
     // starts at lower left corner of building
-    public bool CanPlace(int x_start, int y_start, Building building)
+    public bool CanPlace(int x_start, int y_start, BuildingType type)
     {
-        int x_end = BuildingUtils.TypeToDimensions(building.type).width + x_start;
-        int y_end = BuildingUtils.TypeToDimensions(building.type).height + y_start;
+        int x_end = BuildingUtils.TypeToDimensions(type).width + x_start;
+        int y_end = BuildingUtils.TypeToDimensions(type).height + y_start;
 
         Assert.IsFalse(x_end > GRID_SIZE, "placing building out of bounds");
         Assert.IsTrue(x_start >= 0, "placing building out of bounds");
@@ -107,25 +107,24 @@ public class BuildingGrid : MonoBehaviour
     }
 
     // starts at lower left corner of building
-    public void Place(int x_start, int y_start, Building building)
+    public void Place(int x_start, int y_start, BuildingType type)
     {
-        Assert.IsTrue(CanPlace(x_start, y_start, building), "Trying to place building that can't be placed!");
+        Assert.IsTrue(CanPlace(x_start, y_start, type), "Trying to place building that can't be placed!");
 
-        if (building.type == BuildingType.TreeOfLife) treeOfLifePlaced = true;
+        if (type == BuildingType.TreeOfLife) treeOfLifePlaced = true;
 
-        int x_end = BuildingUtils.TypeToDimensions(building.type).width + x_start;
-        int y_end = BuildingUtils.TypeToDimensions(building.type).height + y_start;
+        int x_end = BuildingUtils.TypeToDimensions(type).width + x_start;
+        int y_end = BuildingUtils.TypeToDimensions(type).height + y_start;
 
         for (int x = x_start; x < x_end; x++)
         {
             for (int y = y_start; y < y_end; y++)
             {
-                grid[x, y] = building;
+                grid[x, y] = type;
             }
         }
     }
 
-    // From clickBuilding: Remove building from grid by Building reference
     public void RemoveBuilding(BuildingBase b)
     {
         grid[b.grid_x, b.grid_y] = null;
@@ -181,7 +180,7 @@ public class BuildingGrid : MonoBehaviour
         return true;
     }
 
-    public void SpawnBuildingPlacementIndicators(Building building, BuildingBase buildingToMove = null)
+    public void SpawnBuildingPlacementIndicators(BuildingType type, BuildingBase buildingToMove = null)
     {
         Assert.IsNotNull(placementIndicatorPrefab, "Assign a placementIndicatorPrefab in the Inspector!");
         if (!treeOfLifePlaced) return;
@@ -195,7 +194,7 @@ public class BuildingGrid : MonoBehaviour
             DestroyBuildingPlacementIndicators();
         }
 
-        BuildingDimensions dimensions = BuildingUtils.TypeToDimensions(building.type);
+        BuildingDimensions dimensions = BuildingUtils.TypeToDimensions(type);
 
         int w = dimensions.width;
         int h = dimensions.height;
@@ -210,7 +209,7 @@ public class BuildingGrid : MonoBehaviour
                 Vector3 pos = new Vector3(GridXToWorldX(x), 0, GridYToWorldZ(y));
                 GameObject ind = Instantiate(placementIndicatorPrefab, pos, Quaternion.identity, placementIndicatorsParent);
                 if(buildingToMove == null)
-                    ind.GetComponent<PlacementIndicatorOnClick>().Initialize(building, x, y);
+                    ind.GetComponent<PlacementIndicatorOnClick>().Initialize(type, x, y);
                 else
                     ind.GetComponent<PlacementIndicatorOnClick>().InitializeWithExistingBuilding(buildingToMove, x, y);
             }
@@ -228,9 +227,9 @@ public class BuildingGrid : MonoBehaviour
         foreach (Transform child in placementIndicatorsParent) Destroy(child.gameObject);
     }
 
-    public void SpawnSingleBuildingPlacementIndicators(Building building)
+    public void SpawnSingleBuildingPlacementIndicators(BuildingType type)
     {
-        BuildingDimensions dimensions = BuildingUtils.TypeToDimensions(building.type);
+        BuildingDimensions dimensions = BuildingUtils.TypeToDimensions(type);
 
         int w = dimensions.width;
         int h = dimensions.height;
@@ -238,12 +237,12 @@ public class BuildingGrid : MonoBehaviour
         int x = GRID_SIZE / 2 - w / 2;
         int y = GRID_SIZE / 2 - h / 2;
 
-        SpawnSingleBuildingPlacementIndicators(building, x, y);
+        SpawnSingleBuildingPlacementIndicators(type, x, y);
     }
     
-    public void SpawnSingleBuildingPlacementIndicators(Building building, int x, int y)
+    public void SpawnSingleBuildingPlacementIndicators(BuildingType type, int x, int y)
     {
-        BuildingDimensions dimensions = BuildingUtils.TypeToDimensions(building.type);
+        BuildingDimensions dimensions = BuildingUtils.TypeToDimensions(type);
 
         int w = dimensions.width;
         int h = dimensions.height;
@@ -260,7 +259,7 @@ public class BuildingGrid : MonoBehaviour
         Vector3 pos = new Vector3(GridXToWorldX(x), 0, GridYToWorldZ(y));
 
         GameObject ind = Instantiate(placementIndicatorPrefab, pos, Quaternion.identity, placementIndicatorsParent);
-        ind.GetComponent<PlacementIndicatorOnClick>().Initialize(building, x, y, building.type == BuildingType.TreeOfLife);
+        ind.GetComponent<PlacementIndicatorOnClick>().Initialize(type, x, y, type == BuildingType.TreeOfLife);
     }
 
     public void FinishLevel()

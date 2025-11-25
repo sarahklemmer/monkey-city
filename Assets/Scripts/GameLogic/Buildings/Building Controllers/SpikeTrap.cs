@@ -8,7 +8,7 @@ public class SpikeTrap : BuildingBase
     void Awake()
     {
         base.SharedAwakeBehavior();
-        building = new(BuildingType.SpikeTrap);
+        type = BuildingType.SpikeTrap;
         monkeys = new(1);
 
         canContainMonkeys = false;

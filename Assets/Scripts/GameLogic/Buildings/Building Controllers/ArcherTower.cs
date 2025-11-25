@@ -33,7 +33,8 @@ public class ArcherTower : BuildingBase
     void Awake()
     {
         base.SharedAwakeBehavior();
-        building = new(BuildingType.ArcherTower);
+        
+        type = BuildingType.ArcherTower;
         monkeys = new(1);
     
         // Find and stop any looping particle systems

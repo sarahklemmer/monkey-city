@@ -3,8 +3,7 @@ using UnityEngine;
 public class PlacementManager : MonoBehaviour
 {
     public static PlacementManager instance;
-    
-    private Building currentBuildingForPlacement;
+    public BuildingType? type { get; private set;}
     
     void Awake()
     {
@@ -18,37 +17,26 @@ public class PlacementManager : MonoBehaviour
         instance = this;
     }
     
-    public void SetCurrentBuilding(Building building)
+    public void SetCurrentBuilding(BuildingType type)
     {
-        currentBuildingForPlacement = building;
-        BuildingType type = building.type;
+        this.type = type;
         
-        if (building != null && BuildingGrid.instance != null)
-        {
-            if (type == BuildingType.TreeOfLife)
-                BuildingGrid.instance.SpawnSingleBuildingPlacementIndicators(building);
-            else
-                BuildingGrid.instance.SpawnBuildingPlacementIndicators(building);
-        }
-    }
-    
-    public Building GetCurrentBuilding()
-    {
-        return currentBuildingForPlacement;
+        if (type == BuildingType.TreeOfLife) BuildingGrid.instance.SpawnSingleBuildingPlacementIndicators(type);
+        else BuildingGrid.instance.SpawnBuildingPlacementIndicators(type);
     }
     
     public void RefreshPlacementIndicators()
     {
-        if (currentBuildingForPlacement != null && BuildingGrid.instance != null)
+        if (type != null)
         {
             BuildingGrid.instance.DestroyBuildingPlacementIndicators();
-            BuildingGrid.instance.SpawnBuildingPlacementIndicators(currentBuildingForPlacement);
+            BuildingGrid.instance.SpawnBuildingPlacementIndicators(type.Value);
         }
     }
     
     public void ClearCurrentBuilding()
     {
-        currentBuildingForPlacement = null;
+        type = null;
         if (BuildingGrid.instance != null)
         {
             BuildingGrid.instance.DestroyBuildingPlacementIndicators();

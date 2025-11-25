@@ -5,7 +5,7 @@ public class Wall : BuildingBase
     void Awake()
     {
         base.SharedAwakeBehavior();
-        building = new(BuildingType.Wall);
+        type = BuildingType.Wall;
         monkeys = new(0);
         canContainMonkeys = false;
     }

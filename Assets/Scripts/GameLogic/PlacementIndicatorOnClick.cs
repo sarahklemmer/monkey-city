@@ -1,19 +1,19 @@
 using UnityEngine.Assertions;
 using UnityEngine;
-using System.Linq;
+using UnityEngine.AI;
 
 public class PlacementIndicatorOnClick : MonoBehaviour
 {
-    BuildingType buildingType;
+    BuildingType type;
     BuildingBase existingBuilding;
     int grid_x;
     int grid_y;
     bool isTreeOfLifeIndicator = false;
     bool isMoving = false;
 
-    public void Initialize(Building building, int grid_x, int grid_y, bool isTreeOfLifeIndicator = false)
+    public void Initialize(BuildingType type, int grid_x, int grid_y, bool isTreeOfLifeIndicator = false)
     {
-        buildingType = building.type;
+        this.type = type;
         this.grid_x = grid_x;
         this.grid_y = grid_y;
         this.isTreeOfLifeIndicator = isTreeOfLifeIndicator;
@@ -25,7 +25,7 @@ public class PlacementIndicatorOnClick : MonoBehaviour
         this.grid_y = grid_y;
         isMoving = true;
         this.existingBuilding = existingBuilding;
-        buildingType = existingBuilding.GetBuildingType();
+        type = existingBuilding.GetBuildingType();
     }
 
     void Update()
@@ -43,10 +43,7 @@ public class PlacementIndicatorOnClick : MonoBehaviour
         {
             // disable building selection for 1 frame
             BuildingSelector.instance.DisableSelectionThisFrame();
-
-            Building placedBuilding = new Building(buildingType);
-
-            GameObject prefab = BuildingToPrefab.GetPrefab(buildingType);
+            GameObject prefab = BuildingToPrefab.GetPrefab(type);
 
             Vector3 pos = new Vector3(
                 BuildingGrid.instance.GridXToWorldX(grid_x) + prefab.transform.position.x,
@@ -54,7 +51,7 @@ public class PlacementIndicatorOnClick : MonoBehaviour
                 BuildingGrid.instance.GridYToWorldZ(grid_y) + prefab.transform.position.z
             );
 
-            BuildingDimensions dim = BuildingUtils.TypeToDimensions(buildingType);
+            BuildingDimensions dim = BuildingUtils.TypeToDimensions(type);
 
             pos.x += (dim.width - 1) * 0.5f;
             pos.z += (dim.height - 1) * 0.5f;
@@ -68,12 +65,12 @@ public class PlacementIndicatorOnClick : MonoBehaviour
                 existingBuilding.MoveMonkeysToPos(pos);
                 existingBuilding.SetGridCoords(grid_x, grid_y);
                 // remove and then immediately place in its new destination
-                BuildingGrid.instance.Place(grid_x, grid_y, existingBuilding.GetInternalBuilding());
+                BuildingGrid.instance.Place(grid_x, grid_y, type);
                 NotifyEnemiesOfBuildingMoved();
                 return;
             }
             //TODO: ask kyle about this or make walls not movable
-            if (buildingType == BuildingType.Wall)
+            if (type == BuildingType.Wall)
             {
                 Assert.IsFalse(isMoving, "can't move walls until we talk to Kyle!");
                 Vector3 center = BuildingGrid.instance.transform.position;
@@ -89,23 +86,22 @@ public class PlacementIndicatorOnClick : MonoBehaviour
                 }
             }
 
-            BuildingGrid.instance.Place(grid_x, grid_y, placedBuilding);
+            BuildingGrid.instance.Place(grid_x, grid_y, type);
             GameObject buildingObj = Instantiate(prefab, pos, rotation);
-            buildingObj.GetComponent<BuildingBase>().SetGridCoords(grid_x, grid_y);
 
-            // TODO: incorporate BuildingHealth into BuildingBase, this is here for now
+            // set buildingbase health to either an existing buildinghealth or a fresh one that we add
             if (buildingObj.GetComponent<BuildingHealth>() == null)
             {
-                buildingObj.AddComponent<BuildingHealth>();
+                buildingObj.GetComponent<BuildingBase>().health = buildingObj.AddComponent<BuildingHealth>();
+            } else
+            {
+                buildingObj.GetComponent<BuildingBase>().health = buildingObj.GetComponent<BuildingHealth>();
             }
 
-            placedBuilding.SetInstance(buildingObj);
+            buildingObj.GetComponent<BuildingBase>().SetGridCoords(grid_x, grid_y);
 
-
-            // spawn monkeys if treeoflife
-            if (buildingType == BuildingType.TreeOfLife) PopulationManager.instance.AddToPopulation(1);
-            // otherwise pay for building
-            else BananaManager.instance.RemoveBananas(BuildingTypeToPrice.GetPrice(buildingType));
+            // treeoflife is free
+            BananaManager.instance.RemoveBananas(BuildingTypeToPrice.GetPrice(type));
             
             BuildingMenuManager.instance.UpdatePrices();
             PlacementManager.instance.RefreshPlacementIndicators();

@@ -28,8 +28,8 @@ public class MonkeyController : MonoBehaviour
 
     private IEnumerator WalkToBuilding(BuildingBase buildingTarget)
     {
-        Vector3 target = new Vector3(buildingTarget.transform.position.x, transform.position.y, buildingTarget.transform.position.z);
         Assert.IsNotNull(buildingTarget);
+        Vector3 target = new Vector3(buildingTarget.transform.position.x, transform.position.y, buildingTarget.transform.position.z);
         // always deallocate on walk, either we're leaving a building or we're not allocated and it just
         // does nothing
         allocation.Unassign();

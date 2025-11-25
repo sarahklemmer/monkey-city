@@ -34,9 +34,7 @@ public class PlaceBuildingButton : MonoBehaviour
             return;
         }
 
-        Building building = new Building(type);
-
         BuildingMenuManager.instance.ForceCloseMenu();
-        PlacementManager.instance.SetCurrentBuilding(building);
+        PlacementManager.instance.SetCurrentBuilding(type);
     }
 }
