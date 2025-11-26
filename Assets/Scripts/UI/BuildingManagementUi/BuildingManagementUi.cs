@@ -10,6 +10,7 @@ public class BuildingManagementUi : MonoBehaviour
     //TODO: get rid of this and add a script that just sets the icon based on building type
     [SerializeField] Sprite archerTowerIcon;
     [SerializeField] Sprite spikeTrapIcon;
+    [SerializeField] Sprite beaconIcon;
 
     private readonly Dictionary<BuildingBase, GameObject> uiLookup = new();
     private Transform content;
@@ -57,8 +58,12 @@ public class BuildingManagementUi : MonoBehaviour
         AssignBuildingToButtons(ui, building);
 
         //TODO: set icon for building type more robustly
-        if(building.GetBuildingType() == BuildingType.ArcherTower) ui.transform.Find("Icon").GetComponent<Image>().sprite = archerTowerIcon;
-        else if(building.GetBuildingType() == BuildingType.SpikeTrap) ui.transform.Find("Icon").GetComponent<Image>().sprite = spikeTrapIcon;
+        if(building.GetBuildingType() == BuildingType.ArcherTower) 
+            ui.transform.Find("Icon").GetComponent<Image>().sprite = archerTowerIcon;
+        else if(building.GetBuildingType() == BuildingType.SpikeTrap) 
+            ui.transform.Find("Icon").GetComponent<Image>().sprite = spikeTrapIcon;
+        else if(building.GetBuildingType() == BuildingType.Beacon) 
+            ui.transform.Find("Icon").GetComponent<Image>().sprite = beaconIcon;
 
         ReorderByType();
     }
@@ -116,7 +121,7 @@ public class BuildingManagementUi : MonoBehaviour
     private void ReorderByType()
     {
         var ordered = uiLookup
-            .OrderBy(pair => pair.Key.GetBuildingType()) // relies on enum ordering
+            .OrderBy(pair => pair.Key.GetBuildingType())
             .ToList();
 
         for (int i = 0; i < ordered.Count; i++)

@@ -10,6 +10,7 @@ public enum BuildingType
     ArcherTower,
     SpikeTrap,
     Wall,
+    Beacon,
 }
 
 public struct BuildingDimensions
@@ -32,7 +33,8 @@ public class BuildingUtils
         { BuildingType.BananaFarm, new BuildingDimensions(1, 1) },
         { BuildingType.ArcherTower, new BuildingDimensions(1, 1) },
         { BuildingType.SpikeTrap, new BuildingDimensions(1, 1) },
-        { BuildingType.Wall, new BuildingDimensions(1, 1) }
+        { BuildingType.Wall, new BuildingDimensions(1, 1) },
+        { BuildingType.Beacon, new BuildingDimensions(1, 1) }
     };
 
     public static BuildingDimensions TypeToDimensions(BuildingType type)
@@ -45,31 +47,3 @@ public class BuildingUtils
         return typeToDimensions[type];
     }
 }
-
-// public class Building
-// {
-//     public readonly BuildingType type;
-//     public GameObject instance;
-//     public BuildingHealth health;
-
-//     public Building(BuildingType in_type)
-//     {
-//         type = in_type;
-//     }
-
-//     public void SetInstance(GameObject obj)
-//     {
-//         instance = obj;
-//         health = obj.GetComponent<BuildingHealth>();
-        
-//         if (health == null)
-//         {
-//             Debug.LogWarning($"Building of type {type} does not have BuildingHealth component!");
-//         }
-//     }
-
-//     public bool IsDestroyed()
-//     {
-//         return instance == null || (health != null && health.GetCurrentHealth() <= 0);
-//     }
-// }

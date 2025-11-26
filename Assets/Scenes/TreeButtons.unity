@@ -10032,6 +10032,11 @@ MonoBehaviour:
     cost: 8
     description: 
     type: 3
+  - buildingName: Beacon
+    icon: {fileID: 21300000, guid: 5a3afdef664494d1ca3fab1d9484209c, type: 3}
+    cost: 10
+    description: 
+    type: 5
   toggle: {fileID: 262339076}
   background: {fileID: 1823082126}
   normalColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
@@ -15598,6 +15603,8 @@ MonoBehaviour:
     value: {fileID: 2507090468085796351, guid: dd92244a58dee420db7196eef52e57d6, type: 3}
   - key: 3
     value: {fileID: 8127945173937545073, guid: 72a779d82b67843cabf386b691791fa8, type: 3}
+  - key: 5
+    value: {fileID: 429499350658594485, guid: f6930fd2ddd1e4c2e82994eb12f77f89, type: 3}
 --- !u!114 &1352258249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15769,8 +15776,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1744986385}
   m_HandleRect: {fileID: 1744986384}
   m_Direction: 0
-  m_Value: 1.0000004
-  m_Size: 0.6250001
+  m_Value: 1
+  m_Size: 0.625
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -20920,6 +20927,7 @@ MonoBehaviour:
   BuildingUIElement: {fileID: 4528023583183745444, guid: 9e2fda4be46ec49a8a970e9a35aac80a, type: 3}
   archerTowerIcon: {fileID: 21300000, guid: 3bf9e6551d633478fa7ff42f4c1c9e46, type: 3}
   spikeTrapIcon: {fileID: 21300000, guid: 120acf6ef246c47b89ef4d3daae31820, type: 3}
+  beaconIcon: {fileID: 21300000, guid: 5a3afdef664494d1ca3fab1d9484209c, type: 3}
 --- !u!114 &1870509367
 MonoBehaviour:
   m_ObjectHideFlags: 0

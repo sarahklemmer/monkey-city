@@ -32,6 +32,7 @@ public class TreeOfLife : BuildingBase
         // SimpleTutorial.instance.StartTutorial();
         BuildingUnlock.Unlock(BuildingType.BananaFarm);
         BuildingUnlock.Unlock(BuildingType.ArcherTower);
+        BuildingUnlock.Unlock(BuildingType.Beacon);
         BuildingUnlock.Disable(BuildingType.TreeOfLife);
         Soundtrack.instance.PlaySoundtrack();
     }

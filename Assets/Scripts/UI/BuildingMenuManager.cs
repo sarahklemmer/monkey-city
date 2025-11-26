@@ -16,7 +16,7 @@ public class BuildingMenuManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private GameObject buildingScrollbar;
-    [SerializeField] private ScrollableList scrollableList; // Changed from UIElements.ScrollView
+    [SerializeField] private ScrollableList scrollableList;
     [SerializeField] private Transform disableInteractivityRoot;
 
     public BuildingData[] allBuildings;
@@ -24,8 +24,8 @@ public class BuildingMenuManager : MonoBehaviour
     
     public Image background;
     
-    public Color normalColor = new Color(0.8f, 0.8f, 0.8f, 1f); // Light gray
-    public Color selectedColor = new Color(1f, 0.9f, 0.5f, 1f); // Yellow sheen
+    public Color normalColor = new Color(0.8f, 0.8f, 0.8f, 1f);
+    public Color selectedColor = new Color(1f, 0.9f, 0.5f, 1f);
 
     public static BuildingMenuManager instance;
 
@@ -57,9 +57,7 @@ public class BuildingMenuManager : MonoBehaviour
 
         if (isOn)
         {
-            // trust me :D
             if(disableInteractivityRoot != null) UIInteractabilityManager.instance.DisableInteractivityExcept(disableInteractivityRoot, true);
-            // Show scrollbar and populate with banana buildings
             buildingScrollbar.SetActive(true);
             scrollableList.PopulateList(GetUnlockedBuildings());
 
@@ -68,9 +66,16 @@ public class BuildingMenuManager : MonoBehaviour
         else
         {
             if(disableInteractivityRoot != null) UIInteractabilityManager.instance.EnableInteractivity();
-            // Hide scrollbar and clear list
             buildingScrollbar.SetActive(false);
             scrollableList.ClearList();
+        }
+    }
+    
+    public void RefreshMenu()
+    {
+        if (toggle.isOn && buildingScrollbar.activeSelf)
+        {
+            scrollableList.PopulateList(GetUnlockedBuildings());
         }
     }
     
@@ -89,7 +94,6 @@ public class BuildingMenuManager : MonoBehaviour
         background.color = normalColor;
     }
 
-    // Call this from your X/close button
     public void CloseAllMenus()
     {
         toggle.isOn = false;

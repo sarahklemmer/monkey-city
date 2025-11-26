@@ -10,7 +10,8 @@ public class BuildingTypeToPrice
         { BuildingType.BananaFarm, 1 },
         { BuildingType.ArcherTower, 4 },
         { BuildingType.SpikeTrap, 8},
-        { BuildingType.Wall, 2 }
+        { BuildingType.Wall, 2 },
+        { BuildingType.Beacon, 10 }
     };
 
     public static int GetPrice(BuildingType ty)
@@ -20,7 +21,6 @@ public class BuildingTypeToPrice
             System.Enum.GetValues(typeof(BuildingType)).Cast<BuildingType>().All(bt => basePrice.ContainsKey(bt)),
             "basePrice dict isn't one to one with the BuildingType enum!"
         );
-        // base price + (scale factor * number of buildings )
         return basePrice[ty];
     }
 }

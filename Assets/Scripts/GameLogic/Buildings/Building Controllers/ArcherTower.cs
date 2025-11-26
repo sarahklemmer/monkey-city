@@ -127,6 +127,29 @@ public class ArcherTower : BuildingBase
         return monkeys != null && monkeys.Count() > 0;
     }
 
+    private float GetEffectiveAttackCooldown()
+    {
+        float baseCooldown = attackCooldown;
+        
+        // Check for nearby beacons
+        Beacon[] beacons = FindObjectsByType<Beacon>(FindObjectsSortMode.None);
+        float bestBonus = 0f;
+        
+        foreach (var beacon in beacons)
+        {
+            if (beacon.GetMonkeyCount() <= 0) continue;
+            
+            float distance = Vector3.Distance(transform.position, beacon.transform.position);
+            if (distance <= beacon.GetBuffRadius())
+            {
+                bestBonus = Mathf.Max(bestBonus, beacon.GetAttackSpeedBonus());
+            }
+        }
+        
+        // Apply bonus (reduce cooldown = faster attacks)
+        return baseCooldown * (1f - bestBonus);
+    }
+
     void Update()
     {
         bananasPerDay = ((int)Math.Pow(5, level - 1)) * GetMonkeyCount() * -1;
@@ -150,7 +173,7 @@ public class ArcherTower : BuildingBase
             return;
         }
 
-        if (Time.time - lastAttackTime >= attackCooldown)
+        if (Time.time - lastAttackTime >= GetEffectiveAttackCooldown())
         {
             Attack();
             lastAttackTime = Time.time;
