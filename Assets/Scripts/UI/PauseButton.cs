@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class PauseButton : MonoBehaviour
 {
     public bool paused { get; private set; } = false;
-    bool stoppedToggleFlashing;
     [SerializeField] Image icon;
     [SerializeField] Sprite pause; 
     [SerializeField] Sprite play;
@@ -30,9 +29,6 @@ public class PauseButton : MonoBehaviour
         
         pausePanel.SetActive(true);
         paused = true;
-
-        stoppedToggleFlashing = ToggleFlasher.instance.active;
-        ToggleFlasher.instance.StopFlash();
     }
 
     void Unpause()
@@ -44,7 +40,5 @@ public class PauseButton : MonoBehaviour
 
         pausePanel.SetActive(false);
         paused = false;
-
-        if(stoppedToggleFlashing) ToggleFlasher.instance.StartFlash();
     }
 }

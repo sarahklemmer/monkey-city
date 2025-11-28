@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class TreeOfLife : BuildingBase
 {
@@ -13,6 +14,7 @@ public class TreeOfLife : BuildingBase
     {
         base.SharedAwakeBehavior();
         type = BuildingType.TreeOfLife;
+        canNeverBeUpgraded = false;
         monkeys = new(999);
     }
     
@@ -27,13 +29,6 @@ public class TreeOfLife : BuildingBase
         }
 
         PopulationManager.instance.AddToPopulation(1);
-        
-        //TODO: if we want a tutorial uncomment this
-        // SimpleTutorial.instance.StartTutorial();
-        BuildingUnlock.Unlock(BuildingType.BananaFarm);
-        BuildingUnlock.Unlock(BuildingType.ArcherTower);
-        BuildingUnlock.Unlock(BuildingType.Beacon);
-        BuildingUnlock.Disable(BuildingType.TreeOfLife);
         Soundtrack.instance.PlaySoundtrack();
     }
     
@@ -41,41 +36,45 @@ public class TreeOfLife : BuildingBase
     {
         OnTreePlaced?.Invoke();
     }
+
+
+    public override bool CanUpgrade() => GetUpgradeCost() <= BananaManager.instance.GetBananas() && !canNeverBeUpgraded;
+
+    public override bool AttemptUpgrade()
+    {
+        if(!CanUpgrade()) return false;
+        BananaManager.instance.AddBananas(-GetUpgradeCost());
+        Upgrade();
+        return true;
+    }
+    
+    public override int GetUpgradeCost()
+    {
+        if (level >= MAX_LEVEL) return 0;
+        return 100;
+    }
     
     public void Upgrade()
     {
-        if (level >= MAX_LEVEL)
-        {
-            Debug.Log($"Tree of Life is already at max level ({MAX_LEVEL})!");
-            return;
-        }
+        Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or abvoe? max level!");
         
         level++;
         
-        // Play upgrade sound
-        if (BuildingSoundManager.instance != null)
-        {
-            BuildingSoundManager.instance.PlayUpgradeSound();
-        }
-        
-        if (upgradeEffect != null)
-        {
-            upgradeEffect.Play();
-            Debug.Log("[TreeOfLife] Playing upgrade effect!");
-        }
-        else
-        {
-            Debug.LogWarning("[TreeOfLife] Upgrade effect is NULL!");
-        }
-        
-        Debug.Log($"Tree of Life upgraded to level {level}!");
-        
-        // You can add visual changes or stat improvements here
-        // For example:
-        // - Increase monkey capacity
-        // - Visual model changes
-        // - Special abilities unlock
+        BuildingSoundManager.instance.PlayUpgradeSound();
+        upgradeEffect.Play();
+        if(level == MAX_LEVEL) canNeverBeUpgraded = true;
     }
+
+    public override string GetUpgradeText() => 
+        level == MAX_LEVEL ? 
+        "Max Level" : 
+        "Upgrade Cost: 100 Bananas\nUnlocks higher building levels";
+
+    // D:
+    public override string GetDescription() => 
+                    $"Level: {GetLevel()}\n" +
+                    "Your base - Protect at all costs!\n" +
+                    $"Idle Monkeys: {GetMonkeyCount()}";
     
     public int GetLevel() => level;
     public bool IsMaxLevel() => level >= MAX_LEVEL;

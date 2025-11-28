@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.Assertions;
 using UnityEngine;
 
 public class ArcherTower : BuildingBase
@@ -35,6 +36,7 @@ public class ArcherTower : BuildingBase
         base.SharedAwakeBehavior();
         
         type = BuildingType.ArcherTower;
+        canNeverBeUpgraded = false;
         monkeys = new(1);
     
         // Find and stop any looping particle systems
@@ -122,11 +124,6 @@ public class ArcherTower : BuildingBase
         }
     }
 
-    private bool HasMonkey()
-    {
-        return monkeys != null && monkeys.Count() > 0;
-    }
-
     private float GetEffectiveAttackCooldown()
     {
         float baseCooldown = attackCooldown;
@@ -155,7 +152,7 @@ public class ArcherTower : BuildingBase
         bananasPerDay = ((int)Math.Pow(5, level - 1)) * GetMonkeyCount() * -1;
         attackDamage = AllArcherTowerInfo.instance.GetDamagePerAttack();
 
-        if (!HasMonkey())
+        if (monkeys.count == 0)
         {
             if (targetEnemy != null) targetEnemy = null;
             return;
@@ -262,17 +259,42 @@ public class ArcherTower : BuildingBase
         }
     }
 
-    public void Upgrade()
+    public override bool CanUpgrade() 
     {
-        if (level >= MAX_LEVEL) return;
-        
-        level++;
-        
-        // Play upgrade sound
-        if (BuildingSoundManager.instance != null)
+        TreeOfLife tree = BuildingManager.instance.GetTreeOfLife() as TreeOfLife;
+        if (tree == null) return false;
+
+        if (canNeverBeUpgraded) return false;
+        if (BananaManager.instance.GetBananas() < GetUpgradeCost()) return false;
+
+        if (level >= 2 && tree.GetLevel() < 2) return false;
+
+        return true;
+    }
+
+    public override bool AttemptUpgrade()
+    {
+        if(!CanUpgrade()) return false;
+        BananaManager.instance.AddBananas(-GetUpgradeCost());
+        Upgrade();
+        return true;
+    }
+
+    public override int GetUpgradeCost()
+    {        
+        switch (level)
         {
-            BuildingSoundManager.instance.PlayUpgradeSound();
+            case 1: return 50;
+            case 2: return 120;
+            default: return 0;
         }
+    }
+
+    void Upgrade()
+    {
+        Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or abvoe? max level!");
+        level++;
+        BuildingSoundManager.instance.PlayUpgradeSound();
         
         switch (level)
         {
@@ -289,32 +311,32 @@ public class ArcherTower : BuildingBase
                 break;
         }
         
-        if (upgradeEffect != null)
-        {
-            upgradeEffect.Play();
-        }
+        upgradeEffect.Play();
         
         UpdateRangeCircle();
-        
-        Debug.Log($"Archer Tower upgraded to level {level}!");
+        if(level == MAX_LEVEL) canNeverBeUpgraded = true;
+    }
+
+    public override string GetUpgradeText()
+    {
+        switch(level)
+        {
+            case 1: return $"Upgrade Cost: {GetUpgradeCost()} Bananas\n Next Upgrade: Faster shooting";
+            case 2: return CanUpgrade() ? $"Upgrade Cost: {GetUpgradeCost()} Bananas\n Next Upgrade: Increased range & faster shooting" : "Requires Tree of Life Level 2";
+            default: return "Max level";
+        }
     }
 
     public int GetLevel() => level;
     public bool IsMaxLevel() => level >= MAX_LEVEL;
     public float GetAttackRange() => attackRange;
     public float GetAttackCooldown() => attackCooldown;
-    
-    public int GetUpgradeCost()
-    {
-        if (level >= MAX_LEVEL) return 0;
-        
-        switch (level)
-        {
-            case 1: return 50;
-            case 2: return 120;
-            default: return 0;
-        }
-    }
+    public override string GetDescription() =>                     
+                    $"Level: {GetLevel()}\n" +
+                    $"Range: {GetAttackRange():F1}m\n" +
+                    $"Damage: {AllArcherTowerInfo.instance.GetDamagePerAttack():F1}\n" +
+                    $"Attack Speed: {GetAttackCooldown():F2}s\n" +
+                    $"Monkeys: {GetMonkeyCount()}/{GetMonkeyCapacity()}";
 
     public override void OnDayCycle()
     {

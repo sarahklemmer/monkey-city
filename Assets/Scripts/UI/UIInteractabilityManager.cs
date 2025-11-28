@@ -27,10 +27,6 @@ public class UIInteractabilityManager : MonoBehaviour
     {
         DisableLastExceptionIgnoringParentGroups();
         BuildingSelector.instance.DisableSelection();
-        BuildingMenuManager.instance.HideAllMenus();
-
-        BuildingSelector.instance.DisableSelection();
-        BuildingMenuManager.instance.HideAllMenus();
 
         cg.alpha = 0f;
         cg.interactable = false;

@@ -27,14 +27,10 @@ public class PlaceBuildingButton : MonoBehaviour
             BuildingGrid.instance.RevealPresetWalls();
             BuildingGrid.instance.FinishLevel();
 
-            BuildingMenuManager.instance.ForceCloseMenu();
-            BuildingMenuManager.instance.UpdatePrices();
-
             PlacementManager.instance.ClearCurrentBuilding();
             return;
         }
 
-        BuildingMenuManager.instance.ForceCloseMenu();
         PlacementManager.instance.SetCurrentBuilding(type);
     }
 }

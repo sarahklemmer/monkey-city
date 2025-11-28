@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -13,6 +14,7 @@ public abstract class BuildingBase : MonoBehaviour
     private bool SharedAwakeBehaviorCalled = false;
     public bool selectable { get; private set; }
     public bool canContainMonkeys { get; protected set; } = true;
+    public bool canNeverBeUpgraded { get; protected set; } = true;
     public int bananasPerDay { get; protected set; } = 0;
     // functions to be overrode
     public abstract void OnDayCycle();
@@ -33,8 +35,6 @@ public abstract class BuildingBase : MonoBehaviour
     protected virtual void OnEnable()
     {
         BuildingManager.instance.AddBuilding(this);
-        BuildingManagementUi.instance.AddBuilding(this);
-        ToggleFlasher.instance.StopFlash();
         if(health == null) health = GetComponent<BuildingHealth>();
         health.SetBuilding(this);
     }
@@ -42,7 +42,6 @@ public abstract class BuildingBase : MonoBehaviour
     protected virtual void OnDisable()
     {
         BuildingManager.instance.RemoveBuilding(this);
-        BuildingManagementUi.instance.RemoveBuilding(this);
         BuildingGrid.instance.RemoveBuilding(this);
     }
 
@@ -128,6 +127,13 @@ public abstract class BuildingBase : MonoBehaviour
         this.grid_x = grid_x;
         this.grid_y = grid_y;
     }
+
+    public abstract string GetDescription();
+    public virtual bool CanUpgrade() => false;
+    public virtual bool AttemptUpgrade() => false;
+    public virtual int GetUpgradeCost() => 0;
+    public virtual string GetUpgradeText() => 
+        "This building cannot be upgraded any further";
     //START OF AI CODE
     public void MakeTransparent()
     {

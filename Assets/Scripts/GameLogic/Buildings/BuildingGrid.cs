@@ -11,7 +11,6 @@ public class BuildingGrid : MonoBehaviour
     
     [SerializeField] GameObject placementIndicatorPrefab;
     [SerializeField] Transform placementIndicatorsParent;
-    [SerializeField] TMP_Text xToolTip;
     [SerializeField] GameObject presetWalls;
     [SerializeField] private string wallCompleteToast = "Congratulations! You beat this level of gameplay! Come back soon for more...";
     [SerializeField] private float wallCompleteToastDuration = 60f;
@@ -186,7 +185,6 @@ public class BuildingGrid : MonoBehaviour
         if (!treeOfLifePlaced) return;
         Assert.IsFalse(buildingToMove != null && buildingToMove.GetBuildingType() == BuildingType.TreeOfLife, "can't move the tree of life!");
 
-        xToolTip.enabled = true;
         BuildingManager.instance.MakeBuildingsTransparent();
 
         if (placementIndicatorsParent.childCount != 0)
@@ -223,7 +221,6 @@ public class BuildingGrid : MonoBehaviour
     
     public void DestroyBuildingPlacementIndicators()
     {
-        xToolTip.enabled = false;
         foreach (Transform child in placementIndicatorsParent) Destroy(child.gameObject);
     }
 

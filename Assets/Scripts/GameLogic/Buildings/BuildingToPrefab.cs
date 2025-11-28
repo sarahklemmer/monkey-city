@@ -5,14 +5,21 @@ using UnityEngine.Assertions;
 public class BuildingToPrefab : MonoBehaviour
 {
     [System.Serializable]
-    class BuildingTypeToPrefab
+    class BuildingValues
     {
-        public BuildingType key;
-        public GameObject value;
+        public GameObject prefab;
+        public Sprite icon;
     }
 
-    [SerializeField] List<BuildingTypeToPrefab> mappings;
-    private static  Dictionary<BuildingType, GameObject> map = new();
+    [System.Serializable]
+    class BuildingTypeToValues
+    {
+        public BuildingType key;
+        public BuildingValues values;
+    }
+
+    [SerializeField] List<BuildingTypeToValues> mappings;
+    private static Dictionary<BuildingType, BuildingValues> map = new();
 
     void Awake()
     {
@@ -22,15 +29,21 @@ public class BuildingToPrefab : MonoBehaviour
             "BuildingToPrefab doesn't align with number of building types, either extras are assigned in the editor or you forgot to add a mapping when you made a new type"
         );
 
-        foreach (BuildingTypeToPrefab m in mappings)
+        foreach (BuildingTypeToValues m in mappings)
         {
-            map[m.key] = m.value;
+            map[m.key] = m.values;
         }
     }
     
     public static GameObject GetPrefab(BuildingType type)
     {
         Assert.IsTrue(map.ContainsKey(type), $"Prefab mapping missing for {type}");
-        return map[type];
+        return map[type].prefab;
+    }
+
+    public static Sprite GetIcon(BuildingType type)
+    {
+        Assert.IsTrue(map.ContainsKey(type), $"Prefab mapping missing for {type}");
+        return map[type].icon;
     }
 }

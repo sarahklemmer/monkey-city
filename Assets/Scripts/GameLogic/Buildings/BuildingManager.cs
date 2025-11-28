@@ -117,6 +117,40 @@ public class BuildingManager : MonoBehaviour
         return closest;
     }
 
+    // D:
+    public BuildingBase GetClosestBuildingWithMonkeys(Vector3 position)
+    {    
+        BuildingBase closest = null;
+        float lowestDistance = float.MaxValue;
+        foreach(BuildingBase building in buildings.Where(b => b.GetMonkeyCount() > 0))
+        {
+            float dist = Vector3.Distance(position, building.transform.position);
+            if(dist < lowestDistance)
+            {
+                lowestDistance = dist;
+                closest = building;
+            }
+        }
+        return closest;
+    }
+
+
+    public BuildingBase GetClosestBuildingNotOfTypeWithMonkeys(Vector3 position, BuildingType type)
+    {    
+        BuildingBase closest = null;
+        float lowestDistance = float.MaxValue;
+        foreach(BuildingBase building in buildings.Where(b => b.GetBuildingType() != type && b.GetMonkeyCount() > 0))
+        {
+            float dist = Vector3.Distance(position, building.transform.position);
+            if(dist < lowestDistance)
+            {
+                lowestDistance = dist;
+                closest = building;
+            }
+        }
+        return closest;
+    }
+
     public int GetDailyProduction() => buildings.Sum(b => b.bananasPerDay);
 
     public int GetBananaProduction() => buildings.OfType<BananaFarm>().Sum(b => b.bananasToProduce);

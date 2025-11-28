@@ -1,0 +1,44 @@
+lost at the start
+isn't finding the building menu
+just instictively double clicked to move omkney 
+bruh still not finding the ui
+can't tell that ui buttons are greyed out
+monkey ui at the top not clear enough didn't realize it meant idle monkeys
+need visual indiiciator that building is unmanned as well guiding the player to click on it
+banana upgrade indiicator flashes
+didn't man building after he upgraded it
+visual indiciator that banana farms are upgraded, maybe bigger or more bananas underneath
+using the path points!!!!
+game needs to pick up the speed more quickly
+display building level in UI as a number
+make upgrade cost visually obvious
+too easy
+maybe make 5th monkey 500 instead of 1000, saving allf of his bananas to upgrade monkeys
+different enemy types that require you to use new buildings
+monkeys come from one or two fixed places
+initial guidance
+
+heard from 2 people now that they're confused on opening the game
+make building ui more apparent from start
+speed up button
+game crashes
+
+player 2
+immediately figured out building manager on
+fix toasts gameplay wise
+don't have toasts overwhelm the player in the middle
+
+real player 2
+not manning his banana farm
+more guidance but everything is on the right and ower left
+didn't realize monkeys were workers thought they were only farmers
+need to be able to click out of building menu by click not on the grid
+fix sarah ui
+change color of cost in buy buidlings menu
+allow player to destroy/sell buildings
+right click on building to bring up menu with move, upgrade, and info
+when you click building, menu pops up on the right side with extended info and buttons 
+spike traps are overpowered
+make monkey automation easier
+particle effects crash?
+ooh ooh ah ah :D

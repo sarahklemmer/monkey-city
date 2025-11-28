@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class BananaFarm : BuildingBase
 {
@@ -14,6 +15,7 @@ public class BananaFarm : BuildingBase
     void Awake()
     {
         base.SharedAwakeBehavior();
+        canNeverBeUpgraded = false;
         type = BuildingType.BananaFarm;
         monkeys = new(2);
     }
@@ -58,39 +60,39 @@ public class BananaFarm : BuildingBase
         }
     }
 
-    public void Upgrade()
+    public override bool CanUpgrade() 
     {
-        if (level >= MAX_LEVEL)
-        {
-            Debug.Log($"Banana Farm is already at max level ({MAX_LEVEL})!");
-            return;
-        }
-        
-        int upgradeCost = GetUpgradeCost();
-        
-        if (BananaManager.instance == null)
-        {
-            Debug.LogError("BananaManager.instance is null!");
-            return;
-        }
-        
-        if (BananaManager.instance.GetBananas() < upgradeCost)
-        {
-            Debug.Log($"Not enough bananas! Need {upgradeCost}, have {BananaManager.instance.GetBananas()}");
-            return;
-        }
-        
-        BananaManager.instance.AddBananas(-upgradeCost);
-        
+        TreeOfLife tree = BuildingManager.instance.GetTreeOfLife() as TreeOfLife;
+        if (tree == null) return false;
+
+        if (canNeverBeUpgraded) return false;
+        if (BananaManager.instance.GetBananas() < GetUpgradeCost()) return false;
+
+        if (level >= 2 && tree.GetLevel() < 2) return false;
+
+        return true;
+    }
+
+    public override bool AttemptUpgrade()
+    {
+        if(!CanUpgrade()) return false;
+        BananaManager.instance.AddBananas(-GetUpgradeCost());
+        Upgrade();
+        return true;
+    }
+    
+    public override int GetUpgradeCost()
+    {
+        if (level >= MAX_LEVEL) return 0;
+        return upgradeCosts[level + 1];
+    }
+
+    public void Upgrade()
+    {   
         level++;
+        Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or abvoe? max level!");
+        BuildingSoundManager.instance.PlayUpgradeSound();
         
-        // Play upgrade sound
-        if (BuildingSoundManager.instance != null)
-        {
-            BuildingSoundManager.instance.PlayUpgradeSound();
-        }
-        
-        // building level is used as a multiplier for the banana production
         switch (level)
         {
             case 1:
@@ -106,29 +108,30 @@ public class BananaFarm : BuildingBase
                 buildingLevel = 5;
                 break;
         }
-        
-        if (upgradeEffect != null)
-        {
-            upgradeEffect.Play();
-            Debug.Log("[BananaFarm] Playing upgrade effect!");
-        }
-        else
-        {
-            Debug.LogWarning("[BananaFarm] Upgrade effect is NULL!");
-        }
-        
-        Debug.Log($"Banana Farm upgraded to level {level}! Now produces {baseBananaProduction} bananas per monkey per day.");
+
+        if(level == MAX_LEVEL) canNeverBeUpgraded = true;
+        upgradeEffect.Play();
+    }
+
+    public override string GetUpgradeText()
+    {   
+        // if we're at a level higher than 1 and the treeoflife is below level 2 we return requires tree of life level 2
+        if(level < MAX_LEVEL) return 
+            level > 1 &&  (BuildingManager.instance.GetTreeOfLife() as TreeOfLife).GetLevel() >= 2 ? 
+            $"Upgrade Cost: {GetUpgradeCost()} Bananas\nNext Upgrade: {GetLevel() + 1}x production" : 
+            "Requires Tree of Life Level 2";
+        else return "MAX LEVEL";
     }
     
     public int GetLevel() => level;
     public bool IsMaxLevel() => level >= MAX_LEVEL;
     public int GetBananasPerDay() => baseBananaProduction;
-    
-    public int GetUpgradeCost()
-    {
-        if (level >= MAX_LEVEL) return 0;
-        return upgradeCosts[level + 1];
-    }
+
+    public override string GetDescription() =>                     
+                    $"Level: {GetLevel()}\n" +
+                    $"Production: {bananasToProduce * 3} Bananas/day\n" +
+                    $"Per Monkey: {(GetMonkeyCount() == 0 ? 0 : (bananasToProduce / GetMonkeyCount()) * 3)} Bananas/day\n" +
+                    $"Monkeys: {GetMonkeyCount()}/{GetMonkeyCapacity()}";
 
     public override void OnDestroy()
     {

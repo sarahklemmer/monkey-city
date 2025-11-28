@@ -4,10 +4,11 @@ public class BuildingSelector : MonoBehaviour
 {
     public static BuildingSelector instance;
     [SerializeField] LayerMask buildingMask;
+    [SerializeField] RectTransform uiSafeArea;
     private bool selectionDisabled = false;
     private bool selectionDisabledForFrame = false;
 
-    BuildingBase currentlySelected = null;
+    public BuildingBase currentlySelected {get; private set;} = null;
     MonkeyController selectedMonkey = null;
     
     void Awake()
@@ -45,7 +46,7 @@ public class BuildingSelector : MonoBehaviour
         
         if (rightClick && clicked != null)
         {
-            BuildingInfo.instance.Show(clicked);
+            BuildingInfoPopup.instance.ShowWithBuilding(clicked);
             return;
         }
         
@@ -68,7 +69,11 @@ public class BuildingSelector : MonoBehaviour
             }
             else
             {
-                Deselect();
+                // if we clicked not on the UI
+                if (!RectTransformUtility.RectangleContainsScreenPoint(uiSafeArea, Input.mousePosition))
+                {
+                    Deselect();
+                }
             }
         }
     }

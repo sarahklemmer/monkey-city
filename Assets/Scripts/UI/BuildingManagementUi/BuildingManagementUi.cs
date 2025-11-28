@@ -7,13 +7,10 @@ using UnityEngine.UI;
 public class BuildingManagementUi : MonoBehaviour
 {
     [SerializeField] GameObject BuildingUIElement;
-    //TODO: get rid of this and add a script that just sets the icon based on building type
-    [SerializeField] Sprite archerTowerIcon;
-    [SerializeField] Sprite spikeTrapIcon;
-    [SerializeField] Sprite beaconIcon;
 
-    private readonly Dictionary<BuildingBase, GameObject> uiLookup = new();
     private Transform content;
+    private List<GameObject> buildingUIElements = new List<GameObject>();
+    private bool buildingPlacementButtonsShowing = false;
 
     public static BuildingManagementUi instance;
 
@@ -27,106 +24,99 @@ public class BuildingManagementUi : MonoBehaviour
         }
 
         instance = this;
-    }
 
-    void Start()
-    {
         Assert.IsNotNull(BuildingUIElement, "BuildingUIElement prefab is not assigned!");
-
-        Assert.IsFalse(BuildingUIElement.activeSelf, "BuildingUIElement prefab must be disabled in the inspector!");
 
         ScrollRect scroll = GetComponentInChildren<ScrollRect>();
         Assert.IsNotNull(scroll, "BuildingManagementUi requires a ScrollRect child.");
 
         content = scroll.content;
         Assert.IsNotNull(content, "ScrollRect.content is null!");
-
     }
 
-    public void AddBuilding(BuildingBase building)
+    public void Show()
     {
-        
-        Assert.IsNotNull(building);
-        if(building is TreeOfLife) return;
-        Assert.IsFalse(uiLookup.ContainsKey(building), $"Building {building.name} already has a UI element!");
-
-        GameObject ui = Instantiate(BuildingUIElement, content);
-        ui.SetActive(true);
-
-        uiLookup.Add(building, ui);
-
-        AssignBuildingToButtons(ui, building);
-
-        //TODO: set icon for building type more robustly
-        if(building.GetBuildingType() == BuildingType.ArcherTower) 
-            ui.transform.Find("Icon").GetComponent<Image>().sprite = archerTowerIcon;
-        else if(building.GetBuildingType() == BuildingType.SpikeTrap) 
-            ui.transform.Find("Icon").GetComponent<Image>().sprite = spikeTrapIcon;
-        else if(building.GetBuildingType() == BuildingType.Beacon) 
-            ui.transform.Find("Icon").GetComponent<Image>().sprite = beaconIcon;
-
-        ReorderByType();
+        if(!buildingPlacementButtonsShowing) DrawUnlockedBuildings();
     }
 
-    public void RemoveBuilding(BuildingBase building)
+    public void RequestUpdateUnlockedBuildings()
     {
-        Assert.IsNotNull(building);
-        if(building is TreeOfLife) return;
-
-        Assert.IsTrue(uiLookup.ContainsKey(building), $"Attempted to remove building UI for {building.name}, but none exists!");
-
-        Destroy(uiLookup[building]);
-        uiLookup.Remove(building);
-
-        ReorderByType();
+        if(buildingPlacementButtonsShowing) DrawUnlockedBuildings();
     }
 
-    private void AssignBuildingToButtons(GameObject ui, BuildingBase building)
+    void DrawUnlockedBuildings()
     {
-        AddButton add = ui.GetComponentInChildren<AddButton>(true);
-        RemoveButton remove = ui.GetComponentInChildren<RemoveButton>(true);
-        
-        InfoButton info = ui.GetComponentInChildren<InfoButton>(true);
-        MoveButton move = ui.GetComponentInChildren<MoveButton>(true);
-        
-        UpgradeButton upgrade = ui.GetComponentInChildren<UpgradeButton>(true);
-        SelectBuildingOnHover selectionEffect = ui.GetComponent<SelectBuildingOnHover>();
-        
-        Assert.IsNotNull(info, "InfoButton missing from prefab!");
-        Assert.IsNotNull(move, "MoveButton missing from prefab!");
-        
-        Assert.IsNotNull(upgrade, "UpgradeButton missing from prefab!");
-        Assert.IsNotNull(selectionEffect, "SelectBuildingOnhover missing from prefab!");
+        buildingPlacementButtonsShowing = true;
+        List<BuildingType> buildingsToRender = BuildingUnlock.GetUnlockedBuildings().ToList();
 
-        Assert.IsNotNull(add, "AddButton missing from prefab!");
-        Assert.IsNotNull(remove, "RemoveButton missing from prefab!");
-        
-        info.building = building;
-        move.building = building;
-        
-        upgrade.building = building;
-        selectionEffect.building = building;
-
-        if(building.canContainMonkeys)
+        // i doubt this is necessary but we should avoid changes in the ordering of buildings in the UI
+        buildingsToRender.Sort();
+        // not using iterators here because we're modifying the list in place
+        for (int i = buildingUIElements.Count - 1; i >= 0; i--)
         {
-            add.building = building;
-            remove.building = building;
-        } else
+            GameObject uiObj = buildingUIElements[i];
+            BuildingListItem item = uiObj.GetComponent<BuildingListItem>();
+
+            if (!BuildingUnlock.Unlocked(item.type))
+            {
+                Destroy(uiObj);
+                buildingUIElements.RemoveAt(i);
+            }
+        }
+        // 1. remove non unlocked buildings from buildingUIElements
+        // 2. draw all not unlocked building types
+    
+        HashSet<BuildingType> displayedTypes = new HashSet<BuildingType>();
+        foreach (GameObject uiObj in buildingUIElements)
         {
-            add.PermanentlyRemoveButton();
-            remove.PermanentlyRemoveButton();
+            displayedTypes.Add(uiObj.GetComponent<BuildingListItem>().type);
+        }
+
+        // instatiate for all non unlocked buildings, so set of unlocked buildings - set of displayed types
+        HashSet<BuildingType> typesToAdd = new HashSet<BuildingType>(BuildingUnlock.GetUnlockedBuildings());
+        typesToAdd.ExceptWith(displayedTypes); 
+
+        foreach (BuildingType type in typesToAdd)
+        {
+            Debug.Log(type);
+            GameObject ui = Instantiate(BuildingUIElement, content);
+            ui.SetActive(true);
+
+            Debug.Log(ui.name);
+            
+            BuildingListItem item = ui.GetComponent<BuildingListItem>();
+            item.Setup(type);
+
+            buildingUIElements.Add(ui);
+        }
+
+        SortUIList();
+
+        foreach(GameObject elt in buildingUIElements)
+        {
+            elt.SetActive(true);
         }
     }
 
-    private void ReorderByType()
+    public void HideUnlockedBuildings()
     {
-        var ordered = uiLookup
-            .OrderBy(pair => pair.Key.GetBuildingType())
-            .ToList();
-
-        for (int i = 0; i < ordered.Count; i++)
+        Debug.Log("hiding");
+        buildingPlacementButtonsShowing = false;
+        foreach(GameObject elt in buildingUIElements)
         {
-            ordered[i].Value.transform.SetSiblingIndex(i);
+            elt.SetActive(false);
         }
+    }
+
+    private void SortUIList()
+    {
+        buildingUIElements.Sort((a, b) => 
+        {
+            var typeA = a.GetComponent<BuildingListItem>().type;
+            var typeB = b.GetComponent<BuildingListItem>().type;
+            return typeA.CompareTo(typeB);
+        });
+
+        for (int i = 0; i < buildingUIElements.Count; i++) { buildingUIElements[i].transform.SetSiblingIndex(i); }
     }
 }

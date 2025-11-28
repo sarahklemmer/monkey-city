@@ -12,20 +12,6 @@ public class BuildingUnlock
         if (unlocked.Contains(type)) return;
         unlocked.Add(type);
         ToastManager.Instance.RequestToast(type.ToString() + " unlocked!");
-        ToggleFlasher.instance.StartFlash();
-        
-        if (BuildingMenuManager.instance != null)
-        {
-            BuildingMenuManager.instance.RefreshMenu();
-        }
-        
-        if ((type == BuildingType.BananaFarm || type == BuildingType.ArcherTower) &&
-            unlocked.Contains(BuildingType.BananaFarm) && 
-            unlocked.Contains(BuildingType.ArcherTower) &&
-            !unlocked.Contains(BuildingType.Beacon))
-        {
-            Unlock(BuildingType.Beacon);
-        }
     }
     
     public static void Disable(BuildingType type) 

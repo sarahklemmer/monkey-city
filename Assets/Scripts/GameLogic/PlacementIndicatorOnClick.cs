@@ -102,8 +102,6 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
             // treeoflife is free
             BananaManager.instance.RemoveBananas(BuildingTypeToPrice.GetPrice(type));
-            
-            BuildingMenuManager.instance.UpdatePrices();
             PlacementManager.instance.RefreshPlacementIndicators();
             BuildingHealth newBuildingHealth = buildingObj.GetComponent<BuildingHealth>();
             NotifyEnemiesOfNewBuilding(newBuildingHealth);

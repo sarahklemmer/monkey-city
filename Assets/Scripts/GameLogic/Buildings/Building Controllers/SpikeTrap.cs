@@ -28,4 +28,7 @@ public class SpikeTrap : BuildingBase
     {
         return;
     }
+
+    public override string GetDescription() => 
+        "A spike trap to distract attacking chimps, it can buy your archer towers time and will hurt chimps as they attack it.";
 }

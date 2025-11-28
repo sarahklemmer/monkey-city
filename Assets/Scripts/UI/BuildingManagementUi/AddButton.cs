@@ -16,14 +16,24 @@ public class AddButton : MonoBehaviour
 
     void Update()
     {
-        victim = BuildingManager.instance.GetTreeOfLife();
-        if(victim == null) return;
+        victim = building is TreeOfLife ? 
+            BuildingManager.instance.GetClosestBuildingWithMonkeys(transform.position) : 
+            BuildingManager.instance.GetTreeOfLife();
+            
+        if(victim == null || building == null) {
+            button.interactable = false;
+            return;
+        }
         // if there's no monkeys left in the treeoflife we need to pull from the other type of building
         if(victim.GetMonkeyCount() == 0)
         {
-            // if we're a banana farm pull from archer tower and vice versa
-            BuildingType type = building.GetBuildingType() == BuildingType.BananaFarm ? BuildingType.ArcherTower : BuildingType.BananaFarm; 
-            victim = BuildingManager.instance.GetClosestBuildingOfTypeWithMonkeys(building.transform.position, type);
+            if(building is BananaFarm) victim = BuildingManager.instance.GetClosestBuildingNotOfTypeWithMonkeys(transform.position, BuildingType.BananaFarm);
+            else
+            {
+                victim = 
+                    BuildingManager.instance.GetClosestBuildingOfTypeWithMonkeys(transform.position, BuildingType.BananaFarm) ?? 
+                    BuildingManager.instance.GetClosestBuildingNotOfTypeWithMonkeys(transform.position, building.type);
+            }
         }
 
         button.interactable = building.CanAllocate() && victim != null;

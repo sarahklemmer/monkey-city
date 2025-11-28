@@ -15,7 +15,7 @@ public class RemoveButton : MonoBehaviour
 
     void Update()
     {
-        button.interactable = building.NextMonkeyToRemove() != null;
+        button.interactable = building != null && building.NextMonkeyToRemove() != null;
     }
     public void Click()
     {

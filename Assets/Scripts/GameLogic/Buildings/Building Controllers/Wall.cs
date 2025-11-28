@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class Wall : BuildingBase
 {
     void Awake()
@@ -19,5 +17,7 @@ public class Wall : BuildingBase
     {
         // Walls currently have no destruction side effects
     }
+
+    public override string GetDescription() => "wall";
 }
 

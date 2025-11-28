@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class Beacon : BuildingBase
 {
@@ -32,6 +34,7 @@ public class Beacon : BuildingBase
     {
         base.SharedAwakeBehavior();
         type = BuildingType.Beacon;
+        canNeverBeUpgraded = false;
         monkeys = new(1);
         
         CreateRangeIndicator();
@@ -217,45 +220,6 @@ public class Beacon : BuildingBase
         buffedFarms.Clear();
     }
 
-    public void Upgrade()
-    {
-        if (level >= MAX_LEVEL)
-        {
-            Debug.Log($"Beacon is already at max level ({MAX_LEVEL})!");
-            return;
-        }
-        
-        level++;
-        
-        if (BuildingSoundManager.instance != null)
-        {
-            BuildingSoundManager.instance.PlayUpgradeSound();
-        }
-        
-        switch (level)
-        {
-            case 2:
-                buffRadius = 6.5f;
-                attackSpeedBonus = 0.35f;
-                productionBonus = 0.30f;
-                break;
-            case 3:
-                buffRadius = 8f;
-                attackSpeedBonus = 0.50f;
-                productionBonus = 0.50f;
-                break;
-        }
-        
-        if (upgradeEffect != null)
-        {
-            upgradeEffect.Play();
-        }
-        
-        UpdateRangeCircle();
-        
-        Debug.Log($"Beacon upgraded to level {level}! Radius: {buffRadius}, Attack Speed Bonus: {attackSpeedBonus * 100}%");
-    }
-
     public void OnSelected()
     {
         if (rangeIndicator != null)
@@ -277,11 +241,49 @@ public class Beacon : BuildingBase
     public float GetBuffRadius() => buffRadius;
     public int GetLevel() => level;
     public bool IsMaxLevel() => level >= MAX_LEVEL;
+    public override string GetDescription() => "beacno";
+
+    public override bool CanUpgrade() => GetUpgradeCost() <= BananaManager.instance.GetBananas() && !canNeverBeUpgraded;
+
+    public override bool AttemptUpgrade()
+    {
+        if(!CanUpgrade()) return false;
+        BananaManager.instance.AddBananas(-GetUpgradeCost());
+        Upgrade();
+        return true;
+    }
     
-    public int GetUpgradeCost()
+    public override int GetUpgradeCost()
     {
         if (level >= MAX_LEVEL) return 0;
         return upgradeCosts[level];
+    }
+
+    public void Upgrade()
+    {   
+        level++;
+        Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or abvoe? max level!");
+        
+        BuildingSoundManager.instance.PlayUpgradeSound();
+        
+        switch (level)
+        {
+            case 2:
+                buffRadius = 6.5f;
+                attackSpeedBonus = 0.35f;
+                productionBonus = 0.30f;
+                break;
+            case 3:
+                buffRadius = 8f;
+                attackSpeedBonus = 0.50f;
+                productionBonus = 0.50f;
+                break;
+        }
+        
+        upgradeEffect.Play();
+        
+        UpdateRangeCircle();
+        if(level == MAX_LEVEL) canNeverBeUpgraded = false;
     }
 
     public override void OnDayCycle()

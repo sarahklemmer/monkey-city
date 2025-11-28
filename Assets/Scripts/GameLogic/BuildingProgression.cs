@@ -4,6 +4,15 @@ public class BuildingProgression : MonoBehaviour
 {
     void Update()
     {   
+        if(BuildingManager.instance.GetTreeOfLife() != null && !BuildingUnlock.Unlocked(BuildingType.BananaFarm))
+        {
+            BuildingUnlock.Unlock(BuildingType.BananaFarm);
+            BuildingUnlock.Unlock(BuildingType.ArcherTower);
+            BuildingUnlock.Unlock(BuildingType.Beacon);
+            BuildingUnlock.Disable(BuildingType.TreeOfLife);
+            BuildingManagementUi.instance.RequestUpdateUnlockedBuildings();
+        }
+
         // unlock traps if we've placed a bananafarm and archertower
         if(
             BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm).Count > 0 && 
@@ -12,6 +21,7 @@ public class BuildingProgression : MonoBehaviour
             )
         {
             BuildingUnlock.Unlock(BuildingType.SpikeTrap);
+            BuildingManagementUi.instance.RequestUpdateUnlockedBuildings();
         }
     }
 }
