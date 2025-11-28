@@ -259,6 +259,13 @@ public class Beacon : BuildingBase
         return upgradeCosts[level];
     }
 
+    public override string GetUpgradeText()
+    {   
+        // if we're at a level higher than 1 and the treeoflife is below level 2 we return requires tree of life level 2
+        if(level < MAX_LEVEL) return $"Upgrade cost: {GetUpgradeCost()} bananas";
+        else return "MAX LEVEL";
+    }
+
     public void Upgrade()
     {   
         level++;
@@ -283,7 +290,7 @@ public class Beacon : BuildingBase
         upgradeEffect.Play();
         
         UpdateRangeCircle();
-        if(level == MAX_LEVEL) canNeverBeUpgraded = false;
+        if(level == MAX_LEVEL) canNeverBeUpgraded = true;
     }
 
     public override void OnDayCycle()

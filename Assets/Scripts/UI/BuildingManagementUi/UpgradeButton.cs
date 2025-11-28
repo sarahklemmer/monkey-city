@@ -26,5 +26,6 @@ public class UpgradeButton : MonoBehaviour
     public void Click()
     {
         building.AttemptUpgrade();
+        BuildingInfoPopup.instance.ShowWithBuilding(building);
     }
 }

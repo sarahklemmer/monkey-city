@@ -117,7 +117,7 @@ public class BananaFarm : BuildingBase
     {   
         // if we're at a level higher than 1 and the treeoflife is below level 2 we return requires tree of life level 2
         if(level < MAX_LEVEL) return 
-            level > 1 &&  (BuildingManager.instance.GetTreeOfLife() as TreeOfLife).GetLevel() >= 2 ? 
+            level <= 1 || (BuildingManager.instance.GetTreeOfLife() as TreeOfLife).GetLevel() >= 2 ? 
             $"Upgrade Cost: {GetUpgradeCost()} Bananas\nNext Upgrade: {GetLevel() + 1}x production" : 
             "Requires Tree of Life Level 2";
         else return "MAX LEVEL";
