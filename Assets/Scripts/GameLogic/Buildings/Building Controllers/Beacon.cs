@@ -268,8 +268,8 @@ public class Beacon : BuildingBase
 
     public void Upgrade()
     {   
-        level++;
         Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or abvoe? max level!");
+        level++;
         
         BuildingSoundManager.instance.PlayUpgradeSound();
         

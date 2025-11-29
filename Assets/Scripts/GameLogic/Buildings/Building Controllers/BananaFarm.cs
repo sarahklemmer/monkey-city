@@ -9,6 +9,7 @@ public class BananaFarm : BuildingBase
     public int bananasToProduce = 0;
     public int buildingLevel = 1;
     private static readonly int[] upgradeCosts = { 0, 5, 40, 100, 200 };
+    bool nextUpgradeIndicatorSpawned = false;
     
     [SerializeField] ParticleSystem upgradeEffect;
     
@@ -33,30 +34,24 @@ public class BananaFarm : BuildingBase
 
     void Update()
     {
-        if (AllBananaFarmInfo.instance != null && monkeys != null)
-        {
-            bananasToProduce = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count() * buildingLevel;
-        }
+        bananasToProduce = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count() * buildingLevel;
     }
 
     public override void OnDayCycle()
     {
-        if (monkeys != null && monkeys.Count() > 0 && AllBananaFarmInfo.instance != null)
-        {
-            BananaManager.instance.AddBananas(AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count());
-        }
     }
 
     public void ProduceBananas()
     {   
-        if (BananaManager.instance != null)
+        BananaManager.instance.AddBananas(bananasToProduce);
+        // spawn visualizer
+        BananaVisualization.SpawnAtPosition(transform, bananasToProduce);
+
+        // spawn indicator that we can upgrade
+        if(!nextUpgradeIndicatorSpawned && CanUpgrade())
         {
-            BananaManager.instance.AddBananas(bananasToProduce);
-            Debug.Log($"BananaFarm: Produced {bananasToProduce} bananas ({baseBananaProduction} per monkey x {monkeys.Count()} monkeys)");
-        }
-        else
-        {
-            Debug.LogError("BananaFarm: BananaManager.instance is null!");
+            nextUpgradeIndicatorSpawned = true;
+            BananaVisualization.SpawnAtPosition(transform, "Upgrade available", Color.green);
         }
     }
 
@@ -87,10 +82,10 @@ public class BananaFarm : BuildingBase
         return upgradeCosts[level + 1];
     }
 
-    public void Upgrade()
+    void Upgrade()
     {   
+        Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or above? max level!");
         level++;
-        Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or abvoe? max level!");
         BuildingSoundManager.instance.PlayUpgradeSound();
         
         switch (level)
@@ -109,7 +104,8 @@ public class BananaFarm : BuildingBase
                 break;
         }
 
-        if(level == MAX_LEVEL) canNeverBeUpgraded = true;
+        if(level >= MAX_LEVEL) canNeverBeUpgraded = true;
+        else nextUpgradeIndicatorSpawned = false;
         upgradeEffect.Play();
     }
 

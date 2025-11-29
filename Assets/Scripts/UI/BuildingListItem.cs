@@ -48,20 +48,18 @@ public class BuildingListItem : MonoBehaviour
         cg.alpha = active ? 1f : 0.2f;
         cg.interactable = active;
 
-        if (type == BuildingType.TreeOfLife) count.gameObject.SetActive(false);
-        else
-        {
-            count.gameObject.SetActive(true);
 
-            int buildingCount = BuildingManager.instance.GetBuildingsOfType(type).Count;
-            count.text = buildingCount.ToString() + "/5";
-            
-            if(buildingCount == 5) {
-                count.color = Color.red;
-                atCapacity = true;
-            }
-            else count.color = Color.black;
+        count.gameObject.SetActive(true);
+
+        int buildingCount = BuildingManager.instance.GetBuildingsOfType(type).Count;
+        count.text = buildingCount.ToString() + (type == BuildingType.TreeOfLife ? "/1" : "/5");
+        
+        if(buildingCount == 5) {
+            count.color = Color.red;
+            atCapacity = true;
         }
+        else count.color = Color.black;
+        
         button.interactable = !atCapacity && BananaManager.instance.GetBananas() >= cost;
     }
 }

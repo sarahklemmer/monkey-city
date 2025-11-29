@@ -57,7 +57,6 @@ public class TreeOfLife : BuildingBase
     public void Upgrade()
     {
         Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or abvoe? max level!");
-        
         level++;
         
         BuildingSoundManager.instance.PlayUpgradeSound();

@@ -1,13 +1,12 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 public class BananaProductionTimer : MonoBehaviour
 {
     public static BananaProductionTimer instance;
 
-    [SerializeField] private float productionInterval = 10f;
+    public float productionInterval {get; private set; } = 5f;
 
     private bool isRunning = true;
 
@@ -44,34 +43,16 @@ public class BananaProductionTimer : MonoBehaviour
 
     void ProduceBananasFromAllFarms()
     {
-        if (BuildingManager.instance == null)
-        {
-            Debug.LogWarning("BananaProductionTimer: BuildingManager instance not found!");
-            return;
-        }
-
         List<BuildingBase> bananaFarms = BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm);
-        
-        if (bananaFarms == null || bananaFarms.Count == 0)
-        {
-            Debug.LogWarning("BananaProductionTimer: No banana farms found in scene!");
-            return;
-        }
 
-        Debug.Log($"BananaProductionTimer: Found {bananaFarms.Count} banana farm(s), producing bananas...");
-
-        int farmsProcessed = 0;
         foreach (BuildingBase building in bananaFarms)
         {
             if (building != null && building is BananaFarm)
             {
                 BananaFarm farm = building as BananaFarm;
                 farm.ProduceBananas();
-                farmsProcessed++;
             }
         }
-        
-        Debug.Log($"BananaProductionTimer: Processed {farmsProcessed} banana farm(s)");
     }
 
     public void SetProductionInterval(float interval)

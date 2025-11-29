@@ -9470,12 +9470,12 @@ GameObject:
   m_Component:
   - component: {fileID: 826187536}
   - component: {fileID: 826187539}
-  - component: {fileID: 826187538}
   - component: {fileID: 826187537}
   - component: {fileID: 826187540}
   - component: {fileID: 826187541}
   - component: {fileID: 826187543}
   - component: {fileID: 826187542}
+  - component: {fileID: 826187544}
   m_Layer: 0
   m_Name: ResourceManager
   m_TagString: Untagged
@@ -9512,21 +9512,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monkeyPrefab: {fileID: 5006477332581409323, guid: bcc8cb042dbe74aa498c4321e0127a1e, type: 3}
   zOffset: 0.2
---- !u!114 &826187538
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 826187535}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68a81d8e979bd45d18d5c7be0580c9bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  happinessPrefab: {fileID: 0}
-  happinessCountText: {fileID: 1440460406}
-  happinessCount: 50
 --- !u!114 &826187539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9580,7 +9565,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d9f585f97db94d86a5b14712dd6059f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  productionInterval: 5
 --- !u!114 &826187543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9595,6 +9579,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseBananasPerDay: 2
   costMultiplier: 1
+--- !u!114 &826187544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826187535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b05a9cc0c1924688ba43215176e826e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 1514070848066498016, guid: a16e9baec65434f6f83b3707f0a45b21, type: 3}
+  floatSpeed: 1
+  lifetime: 2
+  fadeStartTime: 1
+  bananaIcon: {fileID: 66986238, guid: dbb2a13e1ff47413e895d22bbbba7fe3, type: 3}
+  upgradeIcon: {fileID: -778062093, guid: f15010e14c9b44f6d9f008e049b58845, type: 3}
 --- !u!1001 &829891010
 PrefabInstance:
   m_ObjectHideFlags: 0

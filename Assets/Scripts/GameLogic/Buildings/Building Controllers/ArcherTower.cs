@@ -292,7 +292,7 @@ public class ArcherTower : BuildingBase
 
     void Upgrade()
     {
-        Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or abvoe? max level!");
+        Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or above? max level!");
         level++;
         BuildingSoundManager.instance.PlayUpgradeSound();
         
