@@ -145,11 +145,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6321599692332747698, guid: fc3055294e925461ca337bdec4f0e05a, type: 3}
   m_PrefabInstance: {fileID: 7297080626534403660}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &4158359482099949380 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6697140450903855368, guid: fc3055294e925461ca337bdec4f0e05a, type: 3}
-  m_PrefabInstance: {fileID: 7297080626534403660}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8048145612990747095
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -306,10 +301,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineMaterial: {fileID: 2100000, guid: f5ea81a833a1649e2a382c6e66bdeaba, type: 2}
   targetRenderer: {fileID: 8678810773718043987}
+  health: {fileID: 0}
   arrowPrefab: {fileID: 6334997851377227509, guid: eb2a74ef0200849a580f03bc9b92561a, type: 3}
-  level1Model: {fileID: 0}
-  level2Model: {fileID: 4158359482099949380}
-  level3Model: {fileID: 0}
+  level1Model: {fileID: 3574497664888478216, guid: 144e62f6865264f8786476feba1b12eb, type: 3}
+  level2Model: {fileID: 6697140450903855368, guid: fc3055294e925461ca337bdec4f0e05a, type: 3}
+  level3Model: {fileID: 6697140450903855368, guid: fc3055294e925461ca337bdec4f0e05a, type: 3}
   upgradeEffect: {fileID: 5487528484098358863}
   showRangeOnSelect: 1
   rangeColor: {r: 0.5, g: 0.8, b: 1, a: 0.15}

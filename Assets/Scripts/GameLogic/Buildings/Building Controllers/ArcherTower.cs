@@ -2,13 +2,24 @@ using System;
 using UnityEngine.Assertions;
 using UnityEngine;
 
+public enum ArcherTowerType
+{
+    Base,
+    SniperMonkey,
+    TackSprayer
+}
+
 public class ArcherTower : BuildingBase
 {
-    private int level = 1;
-    private const int MAX_LEVEL = 3;
+    public int level {get; private set; } = 1;
+    const int CHOOSE_PATH_LEVEL = 3;
+    private const int MAX_LEVEL = 6;
+
+    ArcherTowerType archerType = ArcherTowerType.Base;
     
     private float attackRange = 5f;
     private float attackDamage = 10f;
+    private float attackMultiplier = 1f;
     private float attackCooldown = 1f; 
     
     [SerializeField] GameObject arrowPrefab;
@@ -50,30 +61,18 @@ public class ArcherTower : BuildingBase
             }
         }
         
-        // Make sure upgrade models start disabled
-        if (level1Model != null) level1Model.SetActive(true);
-        if (level2Model != null) level2Model.SetActive(false);
-        if (level3Model != null) level3Model.SetActive(false);
+        level1Model.SetActive(true);
+        level2Model.SetActive(false);
+        level3Model.SetActive(false);
         
         CreateRangeIndicator();
     }
 
     void Start()
     {
-        if (BuildingSoundManager.instance != null)
-        {
-            BuildingSoundManager.instance.PlayBuildingPlacedSound();
-        }
-    
-        if (WaveSpawner.instance != null)
-        {
-            WaveSpawner.instance.OnFirstTowerPlaced(this);
-        }
-    
-        if (rangeIndicator != null)
-        {
-            rangeIndicator.enabled = true;
-        }
+        BuildingSoundManager.instance.PlayBuildingPlacedSound();
+        WaveSpawner.instance.OnFirstTowerPlaced(this);
+        rangeIndicator.enabled = true;
     }
 
     private void CreateRangeIndicator()
@@ -110,8 +109,6 @@ public class ArcherTower : BuildingBase
 
     private void UpdateRangeCircle()
     {
-        if (rangeIndicator == null) return;
-        
         float angleStep = 360f / circleSegments;
         
         for (int i = 0; i < circleSegments; i++)
@@ -177,29 +174,9 @@ public class ArcherTower : BuildingBase
         }
     }
 
-    public void OnSelected()
-    {
-        if (rangeIndicator != null && showRangeOnSelect)
-        {
-            rangeIndicator.enabled = true;
-        }
-    }
-
-    public void OnDeselected()
-    {
-        if (rangeIndicator != null)
-        {
-            rangeIndicator.enabled = false;
-        }
-    }
-
-    public void SetRangeIndicatorVisible(bool visible)
-    {
-        if (rangeIndicator != null)
-        {
-            rangeIndicator.enabled = visible;
-        }
-    }
+    public void OnSelected() => rangeIndicator.enabled = true;
+    public void OnDeselected() => rangeIndicator.enabled = false;
+    public void SetRangeIndicatorVisible(bool visible) => rangeIndicator.enabled = visible;
 
     private void FindNearestEnemy()
     {
@@ -255,7 +232,7 @@ public class ArcherTower : BuildingBase
         
         if (arrowScript != null && targetEnemy != null)
         {
-            arrowScript.Initialize(targetEnemy, attackDamage);
+            arrowScript.Initialize(targetEnemy, attackDamage * attackMultiplier);
         }
     }
 
@@ -268,6 +245,7 @@ public class ArcherTower : BuildingBase
         if (BananaManager.instance.GetBananas() < GetUpgradeCost()) return false;
 
         if (level >= 2 && tree.GetLevel() < 2) return false;
+        if (NeedToSetType()) return false;
 
         return true;
     }
@@ -284,8 +262,11 @@ public class ArcherTower : BuildingBase
     {        
         switch (level)
         {
-            case 1: return 50;
-            case 2: return 120;
+            case 1: return 20;
+            case 2: return 50;
+            case 3: return 100;
+            case 4:
+            case 5: return 250;
             default: return 0;
         }
     }
@@ -293,28 +274,61 @@ public class ArcherTower : BuildingBase
     void Upgrade()
     {
         Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or above? max level!");
-        level++;
         BuildingSoundManager.instance.PlayUpgradeSound();
-        
-        switch (level)
+
+        if(level == 1)
         {
-            case 2:
-                attackCooldown = 0.7f;
-                if (level1Model != null) level1Model.SetActive(false);
-                if (level2Model != null) level2Model.SetActive(true);
-                break;
-            case 3:
-                attackRange = 6.5f;
-                attackCooldown = 0.5f;
-                if (level2Model != null) level2Model.SetActive(false);
-                if (level3Model != null) level3Model.SetActive(true);
-                break;
+            attackCooldown = 0.7f;
+            level1Model.SetActive(false);
+            level2Model.SetActive(true);
+        } else if(level == 2)
+        {
+            attackRange = 6.5f;
+            attackCooldown = 0.5f;
+            level2Model.SetActive(false);
+            level3Model.SetActive(true);
+        } 
+        else if(level >= CHOOSE_PATH_LEVEL && archerType == ArcherTowerType.SniperMonkey) UpgradeSniperMonkey();
+        else if(level >= CHOOSE_PATH_LEVEL && archerType == ArcherTowerType.TackSprayer) UpgradeTackSprayer();
+        else
+        {
+            // basically just a std::unreachable
+            Assert.IsTrue(false, "somehow upgrading with base archertower after passing path choose level");
         }
+
+        level++;
+
         
         upgradeEffect.Play();
         
         UpdateRangeCircle();
         if(level == MAX_LEVEL) canNeverBeUpgraded = true;
+    }
+
+    void UpgradeSniperMonkey()
+    {
+        Assert.IsTrue(level >= CHOOSE_PATH_LEVEL, "upgrading sniper monkey too early");
+        if(level == CHOOSE_PATH_LEVEL)
+        {
+            attackRange *= 2;
+            attackCooldown *= 3;
+            attackMultiplier += 4f;
+        } else {
+            attackRange += 1;
+            attackMultiplier += 1f;
+        }
+    }
+
+    void UpgradeTackSprayer()
+    {
+        Assert.IsTrue(level >= CHOOSE_PATH_LEVEL, "upgrading tack sprayer too early");
+        if(level == CHOOSE_PATH_LEVEL)
+        {
+            attackRange /= 2;
+            attackCooldown /= 3;
+        } else attackCooldown /= 2;
+
+        attackMultiplier += 0.5f;
     }
 
     public override string GetUpgradeText()
@@ -323,8 +337,20 @@ public class ArcherTower : BuildingBase
         {
             case 1: return $"Upgrade Cost: {GetUpgradeCost()} Bananas\n Next Upgrade: Faster shooting";
             case 2: return CanUpgrade() ? $"Upgrade Cost: {GetUpgradeCost()} Bananas\n Next Upgrade: Increased range & faster shooting" : "Requires Tree of Life Level 2";
+            case 3: return $"Upgrade Cost: {GetUpgradeCost()} Bananas\n Next Upgrade: Pick a path";
+            case 4: 
+            case 5: return $"Upgrade Cost: {GetUpgradeCost()} Bananas\n " + (archerType == ArcherTowerType.SniperMonkey ? "higher damage and attack range" : "much higher attack speed");
             default: return "Max level";
         }
+    }
+
+    public bool NeedToSetType() => archerType == ArcherTowerType.Base && level >= CHOOSE_PATH_LEVEL;
+
+    public void SelectType(ArcherTowerType ty)
+    {
+        Assert.AreEqual(archerType, ArcherTowerType.Base, "setting type when one has been selected");
+        Assert.AreNotEqual(ty, ArcherTowerType.Base, "setting type to baes");
+        archerType = ty;
     }
 
     public int GetLevel() => level;
@@ -338,18 +364,8 @@ public class ArcherTower : BuildingBase
                     $"Attack Speed: {GetAttackCooldown():F2}s\n" +
                     $"Monkeys: {GetMonkeyCount()}/{GetMonkeyCapacity()}";
 
-    public override void OnDayCycle()
-    {
-        /* do nothing */
-    }
-
-    public override void OnDestroy()
-    {
-        if (monkeys != null)
-        {
-            monkeys.FreeMonkeys();
-        }
-    }
+    public override void OnDayCycle() {}
+    public override void OnDestroy() => monkeys.FreeMonkeys();
 
     void OnDrawGizmosSelected()
     {

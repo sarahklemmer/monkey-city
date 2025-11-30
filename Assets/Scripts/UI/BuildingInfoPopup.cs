@@ -56,7 +56,7 @@ public class BuildingInfoPopup : MonoBehaviour
             ShowWithBuilding(currentlyShowing);
         }
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     public void ShowWithBuilding(BuildingBase b)
     {
         BuildingManagementUi.instance.HideUnlockedBuildings();
@@ -82,7 +82,11 @@ public class BuildingInfoPopup : MonoBehaviour
             add.gameObject.SetActive(true);
             remove.gameObject.SetActive(true);
         }
+
         move.building = b;
+
+        if(b is ArcherTower && (b as ArcherTower).NeedToSetType()) PickArcherTowerType.Show(b as ArcherTower);
+        else PickArcherTowerType.Hide();
     }
 
     public void Hide()
