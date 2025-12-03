@@ -11,7 +11,7 @@ public class SetToBuildingIcon : MonoBehaviour
 
     void Update()
     {
-        BuildingBase b = BuildingSelector.instance.currentlySelected;
+        BuildingBase b = BuildingSelector.instance.currentlyViewing;
 
         if(b == null) return;
 

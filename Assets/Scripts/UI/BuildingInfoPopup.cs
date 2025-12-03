@@ -45,14 +45,14 @@ public class BuildingInfoPopup : MonoBehaviour
 
     void Update()
     {
-        if(BuildingSelector.instance.currentlySelected == null && currentlyShowing != null) {
+        if(BuildingSelector.instance.currentlyViewing == null && currentlyShowing != null) {
             currentlyShowing = null;
             Hide();
             return;
         }
 
-        if(currentlyShowing != BuildingSelector.instance.currentlySelected) {
-            currentlyShowing = BuildingSelector.instance.currentlySelected;
+        if(currentlyShowing != BuildingSelector.instance.currentlyViewing) {
+            currentlyShowing = BuildingSelector.instance.currentlyViewing;
             ShowWithBuilding(currentlyShowing);
         }
     }

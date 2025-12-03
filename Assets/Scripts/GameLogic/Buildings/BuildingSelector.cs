@@ -9,6 +9,7 @@ public class BuildingSelector : MonoBehaviour
     private bool selectionDisabledForFrame = false;
 
     public BuildingBase currentlySelected {get; private set;} = null;
+    public BuildingBase currentlyViewing {get; private set;} = null;
     MonkeyController selectedMonkey = null;
     
     void Awake()
@@ -44,36 +45,40 @@ public class BuildingSelector : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 1000f, buildingMask))
             clicked = hit.collider.GetComponentInParent<BuildingBase>();
         
+        // if we right click 
         if (rightClick && clicked != null)
         {
-            BuildingInfoPopup.instance.ShowWithBuilding(clicked);
+            currentlyViewing = clicked;
             return;
-        }
-        
-        if (leftClick)
+        } else if (rightClick)
         {
-            if (clicked != null)
-            {
-                if (currentlySelected != null && selectedMonkey != null)
-                {
-                    if (clicked != currentlySelected && clicked.CanAllocate())
-                    {
-                        currentlySelected.RemoveMonkey(selectedMonkey);
-                        selectedMonkey.StartWalkingToBuilding(clicked);
-                        Deselect();
-                        return;
-                    }
-                }
+            currentlyViewing = null;
+        }
 
-                Select(clicked);
-            }
-            else
+        // we know it was a leftclick from here
+        
+        if (clicked != null)
+        {
+            if (currentlySelected != null && selectedMonkey != null)
             {
-                // if we clicked not on the UI
-                if (!RectTransformUtility.RectangleContainsScreenPoint(uiSafeArea, Input.mousePosition))
+                if (clicked != currentlySelected && clicked.CanAllocate())
                 {
+                    currentlySelected.RemoveMonkey(selectedMonkey);
+                    selectedMonkey.StartWalkingToBuilding(clicked);
                     Deselect();
+                    return;
                 }
+            }
+
+            Select(clicked);
+        }
+        else
+        {
+            // if we clicked not on the UI
+            if (!RectTransformUtility.RectangleContainsScreenPoint(uiSafeArea, Input.mousePosition))
+            {
+                currentlyViewing = null;
+                Deselect();
             }
         }
     }
