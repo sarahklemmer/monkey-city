@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public class BuildingUnlock
 {
@@ -11,7 +12,8 @@ public class BuildingUnlock
     {
         if (unlocked.Contains(type)) return;
         unlocked.Add(type);
-        ToastManager.Instance.RequestToast(type.ToString() + " unlocked!");
+        ToastBuildingManager.Instance.RequestToast(type.ToString() + " unlocked!");
+        Debug.WriteLine($"Building unlocked: {type}");
     }
     
     public static void Disable(BuildingType type) 
