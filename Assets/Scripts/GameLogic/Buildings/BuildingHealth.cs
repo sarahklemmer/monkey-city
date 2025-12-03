@@ -12,6 +12,7 @@ public class BuildingHealth : MonoBehaviour
     private float currentHealth;
     private float lastDamageTime;
     private bool isRegenerating = false;
+    [HideInInspector] public bool regenerationAllowed = true;
     private Coroutine regenCoroutine;
     private BuildingBase building = null;
 
@@ -97,7 +98,7 @@ public class BuildingHealth : MonoBehaviour
 
     private IEnumerator CheckForRegeneration()
     {
-        while (Time.time - lastDamageTime < regenDelay)
+        while (Time.time - lastDamageTime < regenDelay || !regenerationAllowed)
         {
             yield return new WaitForSeconds(0.5f);
         }

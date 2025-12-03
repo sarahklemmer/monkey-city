@@ -48,10 +48,13 @@ public class BuildingSelector : MonoBehaviour
         // if we right click 
         if (rightClick && clicked != null)
         {
+            if(currentlyViewing != clicked && currentlyViewing != null) currentlyViewing.OnDeslectOrStopViewing();
             currentlyViewing = clicked;
+            currentlyViewing.OnSelectOrView();
             return;
         } else if (rightClick)
         {
+            currentlyViewing.OnDeslectOrStopViewing();
             currentlyViewing = null;
         }
 
@@ -77,6 +80,7 @@ public class BuildingSelector : MonoBehaviour
             // if we clicked not on the UI
             if (!RectTransformUtility.RectangleContainsScreenPoint(uiSafeArea, Input.mousePosition))
             {
+                if(currentlyViewing != null) currentlyViewing.OnDeslectOrStopViewing();
                 currentlyViewing = null;
                 Deselect();
             }
@@ -93,6 +97,7 @@ public class BuildingSelector : MonoBehaviour
 
         currentlySelected = b;
         currentlySelected.EnableGlow();
+        currentlySelected.OnSelectOrView();
 
         if (currentlySelected.GetMonkeyCount() > 0)
         {
@@ -109,6 +114,7 @@ public class BuildingSelector : MonoBehaviour
         if (currentlySelected != null)
         {
             currentlySelected.DisableGlow();
+            currentlySelected.OnDeslectOrStopViewing();
         }
 
         if (selectedMonkey != null)

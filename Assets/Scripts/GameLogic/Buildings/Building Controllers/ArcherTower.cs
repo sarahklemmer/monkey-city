@@ -37,7 +37,6 @@ public class ArcherTower : BuildingBase
 
     // Range indicator components
     private LineRenderer rangeIndicator;
-    [SerializeField] private bool showRangeOnSelect = true;
     [SerializeField] private Color rangeColor = new Color(0.5f, 0.8f, 1f, 0.15f);
     [SerializeField] private int circleSegments = 50;
     [SerializeField] private Vector3 circleOffset = Vector3.zero;
@@ -72,7 +71,6 @@ public class ArcherTower : BuildingBase
     {
         BuildingSoundManager.instance.PlayBuildingPlacedSound();
         WaveSpawner.instance.OnFirstTowerPlaced(this);
-        rangeIndicator.enabled = true;
     }
 
     private void CreateRangeIndicator()
@@ -103,7 +101,8 @@ public class ArcherTower : BuildingBase
         rangeIndicator.endColor = rangeColor;
         rangeIndicator.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         rangeIndicator.receiveShadows = false;
-        
+        rangeIndicator.enabled = false;
+
         UpdateRangeCircle();
     }
 
@@ -174,10 +173,6 @@ public class ArcherTower : BuildingBase
         }
     }
 
-    public void OnSelected() => rangeIndicator.enabled = true;
-    public void OnDeselected() => rangeIndicator.enabled = false;
-    public void SetRangeIndicatorVisible(bool visible) => rangeIndicator.enabled = visible;
-
     private void FindNearestEnemy()
     {
         EnemyAttacker[] enemies = FindObjectsByType<EnemyAttacker>(FindObjectsSortMode.None);
@@ -235,6 +230,9 @@ public class ArcherTower : BuildingBase
             arrowScript.Initialize(targetEnemy, attackDamage * attackMultiplier);
         }
     }
+
+    public override void OnSelectOrView() => rangeIndicator.enabled = true;
+    public override void OnDeslectOrStopViewing() => rangeIndicator.enabled = false; 
 
     public override bool CanUpgrade() 
     {
@@ -336,7 +334,7 @@ public class ArcherTower : BuildingBase
         switch(level)
         {
             case 1: return $"Upgrade Cost: {GetUpgradeCost()} Bananas\n Next Upgrade: Faster shooting";
-            case 2: return CanUpgrade() ? $"Upgrade Cost: {GetUpgradeCost()} Bananas\n Next Upgrade: Increased range & faster shooting" : "Requires Tree of Life Level 2";
+            case 2: return (level >= 2 && (BuildingManager.instance.GetTreeOfLife() as TreeOfLife).GetLevel() < 2) ?  "Requires Tree of Life Level 2" : $"Upgrade Cost: {GetUpgradeCost()} Bananas\n Next Upgrade: Increased range & faster shooting";
             case 3: return $"Upgrade Cost: {GetUpgradeCost()} Bananas\n Next Upgrade: Pick a path";
             case 4: 
             case 5: return $"Upgrade Cost: {GetUpgradeCost()} Bananas\n " + (archerType == ArcherTowerType.SniperMonkey ? "higher damage and attack range" : "much higher attack speed");

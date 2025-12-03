@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -19,7 +18,6 @@ public class Beacon : BuildingBase
     [SerializeField] private ParticleSystem beaconAuraEffect;
     
     [Header("Range Indicator")]
-    [SerializeField] private bool showRangeAlways = true;
     [SerializeField] private Color rangeColor = new Color(1f, 1f, 1f, 0.3f); 
     [SerializeField] private int circleSegments = 50;
     
@@ -44,26 +42,11 @@ public class Beacon : BuildingBase
 
     void Start()
     {
-        if (BuildingSoundManager.instance != null)
-        {
-            BuildingSoundManager.instance.PlayBuildingPlacedSound();
-        }
+        BuildingSoundManager.instance.PlayBuildingPlacedSound();
         
-        if (beaconAuraEffect != null)
-        {
-            beaconAuraEffect.Play();
-        }
-        
-        if (rangeIndicator != null)
-        if (rangeIndicator != null)
-        {
-            rangeIndicator.enabled = true;
-            Debug.Log("[Beacon] Range indicator enabled");
-        }
-        else
-        {
-            Debug.LogWarning("[Beacon] Range indicator is NULL in Start!");
-        }
+        if (beaconAuraEffect != null) beaconAuraEffect.Play();
+        Assert.IsNotNull(rangeIndicator, "rangeindicator is null in beacon");
+        rangeIndicator.enabled = false;
     }
 
     protected override void UpdateBehavior()
@@ -220,28 +203,14 @@ public class Beacon : BuildingBase
         buffedFarms.Clear();
     }
 
-    public void OnSelected()
-    {
-        if (rangeIndicator != null)
-        {
-            rangeIndicator.enabled = true;
-        }
-    }
-
-    public void OnDeselected()
-    {
-        if (rangeIndicator != null && showRangeAlways)
-        {
-            rangeIndicator.enabled = true;
-        }
-    }
-
     public float GetAttackSpeedBonus() => attackSpeedBonus;
     public float GetProductionBonus() => productionBonus;
     public float GetBuffRadius() => buffRadius;
     public int GetLevel() => level;
     public bool IsMaxLevel() => level >= MAX_LEVEL;
     public override string GetDescription() => "beacno";
+    public override void OnSelectOrView() => rangeIndicator.enabled = true;
+    public override void OnDeslectOrStopViewing() => rangeIndicator.enabled = false; 
 
     public override bool CanUpgrade() => GetUpgradeCost() <= BananaManager.instance.GetBananas() && !canNeverBeUpgraded;
 

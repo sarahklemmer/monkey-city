@@ -96,6 +96,8 @@ public abstract class BuildingBase : MonoBehaviour
 
     public virtual int GetMonkeyCount() => monkeys.count;
     public virtual int GetMonkeyCapacity() => monkeys.capacity;
+    public virtual void OnSelectOrView() {}
+    public virtual void OnDeslectOrStopViewing() {}
     public bool CanAllocate() => monkeys.CanAllocate();
 
     public BuildingType GetBuildingType() => type;

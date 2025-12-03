@@ -52,9 +52,9 @@ public class BuildingListItem : MonoBehaviour
         count.gameObject.SetActive(true);
 
         int buildingCount = BuildingManager.instance.GetBuildingsOfType(type).Count;
-        count.text = buildingCount.ToString() + (type == BuildingType.TreeOfLife ? "/1" : "/5");
+        count.text = buildingCount.ToString() + "/" + BuildingCapToPrice.GetCap(type);
         
-        if(buildingCount == 5) {
+        if(buildingCount == BuildingCapToPrice.GetCap(type)) {
             count.color = Color.red;
             atCapacity = true;
         }

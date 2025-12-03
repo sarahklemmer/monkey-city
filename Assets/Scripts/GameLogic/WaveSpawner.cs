@@ -121,7 +121,7 @@ public class WaveSpawner : MonoBehaviour
                     }
                     
                     waveActive = false;
-                    HealAllBuildings();
+                    BuildingManager.instance.HealAllToFull();
                     ChoosePathSystem.instance.ShowPathMenu();
                 }
                 else
@@ -200,7 +200,7 @@ public class WaveSpawner : MonoBehaviour
                 }
                 
                 waveActive = false;
-                HealAllBuildings();
+                BuildingManager.instance.HealAllToFull();
 
                 if (currentWave == 1)
                 {
@@ -420,21 +420,6 @@ public class WaveSpawner : MonoBehaviour
         }
     
         return new Vector3(x, 0, z);
-    }
-
-    private void HealAllBuildings()
-    {
-        BuildingHealth[] allBuildings = FindObjectsByType<BuildingHealth>(FindObjectsSortMode.None);
-        
-        int healedCount = 0;
-        foreach (BuildingHealth building in allBuildings)
-        {
-            if (building != null && building.GetCurrentHealth() > 0)
-            {
-                building.HealToFull();
-                healedCount++;
-            }
-        }
     }
 
     private int GetDaysBetweenWaves()
