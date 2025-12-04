@@ -15,21 +15,17 @@ namespace GameLogic.Buildings.Building_Controllers
             type = BuildingType.Library;
             canNeverBeUpgraded = true;
             canContainMonkeys = false;
-            
-            Debug.Log("Library: Awake called");
         }
 
         void Start()
         {
             BuildingSoundManager.instance.PlayBuildingPlacedSound();
-            Debug.Log("Library: Start called, attempting to activate bonus");
             ActivatePointBonus();
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            Debug.Log($"Library: OnEnable called, pointBonusActive={pointBonusActive}");
             
             if (!pointBonusActive && !isBeingDestroyed)
             {

@@ -36,8 +36,6 @@ public class Beacon : BuildingBase
         monkeys = new(1);
         
         CreateRangeIndicator();
-        
-        Debug.Log("[Beacon] Awake completed, range indicator created");
     }
 
     void Start()
@@ -93,8 +91,6 @@ public class Beacon : BuildingBase
         rangeIndicator.receiveShadows = false;
         
         UpdateRangeCircle();
-        
-        Debug.Log($"[Beacon] Range indicator created: segments={circleSegments}, radius={buffRadius}, color={rangeColor}");
     }
 
     private void UpdateRangeCircle()
@@ -171,25 +167,21 @@ public class Beacon : BuildingBase
     private void ApplyArcherBuff(ArcherTower archer)
     {
         archer.AddBeaconBuff(this);
-        Debug.Log($"[Beacon] Buffing Archer Tower at {archer.transform.position} - Attack Speed +{attackSpeedBonus * 100}%");
     }
 
     private void RemoveArcherBuff(ArcherTower archer)
     {
         archer.RemoveBeaconBuff(this);
-        Debug.Log($"[Beacon] Removing buff from Archer Tower at {archer.transform.position}");
     }
 
     private void ApplyFarmBuff(BananaFarm farm)
     {
         farm.AddBeaconBuff(this);
-        Debug.Log($"[Beacon] Buffing Banana Farm at {farm.transform.position} - Production +{productionBonus * 100}%");
     }
 
     private void RemoveFarmBuff(BananaFarm farm)
     {
         farm.RemoveBeaconBuff(this);
-        Debug.Log($"[Beacon] Removing buff from Banana Farm at {farm.transform.position}");
     }
 
     private void ClearAllBuffs()
@@ -272,8 +264,6 @@ public class Beacon : BuildingBase
     public void Upgrade()
     {   
         Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or above max level!");
-        
-        // Clear all buffs before upgrading
         ClearAllBuffs();
         
         level++;
@@ -297,13 +287,9 @@ public class Beacon : BuildingBase
         if (upgradeEffect != null) upgradeEffect.Play();
         
         UpdateRangeCircle();
-        
-        // Reapply buffs with new values
         UpdateBuffedBuildings();
         
         if(level == MAX_LEVEL) canNeverBeUpgraded = true;
-        
-        Debug.Log($"[Beacon] Upgraded to level {level}! Radius: {buffRadius}, AttackSpeed: +{attackSpeedBonus * 100}%, Production: +{productionBonus * 100}%");
     }
 
     public override void OnDayCycle()
