@@ -170,22 +170,26 @@ public class Beacon : BuildingBase
 
     private void ApplyArcherBuff(ArcherTower archer)
     {
-        Debug.Log($"Beacon buffing Archer Tower at {archer.transform.position}");
+        archer.AddBeaconBuff(this);
+        Debug.Log($"[Beacon] Buffing Archer Tower at {archer.transform.position} - Attack Speed +{attackSpeedBonus * 100}%");
     }
 
     private void RemoveArcherBuff(ArcherTower archer)
     {
-        Debug.Log($"Beacon removing buff from Archer Tower at {archer.transform.position}");
+        archer.RemoveBeaconBuff(this);
+        Debug.Log($"[Beacon] Removing buff from Archer Tower at {archer.transform.position}");
     }
 
     private void ApplyFarmBuff(BananaFarm farm)
     {
-        Debug.Log($"Beacon buffing Banana Farm at {farm.transform.position}");
+        farm.AddBeaconBuff(this);
+        Debug.Log($"[Beacon] Buffing Banana Farm at {farm.transform.position} - Production +{productionBonus * 100}%");
     }
 
     private void RemoveFarmBuff(BananaFarm farm)
     {
-        Debug.Log($"Beacon removing buff from Banana Farm at {farm.transform.position}");
+        farm.RemoveBeaconBuff(this);
+        Debug.Log($"[Beacon] Removing buff from Banana Farm at {farm.transform.position}");
     }
 
     private void ClearAllBuffs()
@@ -208,7 +212,38 @@ public class Beacon : BuildingBase
     public float GetBuffRadius() => buffRadius;
     public int GetLevel() => level;
     public bool IsMaxLevel() => level >= MAX_LEVEL;
-    public override string GetDescription() => "beacno";
+
+    public override string GetDescription()
+    {
+        string monkeyStatus = GetMonkeyCount() > 0 ? "ACTIVE" : "INACTIVE";
+        int buffedCount = buffedArchers.Count + buffedFarms.Count;
+        
+        string statsText = $"<size=14><b>Beacon</b> Lv{level}/{MAX_LEVEL} - {monkeyStatus}\n" +
+                          $"Buffing: {buffedCount} buildings\n" +
+                          $"Range: {buffRadius}m\n\n" +
+                          $"<b>Buffs:</b>\n" +
+                          $"Towers: +{attackSpeedBonus * 100:F0}% speed\n" +
+                          $"Farms: +{productionBonus * 100:F0}% production\n" +
+                          $"Upkeep: {Mathf.Abs(bananasPerDay)}/day";
+        
+        if (level < MAX_LEVEL)
+        {
+            statsText += $"\n\n<b>Next:</b> ";
+            switch (level)
+            {
+                case 1:
+                    statsText += $"6.5m, +35% spd, +30% prod";
+                    break;
+                case 2:
+                    statsText += $"8m, +50% spd, +50% prod";
+                    break;
+            }
+        }
+        
+        statsText += "</size>";
+        return statsText;
+    }
+
     public override void OnSelectOrView() => rangeIndicator.enabled = true;
     public override void OnDeslectOrStopViewing() => rangeIndicator.enabled = false; 
 
@@ -230,14 +265,17 @@ public class Beacon : BuildingBase
 
     public override string GetUpgradeText()
     {   
-        // if we're at a level higher than 1 and the treeoflife is below level 2 we return requires tree of life level 2
         if(level < MAX_LEVEL) return $"Upgrade cost: {GetUpgradeCost()} bananas";
         else return "MAX LEVEL";
     }
 
     public void Upgrade()
     {   
-        Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or abvoe? max level!");
+        Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or above max level!");
+        
+        // Clear all buffs before upgrading
+        ClearAllBuffs();
+        
         level++;
         
         BuildingSoundManager.instance.PlayUpgradeSound();
@@ -256,10 +294,16 @@ public class Beacon : BuildingBase
                 break;
         }
         
-        upgradeEffect.Play();
+        if (upgradeEffect != null) upgradeEffect.Play();
         
         UpdateRangeCircle();
+        
+        // Reapply buffs with new values
+        UpdateBuffedBuildings();
+        
         if(level == MAX_LEVEL) canNeverBeUpgraded = true;
+        
+        Debug.Log($"[Beacon] Upgraded to level {level}! Radius: {buffRadius}, AttackSpeed: +{attackSpeedBonus * 100}%, Production: +{productionBonus * 100}%");
     }
 
     public override void OnDayCycle()

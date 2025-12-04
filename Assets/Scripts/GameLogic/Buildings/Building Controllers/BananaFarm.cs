@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Assertions;
+using System.Collections.Generic;
 
 public class BananaFarm : BuildingBase
 {
@@ -135,5 +136,29 @@ public class BananaFarm : BuildingBase
         {
             monkeys.FreeMonkeys();
         }
+    }
+    private HashSet<Beacon> beaconBuffs = new HashSet<Beacon>();
+
+    public void AddBeaconBuff(Beacon beacon)
+    {
+        beaconBuffs.Add(beacon);
+    }
+
+    public void RemoveBeaconBuff(Beacon beacon)
+    {
+        beaconBuffs.Remove(beacon);
+    }
+
+    public float GetTotalProductionBonus()
+    {
+        float bonus = 0f;
+        foreach (var beacon in beaconBuffs)
+        {
+            if (beacon != null && beacon.GetMonkeyCount() > 0)
+            {
+                bonus += beacon.GetProductionBonus();
+            }
+        }
+        return bonus;
     }
 }

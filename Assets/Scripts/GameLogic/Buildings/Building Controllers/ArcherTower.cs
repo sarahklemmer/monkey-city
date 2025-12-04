@@ -1,6 +1,7 @@
 using System;
 using UnityEngine.Assertions;
 using UnityEngine;
+using System.Collections.Generic;
 
 public enum ArcherTowerType
 {
@@ -375,5 +376,30 @@ public class ArcherTower : BuildingBase
             Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position, targetEnemy.transform.position);
         }
+    }
+    
+    private HashSet<Beacon> beaconBuffs = new HashSet<Beacon>();
+
+    public void AddBeaconBuff(Beacon beacon)
+    {
+        beaconBuffs.Add(beacon);
+    }
+
+    public void RemoveBeaconBuff(Beacon beacon)
+    {
+        beaconBuffs.Remove(beacon);
+    }
+
+    public float GetTotalAttackSpeedBonus()
+    {
+        float bonus = 0f;
+        foreach (var beacon in beaconBuffs)
+        {
+            if (beacon != null && beacon.GetMonkeyCount() > 0)
+            {
+                bonus += beacon.GetAttackSpeedBonus();
+            }
+        }
+        return bonus;
     }
 }
