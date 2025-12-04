@@ -6,6 +6,10 @@ public class BuildingInfoPopup : MonoBehaviour
 {
     [SerializeField] TMP_Text description;
     [SerializeField] CanvasGroup parent;
+    [SerializeField] GameObject addObject;
+    [SerializeField] GameObject moveObject;
+    [SerializeField] GameObject removeObject;
+    [SerializeField] GameObject upgradeObject;
     // buttons
     AddButton add;
     MoveButton move;
@@ -26,10 +30,10 @@ public class BuildingInfoPopup : MonoBehaviour
         }
         instance = this;
 
-        add = parent.GetComponentInChildren<AddButton>();
-        move = parent.GetComponentInChildren<MoveButton>();
-        remove = parent.GetComponentInChildren<RemoveButton>();
-        upgrade = parent.GetComponentInChildren<UpgradeButton>();
+        add = GetComponentInChildren<AddButton>();
+        move = GetComponentInChildren<MoveButton>();
+        remove = GetComponentInChildren<RemoveButton>();
+        upgrade = GetComponentInChildren<UpgradeButton>();
 
         Assert.IsNotNull(add, "AddButton is not in children!");
         Assert.IsNotNull(move, "MoveButton is not in children!");
@@ -59,32 +63,40 @@ public class BuildingInfoPopup : MonoBehaviour
 
     public void ShowWithBuilding(BuildingBase b)
     {
+        GameManagementHeirarchy.instance.MakeInfoLastChild();
         BuildingManagementUi.instance.HideUnlockedBuildings();
         parent.alpha = 1f;
         parent.interactable = true;
 
         description.text = b.GetDescription() + "\n\n" + b.GetUpgradeText();
 
-        add.gameObject.SetActive(false);
-        remove.gameObject.SetActive(false);
-        upgrade.gameObject.SetActive(false);
-        move.gameObject.SetActive(false);
+        addObject.SetActive(false);
+        removeObject.SetActive(false);
+        upgradeObject.SetActive(false);
+        moveObject.SetActive(false);
+
+        if(b is TreeOfLife)
+        {
+            upgrade.building = b;
+            upgradeObject.SetActive(true);
+            return;
+        } else
+        {
+            moveObject.SetActive(true);
+            move.building = b;
+        }
 
         if(b.CanUpgrade()) {
             upgrade.building = b;
-            upgrade.gameObject.SetActive(true);
+            upgradeObject.SetActive(true);
         }
 
         if(b.canContainMonkeys) {
             add.building = b;
+            addObject.SetActive(true);
             remove.building = b;
-
-            add.gameObject.SetActive(true);
-            remove.gameObject.SetActive(true);
+            removeObject.SetActive(true);
         }
-
-        move.building = b;
-        move.gameObject.SetActive(true);
 
         if(b is ArcherTower && (b as ArcherTower).NeedToSetType()) PickArcherTowerType.Show(b as ArcherTower);
         else PickArcherTowerType.Hide();
@@ -92,6 +104,7 @@ public class BuildingInfoPopup : MonoBehaviour
 
     public void Hide()
     {
+        GameManagementHeirarchy.instance.MakeBuildingListLastChild();
         parent.alpha = 0f;
         parent.interactable = false;
         BuildingManagementUi.instance.Show();

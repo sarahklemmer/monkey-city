@@ -11,6 +11,7 @@ public class BananaFarm : BuildingBase
     public int buildingLevel = 1;
     private static readonly int[] upgradeCosts = { 0, 5, 40, 100, 200 };
     bool nextUpgradeIndicatorSpawned = false;
+    BananaGrow growEffect;
     
     [SerializeField] ParticleSystem upgradeEffect;
     
@@ -20,6 +21,8 @@ public class BananaFarm : BuildingBase
         canNeverBeUpgraded = false;
         type = BuildingType.BananaFarm;
         monkeys = new(2);
+        growEffect = GetComponent<BananaGrow>();
+        Assert.IsNotNull(growEffect, "no grow effect attached");
     }
     
     protected override void OnEnable()
@@ -88,6 +91,7 @@ public class BananaFarm : BuildingBase
         Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or above? max level!");
         level++;
         BuildingSoundManager.instance.PlayUpgradeSound();
+        growEffect.Grow();
         
         switch (level)
         {
@@ -105,8 +109,13 @@ public class BananaFarm : BuildingBase
                 break;
         }
 
-        if(level >= MAX_LEVEL) canNeverBeUpgraded = true;
-        else nextUpgradeIndicatorSpawned = false;
+        if(level >= MAX_LEVEL) {
+            canNeverBeUpgraded = true;
+            growEffect.GrowTreetop();
+        } else
+        {
+            nextUpgradeIndicatorSpawned = false;
+        }
         upgradeEffect.Play();
     }
 

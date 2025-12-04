@@ -54,7 +54,7 @@ public class BuildingSelector : MonoBehaviour
             return;
         } else if (rightClick)
         {
-            currentlyViewing.OnDeslectOrStopViewing();
+            if(currentlySelected != null) currentlyViewing.OnDeslectOrStopViewing();
             currentlyViewing = null;
         }
 
