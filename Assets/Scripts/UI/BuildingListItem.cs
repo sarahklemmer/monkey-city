@@ -48,13 +48,16 @@ public class BuildingListItem : MonoBehaviour
         cg.alpha = active ? 1f : 0.2f;
         cg.interactable = active;
 
-
         count.gameObject.SetActive(true);
 
         int buildingCount = BuildingManager.instance.GetBuildingsOfType(type).Count;
-        count.text = buildingCount.ToString() + "/" + BuildingCapToPrice.GetCap(type);
+        count.text = buildingCount.ToString() + (type == BuildingType.TreeOfLife || type == BuildingType.Library ? "/1" : "/5");
         
-        if(buildingCount == BuildingCapToPrice.GetCap(type)) {
+        if((type == BuildingType.TreeOfLife || type == BuildingType.Library) && buildingCount >= 1) {
+            count.color = Color.red;
+            atCapacity = true;
+        }
+        else if(buildingCount >= 5) {
             count.color = Color.red;
             atCapacity = true;
         }

@@ -9,9 +9,10 @@ public class BuildingCapToPrice
         { BuildingType.TreeOfLife, 1 },
         { BuildingType.BananaFarm, 5 },
         { BuildingType.ArcherTower, 5 },
-        { BuildingType.SpikeTrap, 1},
+        { BuildingType.SpikeTrap, 5},
         { BuildingType.Wall, 0 },
-        { BuildingType.Beacon, 5 }
+        { BuildingType.Beacon, 5 },
+        { BuildingType.Library, 1 }
     };
 
     public static int GetCap(BuildingType ty)

@@ -11,7 +11,8 @@ public class BuildingTypeToPrice
         { BuildingType.ArcherTower, 4 },
         { BuildingType.SpikeTrap, 25},
         { BuildingType.Wall, 2 },
-        { BuildingType.Beacon, 10 }
+        { BuildingType.Beacon, 10 },
+        { BuildingType.Library, 50 }
     };
 
     public static int GetPrice(BuildingType ty)

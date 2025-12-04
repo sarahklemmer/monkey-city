@@ -65,12 +65,12 @@ public class BuildingInfoPopup : MonoBehaviour
 
         description.text = b.GetDescription() + "\n\n" + b.GetUpgradeText();
 
-        // move is always active 
         add.gameObject.SetActive(false);
         remove.gameObject.SetActive(false);
         upgrade.gameObject.SetActive(false);
+        move.gameObject.SetActive(false);
 
-        if(!b.canNeverBeUpgraded) {
+        if(b.CanUpgrade()) {
             upgrade.building = b;
             upgrade.gameObject.SetActive(true);
         }
@@ -84,6 +84,7 @@ public class BuildingInfoPopup : MonoBehaviour
         }
 
         move.building = b;
+        move.gameObject.SetActive(true);
 
         if(b is ArcherTower && (b as ArcherTower).NeedToSetType()) PickArcherTowerType.Show(b as ArcherTower);
         else PickArcherTowerType.Hide();

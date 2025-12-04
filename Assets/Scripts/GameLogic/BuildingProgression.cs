@@ -13,14 +13,23 @@ public class BuildingProgression : MonoBehaviour
             BuildingManagementUi.instance.RequestUpdateUnlockedBuildings();
         }
 
-        // unlock traps if we've placed a bananafarm and archertower
         if(
             BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm).Count > 0 && 
             BuildingManager.instance.GetBuildingsOfType(BuildingType.ArcherTower).Count > 0 &&
             !BuildingUnlock.Unlocked(BuildingType.SpikeTrap)
-            )
+        )
         {
             BuildingUnlock.Unlock(BuildingType.SpikeTrap);
+            BuildingManagementUi.instance.RequestUpdateUnlockedBuildings();
+        }
+
+        if(
+            BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm).Count > 0 && 
+            BuildingManager.instance.GetBuildingsOfType(BuildingType.ArcherTower).Count > 0 &&
+            !BuildingUnlock.Unlocked(BuildingType.Library)
+        )
+        {
+            BuildingUnlock.Unlock(BuildingType.Library);
             BuildingManagementUi.instance.RequestUpdateUnlockedBuildings();
         }
     }

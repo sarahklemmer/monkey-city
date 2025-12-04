@@ -8,7 +8,6 @@ public class BuildingGrid : MonoBehaviour
 {
     public static BuildingGrid instance;
 
-    
     [SerializeField] GameObject placementIndicatorPrefab;
     [SerializeField] Transform placementIndicatorsParent;
     [SerializeField] GameObject presetWalls;
@@ -81,7 +80,6 @@ public class BuildingGrid : MonoBehaviour
         return transform.position.y;
     }   
 
-
     // starts at lower left corner of building
     public bool CanPlace(int x_start, int y_start, BuildingType type)
     {
@@ -124,10 +122,48 @@ public class BuildingGrid : MonoBehaviour
         }
     }
 
-    public void RemoveBuilding(BuildingBase b)
+    /// <summary>
+    /// Removes a building from the grid (clears grid cells only)
+    /// Placement indicators will be shown when player selects a building to place
+    /// </summary>
+    public void RemoveBuilding(BuildingBase building)
     {
-        grid[b.grid_x, b.grid_y] = null;
+        if (building == null) return;
+    
+        BuildingType type = building.type;
+        BuildingDimensions dimensions = BuildingUtils.TypeToDimensions(type);
+        int x_start = building.grid_x;
+        int y_start = building.grid_y;
+        int x_end = x_start + dimensions.width;
+        int y_end = y_start + dimensions.height;
+    
+        Debug.Log($"BuildingGrid: Removing {type} at ({x_start}, {y_start}) with dimensions {dimensions.width}x{dimensions.height}");
+    
+        // Clear all grid cells occupied by this building
+        for (int x = x_start; x < x_end; x++)
+        {
+            for (int y = y_start; y < y_end; y++)
+            {
+                if (IsValidGridPosition(x, y))
+                {
+                    grid[x, y] = null;
+                }
+            }
+        }
+        
+        // Don't create placement indicators here - they'll be shown when player
+        // selects a building to place via SpawnBuildingPlacementIndicators()
+        Debug.Log($"BuildingGrid: Grid cells cleared. Space will be available for next building placement.");
     }
+
+    /// <summary>
+    /// Checks if grid position is valid
+    /// </summary>
+    private bool IsValidGridPosition(int x, int y)
+    {
+        return x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE;
+    }
+
     // don't worry about how this works, it works
     public void FrameCameraIsoTopBottom()
     {

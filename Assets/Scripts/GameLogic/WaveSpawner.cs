@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using GameLogic.Buildings.Building_Controllers;
 
 [System.Serializable]
 public class EnemyWaveConfig
@@ -48,6 +50,7 @@ public class WaveSpawner : MonoBehaviour
     private ArcherTower firstArcherTower = null;
 
     [SerializeField] private int currentBananas = 0;
+    private List<Library> registeredLibraries = new List<Library>();
 
     public static WaveSpawner instance;
 
@@ -61,6 +64,7 @@ public class WaveSpawner : MonoBehaviour
         }
 
         instance = this;
+        Debug.Log("WaveSpawner: Instance created and ready");
     }
 
     void Start()
@@ -117,7 +121,9 @@ public class WaveSpawner : MonoBehaviour
 
                     if (enemiesAlive == 0)
                     {
-                        PathManager.instance.playerPoints += 1;
+                        int points = GetPointsForWave();
+                        PathManager.instance.playerPoints += points;
+                        Debug.Log($"Wave {currentWave} complete! Awarded {points} points. Library count: {registeredLibraries.Count}, Library active: {registeredLibraries.Count > 0}");
                     }
                     
                     waveActive = false;
@@ -196,7 +202,9 @@ public class WaveSpawner : MonoBehaviour
                 }
                 if (enemiesAlive == 0)
                 {
-                    PathManager.instance.playerPoints += 1;
+                    int points = GetPointsForWave();
+                    PathManager.instance.playerPoints += points;
+                    Debug.Log($"Wave {currentWave} complete! Awarded {points} points. Library count: {registeredLibraries.Count}, Library active: {registeredLibraries.Count > 0}");
                 }
                 
                 waveActive = false;
@@ -443,6 +451,46 @@ public class WaveSpawner : MonoBehaviour
         if (bananas >= bananaThreshold2) return 2;
         if (bananas >= bananaThreshold1) return 1;
         return 0;
+    }
+    
+    // Library Support Methods
+    public void RegisterLibrary(Library library)
+    {
+        if (!registeredLibraries.Contains(library))
+        {
+            registeredLibraries.Add(library);
+            Debug.Log($"WaveSpawner: Library registered! Point bonus now active. Total libraries: {registeredLibraries.Count}");
+        }
+        else
+        {
+            Debug.LogWarning("WaveSpawner: Attempted to register library that's already registered");
+        }
+    }
+    
+    public void UnregisterLibrary(Library library)
+    {
+        if (registeredLibraries.Contains(library))
+        {
+            registeredLibraries.Remove(library);
+            Debug.Log($"WaveSpawner: Library unregistered. Point bonus removed. Total libraries: {registeredLibraries.Count}");
+        }
+    }
+    
+    public int GetRegisteredLibraryCount() => registeredLibraries.Count;
+    
+    private int GetPointsForWave()
+    {
+        int basePoints = 1;
+        
+        // Double points if any library is registered
+        if (registeredLibraries.Count > 0)
+        {
+            Debug.Log($"WaveSpawner: Library bonus applied! {basePoints} x 2 = {basePoints * 2}");
+            return basePoints * 2;
+        }
+        
+        Debug.Log($"WaveSpawner: No library bonus. Awarding base points: {basePoints}");
+        return basePoints;
     }
 
     public void OnEnemyDeath()
