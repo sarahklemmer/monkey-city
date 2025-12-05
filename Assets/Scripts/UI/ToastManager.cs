@@ -101,6 +101,19 @@ public class ToastManager : MonoBehaviour
         }
     }
 
+    public void ClearToastQueue()
+    {
+        toastQueue.Clear();
+    }
+
+    public void ReplaceToast(string message, float duration = 2.0f, float fadeDuration = 0.5f, bool waitForInput = false, bool showContinuePrompt = false)
+    {
+        ForceEndCurrentToast();
+        ClearToastQueue();
+        ToastData toastData = new ToastData(message, duration, fadeDuration, waitForInput, showContinuePrompt);
+        toastQueue.Enqueue(toastData);
+    }
+
     private void ProcessToastQueue()
     {
         if (!isShowingToast && toastQueue.Count > 0)
