@@ -13,8 +13,8 @@ public enum ArcherTowerType
 public class ArcherTower : BuildingBase
 {
     public int level {get; private set; } = 1;
-    const int CHOOSE_PATH_LEVEL = 3;
-    private const int MAX_LEVEL = 6;
+    public const int CHOOSE_PATH_LEVEL = 3;
+    public const int MAX_LEVEL = 6;
 
     ArcherTowerType archerType = ArcherTowerType.Base;
     
@@ -295,11 +295,12 @@ public class ArcherTower : BuildingBase
             Assert.IsTrue(false, "somehow upgrading with base archertower after passing path choose level");
         }
 
-        level++;
-
-        
+        ArcherTowerUpgradeEffects modelUpgradeEffects = GetComponent<ArcherTowerUpgradeEffects>();
+        modelUpgradeEffects.Upgrade(archerType, level);
         upgradeEffect.Play();
         
+        level++;
+
         UpdateRangeCircle();
         if(level == MAX_LEVEL) canNeverBeUpgraded = true;
     }

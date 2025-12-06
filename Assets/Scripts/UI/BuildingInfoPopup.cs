@@ -86,7 +86,7 @@ public class BuildingInfoPopup : MonoBehaviour
             move.building = b;
         }
 
-        if(b.CanUpgrade()) {
+        if(!b.canNeverBeUpgraded) {
             upgrade.building = b;
             upgradeObject.SetActive(true);
         }

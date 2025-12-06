@@ -20,7 +20,7 @@ public abstract class BuildingBase : MonoBehaviour
     public abstract void OnDayCycle();
     public abstract void OnDestroy();
     public BuildingType type {get; protected set;}
-    public BuildingHealth health;
+    [HideInInspector] public BuildingHealth health;
 
     public int grid_x { get; private set; } = 0;
     public int grid_y { get; private set; } = 0;
