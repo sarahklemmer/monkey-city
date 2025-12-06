@@ -25,11 +25,6 @@ public class ArcherTower : BuildingBase
     
     [SerializeField] GameObject arrowPrefab;
     
-    // Visual models - these should be child GameObjects in your hierarchy
-    [SerializeField] GameObject level1Model;
-    [SerializeField] GameObject level2Model;
-    [SerializeField] GameObject level3Model;
-    
     [SerializeField] ParticleSystem upgradeEffect;
     
     private Transform firePoint;
@@ -60,10 +55,6 @@ public class ArcherTower : BuildingBase
                 ps.Clear();
             }
         }
-        
-        level1Model.SetActive(true);
-        level2Model.SetActive(false);
-        level3Model.SetActive(false);
         
         CreateRangeIndicator();
     }
@@ -278,14 +269,10 @@ public class ArcherTower : BuildingBase
         if(level == 1)
         {
             attackCooldown = 0.7f;
-            level1Model.SetActive(false);
-            level2Model.SetActive(true);
         } else if(level == 2)
         {
             attackRange = 6.5f;
             attackCooldown = 0.5f;
-            level2Model.SetActive(false);
-            level3Model.SetActive(true);
         } 
         else if(level >= CHOOSE_PATH_LEVEL && archerType == ArcherTowerType.SniperMonkey) UpgradeSniperMonkey();
         else if(level >= CHOOSE_PATH_LEVEL && archerType == ArcherTowerType.TackSprayer) UpgradeTackSprayer();

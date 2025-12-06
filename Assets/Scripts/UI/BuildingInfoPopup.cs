@@ -79,7 +79,6 @@ public class BuildingInfoPopup : MonoBehaviour
         {
             upgrade.building = b;
             upgradeObject.SetActive(true);
-            return;
         } else
         {
             moveObject.SetActive(true);

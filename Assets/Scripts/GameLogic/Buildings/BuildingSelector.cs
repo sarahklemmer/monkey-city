@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingSelector : MonoBehaviour
 {
     public static BuildingSelector instance;
     [SerializeField] LayerMask buildingMask;
-    [SerializeField] RectTransform uiSafeArea;
+    [SerializeField] List<RectTransform> uiSafeAreas;
     private bool selectionDisabled = false;
     private bool selectionDisabledForFrame = false;
 
@@ -77,13 +78,14 @@ public class BuildingSelector : MonoBehaviour
         }
         else
         {
-            // if we clicked not on the UI
-            if (!RectTransformUtility.RectangleContainsScreenPoint(uiSafeArea, Input.mousePosition))
+            foreach(RectTransform area in uiSafeAreas)
             {
-                if(currentlyViewing != null) currentlyViewing.OnDeslectOrStopViewing();
-                currentlyViewing = null;
-                Deselect();
+                if (RectTransformUtility.RectangleContainsScreenPoint(area, Input.mousePosition) && area.gameObject.activeSelf) return;
             }
+
+            if(currentlyViewing != null) currentlyViewing.OnDeslectOrStopViewing();
+            currentlyViewing = null;
+            Deselect();
         }
     }
 

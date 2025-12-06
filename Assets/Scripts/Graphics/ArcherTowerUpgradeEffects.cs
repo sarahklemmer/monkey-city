@@ -9,6 +9,7 @@ public class ArcherTowerUpgradeEffects : MonoBehaviour
     [SerializeField] GameObject tackMetalParent;
     [SerializeField] List<Texture> upgradeTextures = new List<Texture>();
     [SerializeField] Texture originalTexture;
+    [SerializeField] List<GameObject> bananaModels;
 
     List<GameObject> sniperMetalRenderers;
     List<GameObject> tackMetalRenderers;
@@ -67,6 +68,18 @@ public class ArcherTowerUpgradeEffects : MonoBehaviour
 
         if (level < ArcherTower.CHOOSE_PATH_LEVEL)
         {
+            if (bananaModels != null && bananaModels.Count > 0)
+            {
+                int halfCount = Math.Max(1, (bananaModels.Count + 1) / 2);
+                int i = level == 1 ? 0 : halfCount;
+                int cap = level == 1 ? halfCount : bananaModels.Count;
+                
+                while(i < cap)
+                {
+                    bananaModels[i].SetActive(true);
+                    ++i;
+                }
+            }
             Assert.AreEqual(type, ArcherTowerType.Base, "upgrading with non base type too early");
             return;
         }
