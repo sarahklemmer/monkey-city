@@ -23,7 +23,6 @@ public class EnemyHealthBar : MonoBehaviour
     {
         mainCamera = Camera.main;
         
-        // Auto-find enemy if not assigned
         if (enemy == null)
         {
             enemy = GetComponentInParent<EnemyAttacker>();

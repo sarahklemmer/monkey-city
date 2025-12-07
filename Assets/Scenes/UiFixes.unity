@@ -15828,8 +15828,6 @@ MonoBehaviour:
     m_Bits: 128
   uiSafeAreas:
   - {fileID: 910032207}
-  - {fileID: 1526584731}
-  - {fileID: 0}
 --- !u!114 &1352258251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19239,8 +19237,12 @@ MonoBehaviour:
   - enemyPrefab: {fileID: 2707234809516472809, guid: 047f2f983af6e4a59b64a5a540fe8d67, type: 3}
     bananaThreshold: 5
     spawnWeight: 1
-    enemyName: 
-  bossPrefab: {fileID: 0}
+    enemyName: Chimp
+  - enemyPrefab: {fileID: 3352066068315397455, guid: e2d59eb2416a14540b96d8c9fe60ae64, type: 3}
+    bananaThreshold: 100
+    spawnWeight: 1.5
+    enemyName: Chicken
+  bossPrefab: {fileID: 8163680624104360470, guid: 90ee1acdf122a4fe0b9bedad73078d9b, type: 3}
   bananasRequiredToStartAttacks: 15
   dayReductionPerThreshold: 1
   minimumDaysBetweenWaves: 2

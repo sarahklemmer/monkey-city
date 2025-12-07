@@ -4,56 +4,56 @@ using System.Collections;
 public class EnemyAttacker : MonoBehaviour
 {
     [Header("Combat Stats")]
-    private float attackDamage = 10f;
-    private float attackCooldown = 1f;
-    private float attackRange = 2f;
-    private float moveSpeed = 2f;
-    private float recoilDistance = 1f;
-    private float recoilDuration = 0.2f;
-    private float maxHealth = 40f;
+    protected float attackDamage = 10f;
+    protected float attackCooldown = 1f;
+    protected float attackRange = 2f;
+    protected float moveSpeed = 2f;
+    protected float recoilDistance = 1f;
+    protected float recoilDuration = 0.2f;
+    protected float maxHealth = 40f;
 
     [Header("Animation")]
-    private Animator animator;
+    protected Animator animator;
 
     [Header("Effects")]
-    [SerializeField] private ParticleSystem attackParticle;
-    [SerializeField] private ParticleSystem deathParticle;
+    [SerializeField] protected ParticleSystem attackParticle;
+    [SerializeField] protected ParticleSystem deathParticle;
 
     [Header("Audio Clips")]
-    [SerializeField] private AudioClip attackSound;
-    [SerializeField] private AudioClip deathSound;
+    [SerializeField] protected AudioClip attackSound;
+    [SerializeField] protected AudioClip deathSound;
 
     [Header("Audio Volumes")]
-    [SerializeField, Range(0f, 1f)] private float attackVolume = 1f;
-    [SerializeField, Range(0f, 1f)] private float deathVolume = 1f;
+    [SerializeField, Range(0f, 1f)] protected float attackVolume = 1f;
+    [SerializeField, Range(0f, 1f)] protected float deathVolume = 1f;
 
-    [SerializeField] private float particleStartSize = 0.1f;
-    [SerializeField] private int particleMaxCount = 10;
+    [SerializeField] protected float particleStartSize = 0.1f;
+    [SerializeField] protected int particleMaxCount = 10;
 
     [Header("Damage Flash")]
-    [SerializeField] private float flashDuration = 0.15f;
-    [SerializeField] private Color flashColor = Color.red;
-    private Renderer[] renderers;
-    private Material[][] originalMaterials;
-    private bool isFlashing = false;
+    [SerializeField] protected float flashDuration = 0.15f;
+    [SerializeField] protected Color flashColor = Color.red;
+    protected Renderer[] renderers;
+    protected Material[][] originalMaterials;
+    protected bool isFlashing = false;
 
     [Header("Health Bar")]
-    [SerializeField] private EnemyHealthBar healthBar;
+    [SerializeField] protected EnemyHealthBar healthBar;
 
-    private BuildingHealth targetBuilding;
-    private BuildingHealth priorityTarget; // First tower for tutorial wave
-    private float lastAttackTime;
-    private bool isRecoiling = false;
-    private Vector3 recoilStartPos;
-    private Vector3 recoilTargetPos;
-    private float recoilTimer;
-    private float currentHealth;
-    private bool isWalking = false;
+    protected BuildingHealth targetBuilding;
+    protected BuildingHealth priorityTarget; // First tower for tutorial wave
+    protected float lastAttackTime;
+    protected bool isRecoiling = false;
+    protected Vector3 recoilStartPos;
+    protected Vector3 recoilTargetPos;
+    protected float recoilTimer;
+    protected float currentHealth;
+    protected bool isWalking = false;
 
-    private AudioSource attackSource;
-    private AudioSource deathSource;
+    protected AudioSource attackSource;
+    protected AudioSource deathSource;
 
-    void Awake()
+    protected virtual void Awake()
     {
         currentHealth = maxHealth;
         animator = GetComponentInChildren<Animator>();
@@ -79,7 +79,7 @@ public class EnemyAttacker : MonoBehaviour
         SetupFlashEffect();
     }
 
-    private void SetupFlashEffect()
+    protected void SetupFlashEffect()
     {
         renderers = GetComponentsInChildren<Renderer>();
         if (renderers.Length > 0)
@@ -123,7 +123,7 @@ public class EnemyAttacker : MonoBehaviour
         }
     }
 
-    void Update()
+    protected virtual void Update()
     {
         if (WaveSpawner.instance != null && WaveSpawner.instance.IsPaused())
         {
@@ -192,7 +192,7 @@ public class EnemyAttacker : MonoBehaviour
         }
     }
 
-    private void SetWalking(bool walking)
+    protected void SetWalking(bool walking)
     {
         if (animator != null && isWalking != walking)
         {
@@ -201,7 +201,7 @@ public class EnemyAttacker : MonoBehaviour
         }
     }
 
-    private void MoveTowardTarget()
+    protected virtual void MoveTowardTarget()
     {
         if (targetBuilding == null) return;
 
@@ -213,7 +213,7 @@ public class EnemyAttacker : MonoBehaviour
             targetBuilding.transform.position.z));
     }
 
-    private void FindNearestBuilding()
+    protected void FindNearestBuilding()
     {
         BuildingHealth[] buildings = FindObjectsByType<BuildingHealth>(FindObjectsSortMode.None);
         float closestDist = Mathf.Infinity;
@@ -252,7 +252,7 @@ public class EnemyAttacker : MonoBehaviour
         FindNearestBuilding();
     }
 
-    private void AttackBuilding()
+    protected virtual void AttackBuilding()
     {
         if (targetBuilding == null) return;
 
@@ -290,7 +290,7 @@ public class EnemyAttacker : MonoBehaviour
         isRecoiling = true;
     }
 
-    public void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage)
     {
         currentHealth -= damage;
         if (healthBar != null)
@@ -303,7 +303,7 @@ public class EnemyAttacker : MonoBehaviour
             Die();
     }
 
-    private IEnumerator FlashRed()
+    protected IEnumerator FlashRed()
     {
         if (renderers == null || renderers.Length == 0)
             yield break;
@@ -338,7 +338,7 @@ public class EnemyAttacker : MonoBehaviour
         isFlashing = false;
     }
 
-    private void Die()
+    protected virtual void Die()
     {
         StopAllCoroutines();
 
@@ -383,6 +383,28 @@ public class EnemyAttacker : MonoBehaviour
 
         Destroy(gameObject);
     }
+    
+    public void Heal(float amount)
+    {
+        currentHealth += amount;
+        if (currentHealth > maxHealth)
+            currentHealth = maxHealth;
+    
+        if (healthBar != null)
+            healthBar.ForceUpdate();
+    }
+
+    public void SetMoveSpeed(float speed) => moveSpeed = speed;
+    public void SetMaxHealth(float health) 
+    { 
+        maxHealth = health;
+        currentHealth = maxHealth;
+    }
+    public void SetAttackDamage(float damage) => attackDamage = damage;
+    public void SetAttackCooldown(float cooldown) => attackCooldown = cooldown;
+    public void SetAttackRange(float range) => attackRange = range;
+    public void SetRecoilDistance(float distance) => recoilDistance = distance;
+    public void SetRecoilDuration(float duration) => recoilDuration = duration;
 
     public float GetCurrentHealth() => currentHealth;
     public float GetMaxHealth() => maxHealth;

@@ -25,7 +25,7 @@ public class WaveSpawner : MonoBehaviour
     [SerializeField] private GameObject bossPrefab;
     
     [Header("Difficulty Scaling")]
-    [SerializeField] private int bananasRequiredToStartAttacks = 100;
+    [SerializeField] private int bananasRequiredToStartAttacks = 20;
     private int bananaThreshold1 = 300;
     private int bananaThreshold2 = 800;
     private int bananaThreshold3 = 1500;
@@ -91,6 +91,21 @@ public class WaveSpawner : MonoBehaviour
         {
             ForceNextWave();
         }
+        
+        // DEBUG - Press 2 to see wave status
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            int bananas = BananaManager.instance.GetBananasGenerated();
+            int currentDay = TimeController.instance.currentDay;
+            int daysSinceLastWave = currentDay - lastWaveDay;
+            int daysRequired = GetDaysBetweenWaves();
+            Debug.Log($"=== WAVE DEBUG ===");
+            Debug.Log($"Current Wave: {currentWave} | Enemies Alive: {enemiesAlive}");
+            Debug.Log($"Attacks Unlocked: {attacksUnlocked} | Wave Active: {waveActive}");
+            Debug.Log($"Bananas: {bananas} | Tutorial Done: {firstWaveTriggered}");
+            Debug.Log($"Current Day: {currentDay} | Last Wave Day: {lastWaveDay}");
+            Debug.Log($"Days Since Last Wave: {daysSinceLastWave}/{daysRequired}");
+        }
     }
 
     private IEnumerator WaveLoop()
@@ -102,11 +117,19 @@ public class WaveSpawner : MonoBehaviour
                 yield return new WaitForSeconds(0.5f);
             }
             
+            // FIRST WAVE - Tutorial wave (triggered by tower placement OR 20 bananas)
             if (currentWave == 0 && !firstWaveTriggered)
             {
-                if (firstTowerPlaced)
+                currentBananas = BananaManager.instance.GetBananasGenerated();
+                
+                // Trigger tutorial if EITHER condition is met
+                if (firstTowerPlaced || currentBananas >= bananasRequiredToStartAttacks)
                 {
-                    toastManager.RequestToast($"Man the archer tower, an enemy is attacking!", 2.0f, 0.3f, false, false);
+                    if (firstTowerPlaced)
+                        toastManager.RequestToast($"Man the archer tower, an enemy is attacking!", 2.0f, 0.3f, false, false);
+                    else
+                        toastManager.RequestToast($"Enemy spotted! Defend yourself!", 2.0f, 0.3f, false, false);
+                    
                     firstWaveTriggered = true;
                     currentWave++;
                     lastWaveDay = TimeController.instance.currentDay;
@@ -123,12 +146,19 @@ public class WaveSpawner : MonoBehaviour
                     {
                         int points = GetPointsForWave();
                         PathManager.instance.playerPoints += points;
-                        Debug.Log($"Wave {currentWave} complete! Awarded {points} points. Library count: {registeredLibraries.Count}, Library active: {registeredLibraries.Count > 0}");
+                        Debug.Log($"Wave {currentWave} complete! Awarded {points} points. Library count: {registeredLibraries.Count}");
+                        
+                        // Give grace period before wave 2
+                        yield return new WaitForSeconds(3f);
                     }
                     
                     waveActive = false;
                     BuildingManager.instance.HealAllToFull();
                     ChoosePathSystem.instance.ShowPathMenu();
+                    
+                    // Make wave 2 spawn in 3 days
+                    attacksUnlocked = true;
+                    lastWaveDay = TimeController.instance.currentDay - (daysBetweenWaves - 3); // Wave 2 spawns in 3 days
                 }
                 else
                 {
@@ -137,19 +167,12 @@ public class WaveSpawner : MonoBehaviour
                 }
             }
             
+            // Regular waves system (already unlocked after tutorial)
             if (!attacksUnlocked)
             {
-                currentBananas = BananaManager.instance.GetBananasGenerated();
-                if (currentBananas >= bananasRequiredToStartAttacks)
-                {
-                    attacksUnlocked = true;
-                    lastWaveDay = TimeController.instance.currentDay;
-                }
-                else
-                {
-                    yield return new WaitForSeconds(1f);
-                    continue;
-                }
+                // This should never happen now since tutorial unlocks it
+                yield return new WaitForSeconds(1f);
+                continue;
             }
             
             int bananas = BananaManager.instance.GetBananasGenerated();
@@ -166,6 +189,7 @@ public class WaveSpawner : MonoBehaviour
             int daysRequired = GetDaysBetweenWaves();
             int daysSinceLastWave = currentDay - lastWaveDay;
             
+            // Wave warning
             if (daysSinceLastWave == daysRequired - 1 && lastWarningDay != currentDay)
             {
                 lastWarningDay = currentDay; 
@@ -180,6 +204,7 @@ public class WaveSpawner : MonoBehaviour
                 }
             }
             
+            // Start wave
             if (daysSinceLastWave >= daysRequired)
             {
                 currentWave++;
@@ -191,7 +216,7 @@ public class WaveSpawner : MonoBehaviour
                 if (isBossWave)
                     toastManager.RequestToast($"BOSS WAVE {currentWave} Starting NOW!", 2.0f, 0.3f, false, false);
                 else
-                    toastManager.RequestToast($"Chimpanzees Incoming! Wave {currentWave} Starting!", 2.0f, 0.3f, false, false);
+                    toastManager.RequestToast($"Enemy Wave {currentWave} Incoming!", 2.0f, 0.3f, false, false);
                 
                 yield return new WaitForSeconds(2f);
                 StartWave(enemiesToSpawn);
@@ -200,11 +225,12 @@ public class WaveSpawner : MonoBehaviour
                 {
                     yield return new WaitForSeconds(0.5f);
                 }
+                
                 if (enemiesAlive == 0)
                 {
                     int points = GetPointsForWave();
                     PathManager.instance.playerPoints += points;
-                    Debug.Log($"Wave {currentWave} complete! Awarded {points} points. Library count: {registeredLibraries.Count}, Library active: {registeredLibraries.Count > 0}");
+                    Debug.Log($"Wave {currentWave} complete! Awarded {points} points.");
                 }
                 
                 waveActive = false;
@@ -228,7 +254,7 @@ public class WaveSpawner : MonoBehaviour
             currentWave++;
             lastWaveDay = TimeController.instance.currentDay;
             int enemiesToSpawn = CalculateWaveSize();
-            StartCoroutine(AnnounceAndStartWave(enemiesToSpawn, (currentWave % 5 == 0) && bossPrefab != null));
+            StartCoroutine(AnnounceAndStartWave(enemiesToSpawn, (currentWave % 7 == 0) && bossPrefab != null));
             StartCoroutine(WaveLoop());
         }
     }
@@ -240,12 +266,12 @@ public class WaveSpawner : MonoBehaviour
         if (firstArcherTower != null)
         {
             Vector3 spawnPosition = GetNearestPerimeterPosition(firstArcherTower.transform.position);
-            SpawnEnemyAt(spawnPosition);
+            SpawnEnemyAt(spawnPosition, true); // Force base chimp for tutorial
         }
         else
         {
             Vector3 spawnPosition = GetRandomPerimeterPosition();
-            SpawnEnemyAt(spawnPosition);
+            SpawnEnemyAt(spawnPosition, true);
         }
     }
 
@@ -295,7 +321,7 @@ public class WaveSpawner : MonoBehaviour
         if (isBossWave)
             toastManager.RequestToast($"BOSS WAVE Incoming! Prepare Yourself!", 2.0f, 0.3f, false, false);
         else
-            toastManager.RequestToast($"Chimpanzees Incoming! Wave {currentWave}", 2.0f, 0.3f, false, false);
+            toastManager.RequestToast($"Enemy Wave {currentWave} Incoming!", 2.0f, 0.3f, false, false);
         yield return new WaitForSeconds(2f);
         StartWave(enemiestoSpawn);
     }
@@ -312,31 +338,45 @@ public class WaveSpawner : MonoBehaviour
     private void SpawnEnemy()
     {
         Vector3 spawnPosition = GetRandomPerimeterPosition();
-        SpawnEnemyAt(spawnPosition);
+        SpawnEnemyAt(spawnPosition, false);
     }
 
-    private void SpawnEnemyAt(Vector3 spawnPosition)
+    private void SpawnEnemyAt(Vector3 spawnPosition, bool forceBaseEnemy = false)
     {
         int bananas = BananaManager.instance.GetBananasGenerated();
-        var availableEnemies = enemyTypes.Where(e => e.bananaThreshold <= bananas).ToList();
+        GameObject selectedPrefab;
         
-        if (availableEnemies.Count == 0)
+        // For tutorial wave, always spawn base enemy
+        if (forceBaseEnemy)
         {
-            return;
+            selectedPrefab = enemyTypes[0].enemyPrefab; // First enemy is base chimp
         }
-        
-        float totalWeight = availableEnemies.Sum(e => e.spawnWeight);
-        float randomValue = Random.Range(0f, totalWeight);
-        float cumulative = 0f;
-        
-        GameObject selectedPrefab = availableEnemies[0].enemyPrefab;
-        foreach (var enemyConfig in availableEnemies)
+        else
         {
-            cumulative += enemyConfig.spawnWeight;
-            if (randomValue <= cumulative)
+            // Get available enemies based on banana threshold
+            var availableEnemies = enemyTypes.Where(e => e.bananaThreshold <= bananas).ToList();
+            
+            if (availableEnemies.Count == 0)
             {
-                selectedPrefab = enemyConfig.enemyPrefab;
-                break;
+                Debug.LogWarning("No enemies available for current banana count!");
+                return;
+            }
+            
+            // Weighted random selection
+            float totalWeight = availableEnemies.Sum(e => e.spawnWeight);
+            float randomValue = Random.Range(0f, totalWeight);
+            float cumulative = 0f;
+            
+            selectedPrefab = availableEnemies[0].enemyPrefab;
+            foreach (var enemyConfig in availableEnemies)
+            {
+                cumulative += enemyConfig.spawnWeight;
+                if (randomValue <= cumulative)
+                {
+                    selectedPrefab = enemyConfig.enemyPrefab;
+                    Debug.Log($"Spawning {enemyConfig.enemyName} (threshold: {enemyConfig.bananaThreshold}, weight: {enemyConfig.spawnWeight})");
+                    break;
+                }
             }
         }
         
@@ -347,6 +387,12 @@ public class WaveSpawner : MonoBehaviour
         {
             enemiesAlive++;
             spawnedEnemy.AddComponent<EnemyDeathTracker>().Initialize(this);
+            
+            // Tutorial wave targeting
+            if (currentWave == 1 && firstArcherTower != null)
+            {
+                attacker.SetPriorityTargetToFirstTower();
+            }
         }
     }
 
@@ -361,6 +407,8 @@ public class WaveSpawner : MonoBehaviour
             enemiesAlive++;
             boss.AddComponent<EnemyDeathTracker>().Initialize(this);
         }
+        
+        Debug.Log("BOSS SPAWNED!");
     }
 
     private Vector3 GetNearestPerimeterPosition(Vector3 targetPosition)
@@ -461,10 +509,6 @@ public class WaveSpawner : MonoBehaviour
             registeredLibraries.Add(library);
             Debug.Log($"WaveSpawner: Library registered! Point bonus now active. Total libraries: {registeredLibraries.Count}");
         }
-        else
-        {
-            Debug.LogWarning("WaveSpawner: Attempted to register library that's already registered");
-        }
     }
     
     public void UnregisterLibrary(Library library)
@@ -482,14 +526,12 @@ public class WaveSpawner : MonoBehaviour
     {
         int basePoints = 1;
         
-        // Double points if any library is registered
         if (registeredLibraries.Count > 0)
         {
             Debug.Log($"WaveSpawner: Library bonus applied! {basePoints} x 2 = {basePoints * 2}");
             return basePoints * 2;
         }
         
-        Debug.Log($"WaveSpawner: No library bonus. Awarding base points: {basePoints}");
         return basePoints;
     }
 
