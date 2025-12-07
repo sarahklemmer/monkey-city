@@ -11,6 +11,8 @@ public class PlacementIndicatorOnClick : MonoBehaviour
     bool isTreeOfLifeIndicator = false;
     bool isMoving = false;
 
+    private TutorialManager tutorialManager;
+
     public void Initialize(BuildingType type, int grid_x, int grid_y, bool isTreeOfLifeIndicator = false)
     {
         this.type = type;
@@ -105,6 +107,21 @@ public class PlacementIndicatorOnClick : MonoBehaviour
             PlacementManager.instance.RefreshPlacementIndicators();
             BuildingHealth newBuildingHealth = buildingObj.GetComponent<BuildingHealth>();
             NotifyEnemiesOfNewBuilding(newBuildingHealth);
+            if (tutorialManager == null)
+            {
+                tutorialManager = FindFirstObjectByType<TutorialManager>();
+            }
+            Debug.Log($"isActive: {tutorialManager.isActive}, currentStepIndex: {tutorialManager.currentStepIndex}");
+            if (tutorialManager.isActive && tutorialManager.currentStepIndex == 1)
+            {
+                Debug.Log($"Tutorial active, completing step {tutorialManager.currentStepIndex}");
+                tutorialManager.OnStepCompleted();
+            }
+            if (tutorialManager.isActive && tutorialManager.currentStepIndex == 3)
+            {
+                Debug.Log($"Tutorial active, completing step {tutorialManager.currentStepIndex}");
+                tutorialManager.OnStepCompleted();
+            }
 
 
         }
