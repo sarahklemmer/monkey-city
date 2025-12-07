@@ -131,7 +131,7 @@ public class BuildingHealth : MonoBehaviour
         {
             Material mat = materials[i];
             
-            if (mat.name.Contains("Outline") || mat.name.Contains("Glow"))
+            if (mat.name.Contains("Outline") || mat.name.Contains("Glow") || mat.name.Contains("treecolor"))
             {
                 continue;
             }
