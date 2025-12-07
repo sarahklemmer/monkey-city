@@ -278,6 +278,7 @@ public class WaveSpawner : MonoBehaviour
     private void StartWave(int enemiesToSpawn)
     {
         waveActive = true;
+        FastForwardButton.instance.ReturnToNormalSpeed();
         
         bool isBossWave = (currentWave % 7 == 0) && bossPrefab != null;
         
