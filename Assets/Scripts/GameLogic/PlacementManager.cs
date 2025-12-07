@@ -21,7 +21,9 @@ public class PlacementManager : MonoBehaviour
     {
         this.type = type;
         
-        if (type == BuildingType.TreeOfLife) BuildingGrid.instance.SpawnSingleBuildingPlacementIndicators(type);
+        if (type == BuildingType.TreeOfLife) {
+            BuildingGrid.instance.SpawnSingleBuildingPlacementIndicators(type);
+        }
         else BuildingGrid.instance.SpawnBuildingPlacementIndicators(type);
     }
     

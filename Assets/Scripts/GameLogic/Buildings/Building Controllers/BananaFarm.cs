@@ -10,6 +10,8 @@ public class BananaFarm : BuildingBase
     public int buildingLevel = 1;
     private static readonly int[] upgradeCosts = { 0, 5, 40, 100, 200 };
     bool nextUpgradeIndicatorSpawned = false;
+
+    private TutorialManager tutorialManager;
     
     [SerializeField] ParticleSystem upgradeEffect;
     
@@ -134,6 +136,21 @@ public class BananaFarm : BuildingBase
         if (monkeys != null)
         {
             monkeys.FreeMonkeys();
+        }
+    }
+
+    void OnClick()
+    {
+        if (tutorialManager == null)
+        {
+            tutorialManager = FindFirstObjectByType<TutorialManager>();
+        }
+        Debug.Log($"isActive: {tutorialManager.isActive}, currentStepIndex: {tutorialManager.currentStepIndex}");
+        if (tutorialManager.isActive && tutorialManager.currentStepIndex == 5)
+        {
+            Debug.Log($"Tutorial active, completing step 6 and ending tutorial");
+            tutorialManager.disableArrow();
+            ToastManager.Instance.RequestToast("Congratulations! You are now generating bananas! Bananas make the world go round in Monktopia so spend wisely! Right click any building to see details about it.", 5f);
         }
     }
 }
