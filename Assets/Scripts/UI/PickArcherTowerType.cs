@@ -24,6 +24,7 @@ public class PickArcherTowerType : MonoBehaviour
     {
         if(activeBuilding == null) return;
         instance.sniper.enabled = instance.activeBuilding.NeedToSetType() && BananaManager.instance.GetBananas() >= activeBuilding.GetUpgradeCost();
+        instance.sprayer.enabled = instance.activeBuilding.NeedToSetType() && BananaManager.instance.GetBananas() >= activeBuilding.GetUpgradeCost();
     }
 
     void Start()
