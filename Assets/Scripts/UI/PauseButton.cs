@@ -33,9 +33,9 @@ public class PauseButton : MonoBehaviour
 
     void Unpause()
     {
-        TimeController.instance.StopTicking();
-        BananaProductionTimer.instance.StopProduction();
-        WaveSpawner.instance.PauseSpawning();
+        TimeController.instance.StartTicking();
+        BananaProductionTimer.instance.StartProduction();
+        WaveSpawner.instance.UnpauseSpawning();
         UIInteractabilityManager.instance.EnableInteractivity();
 
         pausePanel.SetActive(false);

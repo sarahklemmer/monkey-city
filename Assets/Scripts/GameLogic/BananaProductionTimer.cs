@@ -9,6 +9,7 @@ public class BananaProductionTimer : MonoBehaviour
     public float productionInterval {get; private set; } = 5f;
 
     private bool isRunning = true;
+    private bool doubled = false;
 
     void Awake()
     {
@@ -86,5 +87,19 @@ public class BananaProductionTimer : MonoBehaviour
     }
 
     public bool IsRunning() => isRunning;
+    
+    public void HalfSpeed()
+    {
+        if(!doubled) return;
+        doubled = false;
+        productionInterval *= 2;
+    }
+
+    public void DoubleSpeed()
+    {
+        if(doubled) return;
+        doubled = true;
+        productionInterval /= 2;
+    }
 }
 

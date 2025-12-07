@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class TimeController : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class TimeController : MonoBehaviour
     private bool night = false;
     public int currentDay { get; private set; }
     [SerializeField]float secondsToDay = 30;
+    private bool doubled = false; 
 
     public static TimeController instance;
     
@@ -47,6 +49,20 @@ public class TimeController : MonoBehaviour
     public void StartTicking()
     {
         ticking = true;
+    }
+
+    public void HalfSpeed()
+    {
+        if(!doubled) return;
+        doubled = false;
+        secondsToDay *= 2;
+    }
+
+    public void DoubleSpeed()
+    {
+        if(doubled) return;
+        doubled = true;
+        secondsToDay /= 2;
     }
 
     void PassDay()
