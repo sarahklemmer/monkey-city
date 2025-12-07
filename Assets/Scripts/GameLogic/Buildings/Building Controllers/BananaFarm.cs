@@ -11,6 +11,7 @@ public class BananaFarm : BuildingBase
     public int buildingLevel = 1;
     private static readonly int[] upgradeCosts = { 0, 5, 40, 100, 200 };
     bool nextUpgradeIndicatorSpawned = false;
+
     BananaGrow growEffect;
     
     [SerializeField] ParticleSystem upgradeEffect;
@@ -140,6 +141,7 @@ public class BananaFarm : BuildingBase
             monkeys.FreeMonkeys();
         }
     }
+
     private HashSet<Beacon> beaconBuffs = new HashSet<Beacon>();
 
     public void AddBeaconBuff(Beacon beacon)
@@ -164,4 +166,5 @@ public class BananaFarm : BuildingBase
         }
         return bonus;
     }
+
 }

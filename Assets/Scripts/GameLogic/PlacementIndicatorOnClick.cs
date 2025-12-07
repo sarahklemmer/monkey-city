@@ -11,6 +11,8 @@ public class PlacementIndicatorOnClick : MonoBehaviour
     bool isTreeOfLifeIndicator = false;
     bool isMoving = false;
 
+    private TutorialManager tutorialManager;
+
     public void Initialize(BuildingType type, int grid_x, int grid_y, bool isTreeOfLifeIndicator = false)
     {
         this.type = type;
@@ -30,7 +32,7 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.X) && !isTreeOfLifeIndicator && !isMoving)
+        if ((Input.GetKey(KeyCode.X) || Input.GetMouseButtonDown(0)) && !isTreeOfLifeIndicator)
         {
             ReturnToNormalState();
             PlacementManager.instance.ClearCurrentBuilding();
@@ -105,6 +107,21 @@ public class PlacementIndicatorOnClick : MonoBehaviour
             PlacementManager.instance.RefreshPlacementIndicators();
             BuildingHealth newBuildingHealth = buildingObj.GetComponent<BuildingHealth>();
             NotifyEnemiesOfNewBuilding(newBuildingHealth);
+            if (tutorialManager == null)
+            {
+                tutorialManager = FindFirstObjectByType<TutorialManager>();
+            }
+            Debug.Log($"isActive: {tutorialManager.isActive}, currentStepIndex: {tutorialManager.currentStepIndex}");
+            if (tutorialManager.isActive && tutorialManager.currentStepIndex == 1)
+            {
+                Debug.Log($"Tutorial active, completing step {tutorialManager.currentStepIndex}");
+                tutorialManager.OnStepCompleted();
+            }
+            if (tutorialManager.isActive && tutorialManager.currentStepIndex == 3)
+            {
+                Debug.Log($"Tutorial active, completing step {tutorialManager.currentStepIndex}");
+                tutorialManager.OnStepCompleted();
+            }
 
 
         }
@@ -119,7 +136,15 @@ public class PlacementIndicatorOnClick : MonoBehaviour
         BuildingManager.instance.MakeBuildingsOpaque();
         BuildingGrid.instance.DestroyBuildingPlacementIndicators();
         // if we error and exit early want the building to come back
-        if(existingBuilding != null) existingBuilding.SetVisible(true);
+        if(existingBuilding != null)
+        {
+            existingBuilding.SetVisible(true);
+            // Restore building to its original grid position if we're canceling a move
+            if (isMoving)
+            {
+                BuildingGrid.instance.Place(existingBuilding.grid_x, existingBuilding.grid_y, existingBuilding.type);
+            }
+        }
         if(existingBuilding != null) UIInteractabilityManager.instance.EnableInteractivity();
     }
 
