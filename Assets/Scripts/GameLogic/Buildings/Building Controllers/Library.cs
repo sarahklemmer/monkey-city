@@ -70,6 +70,7 @@ namespace GameLogic.Buildings.Building_Controllers
 
         void Update()
         {
+            base.UpdateBehavior();
             bananasPerDay = 0;
         }
 

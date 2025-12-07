@@ -38,6 +38,7 @@ public class BananaFarm : BuildingBase
 
     void Update()
     {
+        base.UpdateBehavior();
         bananasToProduce = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count() * buildingLevel;
     }
 
@@ -50,13 +51,6 @@ public class BananaFarm : BuildingBase
         BananaManager.instance.AddBananas(bananasToProduce);
         // spawn visualizer
         BananaVisualization.SpawnAtPosition(transform, bananasToProduce);
-
-        // spawn indicator that we can upgrade
-        if(!nextUpgradeIndicatorSpawned && CanUpgrade())
-        {
-            nextUpgradeIndicatorSpawned = true;
-            BananaVisualization.SpawnAtPosition(transform, "Upgrade available", Color.green);
-        }
     }
 
     public override bool CanUpgrade() 

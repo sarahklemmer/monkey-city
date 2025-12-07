@@ -104,10 +104,6 @@ public class BuildingSelector : MonoBehaviour
         if (currentlySelected.GetMonkeyCount() > 0)
         {
             selectedMonkey = currentlySelected.monkeys.MonkeyToDeallocate();
-            if (selectedMonkey != null)
-            {
-                selectedMonkey.EnableGlow();
-            }
         }
     }
 
@@ -119,12 +115,7 @@ public class BuildingSelector : MonoBehaviour
             currentlySelected.OnDeslectOrStopViewing();
         }
 
-        if (selectedMonkey != null)
-        {
-            selectedMonkey.DisableGlow();
-            selectedMonkey = null;
-        }
-
+        selectedMonkey = null;
         currentlySelected = null;
     }
 

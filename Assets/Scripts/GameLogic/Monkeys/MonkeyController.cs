@@ -4,7 +4,6 @@ using UnityEngine.Assertions;
 
 public class MonkeyController : MonoBehaviour
 {
-    GlowEffect glow;
     private Coroutine moveRoutine;
     public MonkeyAlloc allocation { get; private set; }
 
@@ -12,8 +11,6 @@ public class MonkeyController : MonoBehaviour
 
     void Awake()
     {
-        glow = gameObject.AddComponent<GlowEffect>();
-        glow.Initialize(outlineMaterial);
         allocation = gameObject.AddComponent<MonkeyAlloc>();
         allocation.Initialize(this);
     }
@@ -54,7 +51,4 @@ public class MonkeyController : MonoBehaviour
         // if alloc fails just walk back home type shit
         if (!allocation.Assign(buildingTarget)) StartWalkingToBuilding(BuildingManager.instance.GetTreeOfLife());
     }
-    
-    public void EnableGlow()  => glow.SetGlow(true);
-    public void DisableGlow() => glow.SetGlow(false);
 }

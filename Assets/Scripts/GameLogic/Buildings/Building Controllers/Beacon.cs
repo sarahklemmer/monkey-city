@@ -47,7 +47,7 @@ public class Beacon : BuildingBase
         rangeIndicator.enabled = false;
     }
 
-    protected override void UpdateBehavior()
+    void Update()
     {
         base.UpdateBehavior();
         bananasPerDay = -2 * GetMonkeyCount() * level;

@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -6,6 +5,7 @@ public abstract class BuildingBase : MonoBehaviour
 {
     [SerializeField] private Material outlineMaterial;
     [SerializeField] private Renderer targetRenderer;
+    [SerializeField] private GameObject upgradeIndicator;
     private GlowEffect glow;
     public BuildingMonkeys monkeys {get; protected set; }
     protected VisualMonkeys monkeyVisualizer;
@@ -68,9 +68,9 @@ public abstract class BuildingBase : MonoBehaviour
         selectable = true;
     }
 
-    protected virtual void UpdateBehavior()
+    protected void UpdateBehavior()
     {
-
+        if(upgradeIndicator != null) upgradeIndicator.SetActive(CanUpgrade());
     }
 
     public virtual bool RemoveMonkey(MonkeyController m) {

@@ -137,6 +137,7 @@ public class ArcherTower : BuildingBase
 
     void Update()
     {
+        base.UpdateBehavior();
         bananasPerDay = ((int)Math.Pow(5, level - 1)) * GetMonkeyCount() * -1;
         attackDamage = AllArcherTowerInfo.instance.GetDamagePerAttack();
 
