@@ -41,7 +41,7 @@ public class TutorialManager : MonoBehaviour
             if (currentStepIndex == 5 && isActive)
             {
                 disableArrow();
-                ToastManager.Instance.RequestToast("Congratulations! You are now generating bananas! Bananas make the world go round in Monktopia so spend wisely! Right click any building to see details about it.", 5f);
+                ToastManager.Instance.RequestToast("You can move monkeys between any two buildings this way.\n(Hint: you'll need to do this soon!)", 5f);
             }
         }
     }

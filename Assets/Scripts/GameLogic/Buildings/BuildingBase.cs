@@ -16,6 +16,7 @@ public abstract class BuildingBase : MonoBehaviour
     public bool canContainMonkeys { get; protected set; } = true;
     public bool canNeverBeUpgraded { get; protected set; } = true;
     public int bananasPerDay { get; protected set; } = 0;
+    public static bool anyUpgradeUnlocked = false;
     
     public abstract void OnDayCycle();
     public abstract void OnDestroy();
@@ -70,6 +71,7 @@ public abstract class BuildingBase : MonoBehaviour
 
     protected void UpdateBehavior()
     {
+        if(CanUpgrade() && !anyUpgradeUnlocked) ToastManager.Instance.RequestToast("An upgrade is available, right click on a building to upgrade it", 5f);
         if(upgradeIndicator != null) upgradeIndicator.SetActive(CanUpgrade());
     }
 
