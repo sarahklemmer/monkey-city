@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.UI;  
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class TutorialManager : MonoBehaviour
     
     public int currentStepIndex = 0;
 
+
    void Start()
     {
         Debug.Log("TutorialManager Start() called!");
@@ -29,6 +31,19 @@ public class TutorialManager : MonoBehaviour
         arrow.SetActive(true);
         isActive = true;
         StartNextStep();
+    }
+
+    void Update()
+    {
+        List<BuildingBase> farms = BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm);
+        if(farms.Count > 0 && farms[0].GetMonkeyCount() >= 1)
+        {
+            if (currentStepIndex == 5 && isActive)
+            {
+                disableArrow();
+                ToastManager.Instance.RequestToast("Congratulations! You are now generating bananas! Bananas make the world go round in Monktopia so spend wisely! Right click any building to see details about it.", 5f);
+            }
+        }
     }
 
     public void OnStepCompleted() {

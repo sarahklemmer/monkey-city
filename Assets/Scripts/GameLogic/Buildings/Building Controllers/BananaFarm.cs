@@ -139,18 +139,4 @@ public class BananaFarm : BuildingBase
         }
     }
 
-    void OnClick()
-    {
-        if (tutorialManager == null)
-        {
-            tutorialManager = FindFirstObjectByType<TutorialManager>();
-        }
-        Debug.Log($"isActive: {tutorialManager.isActive}, currentStepIndex: {tutorialManager.currentStepIndex}");
-        if (tutorialManager.isActive && tutorialManager.currentStepIndex == 5)
-        {
-            Debug.Log($"Tutorial active, completing step 6 and ending tutorial");
-            tutorialManager.disableArrow();
-            ToastManager.Instance.RequestToast("Congratulations! You are now generating bananas! Bananas make the world go round in Monktopia so spend wisely! Right click any building to see details about it.", 5f);
-        }
-    }
 }
