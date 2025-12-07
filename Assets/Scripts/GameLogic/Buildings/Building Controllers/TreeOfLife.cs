@@ -61,6 +61,10 @@ public class TreeOfLife : BuildingBase
         
         BuildingSoundManager.instance.PlayUpgradeSound();
         upgradeEffect.Play();
+        TreeOfLifeUpgradeEffects modelUpgradeEffect = GetComponent<TreeOfLifeUpgradeEffects>();
+        Assert.IsNotNull(modelUpgradeEffect, "TreeOfLifeUpgradeEffects not attached to prefab");
+        modelUpgradeEffect.Upgrade();
+
         if(level == MAX_LEVEL) canNeverBeUpgraded = true;
     }
 

@@ -12,6 +12,7 @@ public class BuildingHealth : MonoBehaviour
     private float currentHealth;
     private float lastDamageTime;
     private bool isRegenerating = false;
+    [HideInInspector] public bool regenerationAllowed = true;
     private Coroutine regenCoroutine;
     private BuildingBase building = null;
 
@@ -97,7 +98,7 @@ public class BuildingHealth : MonoBehaviour
 
     private IEnumerator CheckForRegeneration()
     {
-        while (Time.time - lastDamageTime < regenDelay)
+        while (Time.time - lastDamageTime < regenDelay || !regenerationAllowed)
         {
             yield return new WaitForSeconds(0.5f);
         }
@@ -156,13 +157,31 @@ public class BuildingHealth : MonoBehaviour
 
     private void OnDestroyed()
     {
+        Debug.Log($"BuildingHealth: Building destroyed at health 0");
+        
         BuildingBase buildingBase = GetComponent<BuildingBase>();
         if (buildingBase != null)
         {
-            buildingBase.OnDestroy();
+            // Store grid position before calling Die()
+            int gridX = buildingBase.grid_x;
+            int gridY = buildingBase.grid_y;
+            
+            Debug.Log($"BuildingHealth: Calling Die() on {buildingBase.type} at grid ({gridX}, {gridY})");
+            
+            // Call Die() which handles all the cleanup including:
+            // - Freeing monkeys (if applicable)
+            // - Notifying BuildingUnlock
+            // - Notifying BuildingManager
+            // - Restoring placement indicator via BuildingGrid
+            buildingBase.Die();
+            
+            // Die() will destroy the GameObject, so don't call Destroy here
         }
-        
-        Destroy(gameObject);
+        else
+        {
+            Debug.LogError("BuildingHealth: No BuildingBase component found!");
+            Destroy(gameObject);
+        }
     }
 
     public void SetBuilding(BuildingBase b) => building = b;

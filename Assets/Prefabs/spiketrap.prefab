@@ -85,6 +85,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1fceafe18d64e4229855131879cfa2e3, type: 3}
       insertIndex: -1
       addedObject: {fileID: -7677547670825552844}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1fceafe18d64e4229855131879cfa2e3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3593409598227283353}
   m_SourcePrefab: {fileID: 100100000, guid: 1fceafe18d64e4229855131879cfa2e3, type: 3}
 --- !u!23 &7767793886424628900 stripped
 MeshRenderer:
@@ -111,9 +114,11 @@ MonoBehaviour:
   maxHealth: 200
   regenDelay: 1e+11
   regenRate: 0
+  regenerationAllowed: 1
   buildingRenderer: {fileID: 7767793886424628900}
-  fullHealthColor: {r: 1, g: 1, b: 1, a: 1}
-  lowHealthColor: {r: 1, g: 0, b: 0, a: 1}
+  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  maxDamageTint: 0.4
+  damageSeverity: 1.5
 --- !u!114 &5063291641525372872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,6 +133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineMaterial: {fileID: 2100000, guid: f5ea81a833a1649e2a382c6e66bdeaba, type: 2}
   targetRenderer: {fileID: 7767793886424628900}
+  health: {fileID: 0}
   baseDamageMultiplier: 2
 --- !u!114 &-7677547670825552844
 MonoBehaviour:
@@ -141,3 +147,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 653a59083606c4c7b88b363ea5f1afcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &3593409598227283353
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8127945173937545073}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.006, y: 0.0060000014, z: 0.0018506162}
+  m_Center: {x: 0, y: -1.06839e-17, z: 0.0009253081}

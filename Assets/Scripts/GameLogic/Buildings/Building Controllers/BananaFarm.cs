@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Assertions;
+using System.Collections.Generic;
 
 public class BananaFarm : BuildingBase
 {
@@ -11,7 +12,7 @@ public class BananaFarm : BuildingBase
     private static readonly int[] upgradeCosts = { 0, 5, 40, 100, 200 };
     bool nextUpgradeIndicatorSpawned = false;
 
-    private TutorialManager tutorialManager;
+    BananaGrow growEffect;
     
     [SerializeField] ParticleSystem upgradeEffect;
     
@@ -21,6 +22,8 @@ public class BananaFarm : BuildingBase
         canNeverBeUpgraded = false;
         type = BuildingType.BananaFarm;
         monkeys = new(2);
+        growEffect = GetComponent<BananaGrow>();
+        Assert.IsNotNull(growEffect, "no grow effect attached");
     }
     
     protected override void OnEnable()
@@ -36,6 +39,7 @@ public class BananaFarm : BuildingBase
 
     void Update()
     {
+        base.UpdateBehavior();
         bananasToProduce = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count() * buildingLevel;
     }
 
@@ -48,13 +52,6 @@ public class BananaFarm : BuildingBase
         BananaManager.instance.AddBananas(bananasToProduce);
         // spawn visualizer
         BananaVisualization.SpawnAtPosition(transform, bananasToProduce);
-
-        // spawn indicator that we can upgrade
-        if(!nextUpgradeIndicatorSpawned && CanUpgrade())
-        {
-            nextUpgradeIndicatorSpawned = true;
-            BananaVisualization.SpawnAtPosition(transform, "Upgrade available", Color.green);
-        }
     }
 
     public override bool CanUpgrade() 
@@ -89,6 +86,7 @@ public class BananaFarm : BuildingBase
         Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or above? max level!");
         level++;
         BuildingSoundManager.instance.PlayUpgradeSound();
+        growEffect.Grow();
         
         switch (level)
         {
@@ -106,8 +104,13 @@ public class BananaFarm : BuildingBase
                 break;
         }
 
-        if(level >= MAX_LEVEL) canNeverBeUpgraded = true;
-        else nextUpgradeIndicatorSpawned = false;
+        if(level >= MAX_LEVEL) {
+            canNeverBeUpgraded = true;
+            growEffect.GrowTreetop();
+        } else
+        {
+            nextUpgradeIndicatorSpawned = false;
+        }
         upgradeEffect.Play();
     }
 
@@ -137,6 +140,31 @@ public class BananaFarm : BuildingBase
         {
             monkeys.FreeMonkeys();
         }
+    }
+
+    private HashSet<Beacon> beaconBuffs = new HashSet<Beacon>();
+
+    public void AddBeaconBuff(Beacon beacon)
+    {
+        beaconBuffs.Add(beacon);
+    }
+
+    public void RemoveBeaconBuff(Beacon beacon)
+    {
+        beaconBuffs.Remove(beacon);
+    }
+
+    public float GetTotalProductionBonus()
+    {
+        float bonus = 0f;
+        foreach (var beacon in beaconBuffs)
+        {
+            if (beacon != null && beacon.GetMonkeyCount() > 0)
+            {
+                bonus += beacon.GetProductionBonus();
+            }
+        }
+        return bonus;
     }
 
 }

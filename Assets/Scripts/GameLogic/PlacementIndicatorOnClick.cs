@@ -49,7 +49,7 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
             Vector3 pos = new Vector3(
                 BuildingGrid.instance.GridXToWorldX(grid_x) + prefab.transform.position.x,
-                prefab.transform.position.y,
+                isMoving ? existingBuilding.transform.position.y : prefab.transform.position.y,
                 BuildingGrid.instance.GridYToWorldZ(grid_y) + prefab.transform.position.z
             );
 

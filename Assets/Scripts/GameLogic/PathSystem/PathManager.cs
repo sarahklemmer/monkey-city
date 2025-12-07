@@ -68,7 +68,7 @@ public class PathManager : MonoBehaviour
         int costOfUpgrade = CalculateCostOfUpgrade(PathType.Farmer);
         if (playerPoints < costOfUpgrade)
         {
-            ToastManager.Instance?.RequestToast("You don't have enough player points for the Farmer path upgrade", 2f);
+            ToastManager.Instance?.ReplaceToast("You don't have enough player points for the Farmer path upgrade", 1f);
             return;
         }
 
@@ -83,7 +83,7 @@ public class PathManager : MonoBehaviour
         int costOfUpgrade = CalculateCostOfUpgrade(PathType.Warrior);
         if (playerPoints < costOfUpgrade)
         {
-            ToastManager.Instance?.RequestToast("You don't have enough player points for the Warrior path upgrade", 2f);
+            ToastManager.Instance?.ReplaceToast("You don't have enough player points for the Warrior path upgrade", 1f);
             return;
         }
 
@@ -98,7 +98,7 @@ public class PathManager : MonoBehaviour
         int costOfUpgrade = CalculateCostOfUpgrade(PathType.Scholar);
         if (playerPoints < costOfUpgrade)
         {
-            ToastManager.Instance?.RequestToast("You don't have enough player points for the Scholar path upgrade", 2f);
+            ToastManager.Instance?.ReplaceToast("You don't have enough player points for the Scholar path upgrade", 1f);
             return;
         }
 

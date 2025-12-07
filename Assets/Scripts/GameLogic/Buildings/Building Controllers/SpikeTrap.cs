@@ -16,6 +16,7 @@ public class SpikeTrap : BuildingBase
 
     void Start()
     {
+        health.regenerationAllowed = false;
         damageMultiplier = baseDamageMultiplier;
     }
 

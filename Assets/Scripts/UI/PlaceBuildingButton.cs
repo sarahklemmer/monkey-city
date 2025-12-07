@@ -21,7 +21,7 @@ public class PlaceBuildingButton : MonoBehaviour
 
         if (BananaManager.instance.GetBananas() < BuildingTypeToPrice.GetPrice(type)) return;
         // can only place 5 of all types
-        if (BuildingManager.instance.GetBuildingsOfType(type).Count >= 5) return;
+        if (BuildingManager.instance.GetBuildingsOfType(type).Count >= BuildingCapToPrice.GetCap(type)) return;
         
         if (type == BuildingType.Wall)
         {

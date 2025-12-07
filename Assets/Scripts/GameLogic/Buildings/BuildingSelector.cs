@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingSelector : MonoBehaviour
@@ -6,6 +7,8 @@ public class BuildingSelector : MonoBehaviour
     [SerializeField] LayerMask buildingMask;
     [SerializeField] RectTransform uiSafeArea;
     [SerializeField] private TutorialManager tutorialManager;
+
+    [SerializeField] List<RectTransform> uiSafeAreas;
     private bool selectionDisabled = false;
     private bool selectionDisabledForFrame = false;
     private bool lastStep = false;
@@ -50,10 +53,13 @@ public class BuildingSelector : MonoBehaviour
         // if we right click 
         if (rightClick && clicked != null)
         {
+            if(currentlyViewing != clicked && currentlyViewing != null) currentlyViewing.OnDeslectOrStopViewing();
             currentlyViewing = clicked;
+            currentlyViewing.OnSelectOrView();
             return;
         } else if (rightClick)
         {
+            if(currentlySelected != null) currentlyViewing.OnDeslectOrStopViewing();
             currentlyViewing = null;
         }
 
@@ -76,12 +82,14 @@ public class BuildingSelector : MonoBehaviour
         }
         else
         {
-            // if we clicked not on the UI
-            if (!RectTransformUtility.RectangleContainsScreenPoint(uiSafeArea, Input.mousePosition))
+            foreach(RectTransform area in uiSafeAreas)
             {
-                currentlyViewing = null;
-                Deselect();
+                if (RectTransformUtility.RectangleContainsScreenPoint(area, Input.mousePosition) && area.gameObject.activeSelf) return;
             }
+
+            if(currentlyViewing != null) currentlyViewing.OnDeslectOrStopViewing();
+            currentlyViewing = null;
+            Deselect();
         }
     }
 
@@ -95,14 +103,11 @@ public class BuildingSelector : MonoBehaviour
 
         currentlySelected = b;
         currentlySelected.EnableGlow();
+        currentlySelected.OnSelectOrView();
 
         if (currentlySelected.GetMonkeyCount() > 0)
         {
             selectedMonkey = currentlySelected.monkeys.MonkeyToDeallocate();
-            if (selectedMonkey != null)
-            {
-                selectedMonkey.EnableGlow();
-            }
         }
         
         if (tutorialManager.isActive && tutorialManager.currentStepIndex == 4)
@@ -118,14 +123,10 @@ public class BuildingSelector : MonoBehaviour
         if (currentlySelected != null)
         {
             currentlySelected.DisableGlow();
+            currentlySelected.OnDeslectOrStopViewing();
         }
 
-        if (selectedMonkey != null)
-        {
-            selectedMonkey.DisableGlow();
-            selectedMonkey = null;
-        }
-
+        selectedMonkey = null;
         currentlySelected = null;
     }
 

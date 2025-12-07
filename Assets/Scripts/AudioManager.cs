@@ -14,7 +14,7 @@ public class AudioManager : MonoBehaviour
     public void ToggleMute()
     {
         isMuted = !isMuted;
-        AudioSource[] allAudioSources = FindObjectsOfType<AudioSource>();
+        AudioSource[] allAudioSources = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
         foreach (AudioSource audioSource in allAudioSources)
         {
             audioSource.mute = isMuted;

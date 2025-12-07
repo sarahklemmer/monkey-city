@@ -1,6 +1,7 @@
 using System;
 using UnityEngine.Assertions;
 using UnityEngine;
+using System.Collections.Generic;
 
 public enum ArcherTowerType
 {
@@ -12,8 +13,8 @@ public enum ArcherTowerType
 public class ArcherTower : BuildingBase
 {
     public int level {get; private set; } = 1;
-    const int CHOOSE_PATH_LEVEL = 3;
-    private const int MAX_LEVEL = 6;
+    public const int CHOOSE_PATH_LEVEL = 3;
+    public const int MAX_LEVEL = 6;
 
     ArcherTowerType archerType = ArcherTowerType.Base;
     
@@ -24,11 +25,6 @@ public class ArcherTower : BuildingBase
     
     [SerializeField] GameObject arrowPrefab;
     
-    // Visual models - these should be child GameObjects in your hierarchy
-    [SerializeField] GameObject level1Model;
-    [SerializeField] GameObject level2Model;
-    [SerializeField] GameObject level3Model;
-    
     [SerializeField] ParticleSystem upgradeEffect;
     
     private Transform firePoint;
@@ -37,7 +33,6 @@ public class ArcherTower : BuildingBase
 
     // Range indicator components
     private LineRenderer rangeIndicator;
-    [SerializeField] private bool showRangeOnSelect = true;
     [SerializeField] private Color rangeColor = new Color(0.5f, 0.8f, 1f, 0.15f);
     [SerializeField] private int circleSegments = 50;
     [SerializeField] private Vector3 circleOffset = Vector3.zero;
@@ -61,10 +56,6 @@ public class ArcherTower : BuildingBase
             }
         }
         
-        level1Model.SetActive(true);
-        level2Model.SetActive(false);
-        level3Model.SetActive(false);
-        
         CreateRangeIndicator();
     }
 
@@ -72,7 +63,6 @@ public class ArcherTower : BuildingBase
     {
         BuildingSoundManager.instance.PlayBuildingPlacedSound();
         WaveSpawner.instance.OnFirstTowerPlaced(this);
-        rangeIndicator.enabled = true;
     }
 
     private void CreateRangeIndicator()
@@ -103,7 +93,8 @@ public class ArcherTower : BuildingBase
         rangeIndicator.endColor = rangeColor;
         rangeIndicator.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         rangeIndicator.receiveShadows = false;
-        
+        rangeIndicator.enabled = false;
+
         UpdateRangeCircle();
     }
 
@@ -146,6 +137,7 @@ public class ArcherTower : BuildingBase
 
     void Update()
     {
+        base.UpdateBehavior();
         bananasPerDay = ((int)Math.Pow(5, level - 1)) * GetMonkeyCount() * -1;
         attackDamage = AllArcherTowerInfo.instance.GetDamagePerAttack();
 
@@ -173,10 +165,6 @@ public class ArcherTower : BuildingBase
             lastAttackTime = Time.time;
         }
     }
-
-    public void OnSelected() => rangeIndicator.enabled = true;
-    public void OnDeselected() => rangeIndicator.enabled = false;
-    public void SetRangeIndicatorVisible(bool visible) => rangeIndicator.enabled = visible;
 
     private void FindNearestEnemy()
     {
@@ -236,6 +224,9 @@ public class ArcherTower : BuildingBase
         }
     }
 
+    public override void OnSelectOrView() => rangeIndicator.enabled = true;
+    public override void OnDeslectOrStopViewing() => rangeIndicator.enabled = false; 
+
     public override bool CanUpgrade() 
     {
         TreeOfLife tree = BuildingManager.instance.GetTreeOfLife() as TreeOfLife;
@@ -279,14 +270,10 @@ public class ArcherTower : BuildingBase
         if(level == 1)
         {
             attackCooldown = 0.7f;
-            level1Model.SetActive(false);
-            level2Model.SetActive(true);
         } else if(level == 2)
         {
             attackRange = 6.5f;
             attackCooldown = 0.5f;
-            level2Model.SetActive(false);
-            level3Model.SetActive(true);
         } 
         else if(level >= CHOOSE_PATH_LEVEL && archerType == ArcherTowerType.SniperMonkey) UpgradeSniperMonkey();
         else if(level >= CHOOSE_PATH_LEVEL && archerType == ArcherTowerType.TackSprayer) UpgradeTackSprayer();
@@ -296,11 +283,12 @@ public class ArcherTower : BuildingBase
             Assert.IsTrue(false, "somehow upgrading with base archertower after passing path choose level");
         }
 
-        level++;
-
-        
+        ArcherTowerUpgradeEffects modelUpgradeEffects = GetComponent<ArcherTowerUpgradeEffects>();
+        modelUpgradeEffects.Upgrade(archerType, level);
         upgradeEffect.Play();
         
+        level++;
+
         UpdateRangeCircle();
         if(level == MAX_LEVEL) canNeverBeUpgraded = true;
     }
@@ -336,7 +324,7 @@ public class ArcherTower : BuildingBase
         switch(level)
         {
             case 1: return $"Upgrade Cost: {GetUpgradeCost()} Bananas\n Next Upgrade: Faster shooting";
-            case 2: return CanUpgrade() ? $"Upgrade Cost: {GetUpgradeCost()} Bananas\n Next Upgrade: Increased range & faster shooting" : "Requires Tree of Life Level 2";
+            case 2: return (level >= 2 && (BuildingManager.instance.GetTreeOfLife() as TreeOfLife).GetLevel() < 2) ?  "Requires Tree of Life Level 2" : $"Upgrade Cost: {GetUpgradeCost()} Bananas\n Next Upgrade: Increased range & faster shooting";
             case 3: return $"Upgrade Cost: {GetUpgradeCost()} Bananas\n Next Upgrade: Pick a path";
             case 4: 
             case 5: return $"Upgrade Cost: {GetUpgradeCost()} Bananas\n " + (archerType == ArcherTowerType.SniperMonkey ? "higher damage and attack range" : "much higher attack speed");
@@ -377,5 +365,30 @@ public class ArcherTower : BuildingBase
             Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position, targetEnemy.transform.position);
         }
+    }
+    
+    private HashSet<Beacon> beaconBuffs = new HashSet<Beacon>();
+
+    public void AddBeaconBuff(Beacon beacon)
+    {
+        beaconBuffs.Add(beacon);
+    }
+
+    public void RemoveBeaconBuff(Beacon beacon)
+    {
+        beaconBuffs.Remove(beacon);
+    }
+
+    public float GetTotalAttackSpeedBonus()
+    {
+        float bonus = 0f;
+        foreach (var beacon in beaconBuffs)
+        {
+            if (beacon != null && beacon.GetMonkeyCount() > 0)
+            {
+                bonus += beacon.GetAttackSpeedBonus();
+            }
+        }
+        return bonus;
     }
 }

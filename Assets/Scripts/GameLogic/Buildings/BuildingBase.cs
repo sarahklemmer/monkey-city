@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -6,6 +5,7 @@ public abstract class BuildingBase : MonoBehaviour
 {
     [SerializeField] private Material outlineMaterial;
     [SerializeField] private Renderer targetRenderer;
+    [SerializeField] private GameObject upgradeIndicator;
     private GlowEffect glow;
     public BuildingMonkeys monkeys {get; protected set; }
     protected VisualMonkeys monkeyVisualizer;
@@ -16,11 +16,11 @@ public abstract class BuildingBase : MonoBehaviour
     public bool canContainMonkeys { get; protected set; } = true;
     public bool canNeverBeUpgraded { get; protected set; } = true;
     public int bananasPerDay { get; protected set; } = 0;
-    // functions to be overrode
+    
     public abstract void OnDayCycle();
     public abstract void OnDestroy();
     public BuildingType type {get; protected set;}
-    public BuildingHealth health;
+    [HideInInspector] public BuildingHealth health;
 
     public int grid_x { get; private set; } = 0;
     public int grid_y { get; private set; } = 0;
@@ -68,9 +68,9 @@ public abstract class BuildingBase : MonoBehaviour
         selectable = true;
     }
 
-    protected virtual void UpdateBehavior()
+    protected void UpdateBehavior()
     {
-
+        if(upgradeIndicator != null) upgradeIndicator.SetActive(CanUpgrade());
     }
 
     public virtual bool RemoveMonkey(MonkeyController m) {
@@ -96,6 +96,8 @@ public abstract class BuildingBase : MonoBehaviour
 
     public virtual int GetMonkeyCount() => monkeys.count;
     public virtual int GetMonkeyCapacity() => monkeys.capacity;
+    public virtual void OnSelectOrView() {}
+    public virtual void OnDeslectOrStopViewing() {}
     public bool CanAllocate() => monkeys.CanAllocate();
 
     public BuildingType GetBuildingType() => type;
@@ -134,6 +136,42 @@ public abstract class BuildingBase : MonoBehaviour
     public virtual int GetUpgradeCost() => 0;
     public virtual string GetUpgradeText() => 
         "This building cannot be upgraded any further";
+
+    /// <summary>
+    /// Called when building dies (health reaches 0, destroyed by enemies, etc.)
+    /// Override this in derived classes for custom death behavior
+    /// </summary>
+    public virtual void Die()
+    {
+        Debug.Log($"{type}: Die() called");
+        
+        // Only free monkeys if this building can contain them
+        if (canContainMonkeys && monkeys != null && monkeys.count > 0)
+        {
+            Debug.Log($"{type}: Freeing {monkeys.count} monkeys before death");
+            monkeys.FreeMonkeys();
+        }
+        else
+        {
+            Debug.Log($"{type}: Skipping monkey freeing (canContainMonkeys={canContainMonkeys}, monkeyCount={monkeys?.count ?? 0})");
+        }
+        
+        // Notify BuildingManager that this building is being destroyed
+        if (BuildingManager.instance != null)
+        {
+            BuildingManager.instance.OnBuildingDestroyed(this);
+        }
+        
+        // Notify BuildingUnlock that this building was destroyed so it can be rebuilt
+        if (BuildingUnlock.instance != null)
+        {
+            BuildingUnlock.instance.OnBuildingDestroyed(type);
+        }
+        
+        // Destroy the GameObject
+        Destroy(gameObject);
+    }
+
     //START OF AI CODE
     public void MakeTransparent()
     {
@@ -175,8 +213,6 @@ public abstract class BuildingBase : MonoBehaviour
                 m.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
             }
         }
-
-
     }
 
     public void MakeOpaque()
@@ -206,17 +242,15 @@ public abstract class BuildingBase : MonoBehaviour
                     m.color = c;
                 }
 
-                // URP surface toggle if available
                 if (m.HasProperty("_Surface")) m.SetFloat("_Surface", 0f); // Opaque
 
-                // Built-in Standard fallback settings
                 m.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                 m.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
                 m.SetInt("_ZWrite", 1);
                 m.DisableKeyword("_ALPHATEST_ON");
                 m.DisableKeyword("_ALPHABLEND_ON");
                 m.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                m.renderQueue = -1; // use shader default
+                m.renderQueue = -1;
             }
         }
     }

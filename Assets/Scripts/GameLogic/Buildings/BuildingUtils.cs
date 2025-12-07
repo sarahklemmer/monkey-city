@@ -11,6 +11,7 @@ public enum BuildingType
     SpikeTrap,
     Wall,
     Beacon,
+    Library,
 }
 
 public struct BuildingDimensions
@@ -34,7 +35,8 @@ public class BuildingUtils
         { BuildingType.ArcherTower, new BuildingDimensions(1, 1) },
         { BuildingType.SpikeTrap, new BuildingDimensions(1, 1) },
         { BuildingType.Wall, new BuildingDimensions(1, 1) },
-        { BuildingType.Beacon, new BuildingDimensions(1, 1) }
+        { BuildingType.Beacon, new BuildingDimensions(1, 1) },
+        { BuildingType.Library, new BuildingDimensions(2, 2) }
     };
 
     public static BuildingDimensions TypeToDimensions(BuildingType type)

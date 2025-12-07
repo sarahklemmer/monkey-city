@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -19,7 +18,6 @@ public class Beacon : BuildingBase
     [SerializeField] private ParticleSystem beaconAuraEffect;
     
     [Header("Range Indicator")]
-    [SerializeField] private bool showRangeAlways = true;
     [SerializeField] private Color rangeColor = new Color(1f, 1f, 1f, 0.3f); 
     [SerializeField] private int circleSegments = 50;
     
@@ -38,35 +36,18 @@ public class Beacon : BuildingBase
         monkeys = new(1);
         
         CreateRangeIndicator();
-        
-        Debug.Log("[Beacon] Awake completed, range indicator created");
     }
 
     void Start()
     {
-        if (BuildingSoundManager.instance != null)
-        {
-            BuildingSoundManager.instance.PlayBuildingPlacedSound();
-        }
+        BuildingSoundManager.instance.PlayBuildingPlacedSound();
         
-        if (beaconAuraEffect != null)
-        {
-            beaconAuraEffect.Play();
-        }
-        
-        if (rangeIndicator != null)
-        if (rangeIndicator != null)
-        {
-            rangeIndicator.enabled = true;
-            Debug.Log("[Beacon] Range indicator enabled");
-        }
-        else
-        {
-            Debug.LogWarning("[Beacon] Range indicator is NULL in Start!");
-        }
+        if (beaconAuraEffect != null) beaconAuraEffect.Play();
+        Assert.IsNotNull(rangeIndicator, "rangeindicator is null in beacon");
+        rangeIndicator.enabled = false;
     }
 
-    protected override void UpdateBehavior()
+    void Update()
     {
         base.UpdateBehavior();
         bananasPerDay = -2 * GetMonkeyCount() * level;
@@ -110,8 +91,6 @@ public class Beacon : BuildingBase
         rangeIndicator.receiveShadows = false;
         
         UpdateRangeCircle();
-        
-        Debug.Log($"[Beacon] Range indicator created: segments={circleSegments}, radius={buffRadius}, color={rangeColor}");
     }
 
     private void UpdateRangeCircle()
@@ -187,22 +166,22 @@ public class Beacon : BuildingBase
 
     private void ApplyArcherBuff(ArcherTower archer)
     {
-        Debug.Log($"Beacon buffing Archer Tower at {archer.transform.position}");
+        archer.AddBeaconBuff(this);
     }
 
     private void RemoveArcherBuff(ArcherTower archer)
     {
-        Debug.Log($"Beacon removing buff from Archer Tower at {archer.transform.position}");
+        archer.RemoveBeaconBuff(this);
     }
 
     private void ApplyFarmBuff(BananaFarm farm)
     {
-        Debug.Log($"Beacon buffing Banana Farm at {farm.transform.position}");
+        farm.AddBeaconBuff(this);
     }
 
     private void RemoveFarmBuff(BananaFarm farm)
     {
-        Debug.Log($"Beacon removing buff from Banana Farm at {farm.transform.position}");
+        farm.RemoveBeaconBuff(this);
     }
 
     private void ClearAllBuffs()
@@ -220,28 +199,45 @@ public class Beacon : BuildingBase
         buffedFarms.Clear();
     }
 
-    public void OnSelected()
-    {
-        if (rangeIndicator != null)
-        {
-            rangeIndicator.enabled = true;
-        }
-    }
-
-    public void OnDeselected()
-    {
-        if (rangeIndicator != null && showRangeAlways)
-        {
-            rangeIndicator.enabled = true;
-        }
-    }
-
     public float GetAttackSpeedBonus() => attackSpeedBonus;
     public float GetProductionBonus() => productionBonus;
     public float GetBuffRadius() => buffRadius;
     public int GetLevel() => level;
     public bool IsMaxLevel() => level >= MAX_LEVEL;
-    public override string GetDescription() => "beacno";
+
+    public override string GetDescription()
+    {
+        string monkeyStatus = GetMonkeyCount() > 0 ? "ACTIVE" : "INACTIVE";
+        int buffedCount = buffedArchers.Count + buffedFarms.Count;
+        
+        string statsText = $"<size=14><b>Beacon</b> Lv{level}/{MAX_LEVEL} - {monkeyStatus}\n" +
+                          $"Buffing: {buffedCount} buildings\n" +
+                          $"Range: {buffRadius}m\n\n" +
+                          $"<b>Buffs:</b>\n" +
+                          $"Towers: +{attackSpeedBonus * 100:F0}% speed\n" +
+                          $"Farms: +{productionBonus * 100:F0}% production\n" +
+                          $"Upkeep: {Mathf.Abs(bananasPerDay)}/day";
+        
+        if (level < MAX_LEVEL)
+        {
+            statsText += $"\n\n<b>Next:</b> ";
+            switch (level)
+            {
+                case 1:
+                    statsText += $"6.5m, +35% spd, +30% prod";
+                    break;
+                case 2:
+                    statsText += $"8m, +50% spd, +50% prod";
+                    break;
+            }
+        }
+        
+        statsText += "</size>";
+        return statsText;
+    }
+
+    public override void OnSelectOrView() => rangeIndicator.enabled = true;
+    public override void OnDeslectOrStopViewing() => rangeIndicator.enabled = false; 
 
     public override bool CanUpgrade() => GetUpgradeCost() <= BananaManager.instance.GetBananas() && !canNeverBeUpgraded;
 
@@ -261,14 +257,15 @@ public class Beacon : BuildingBase
 
     public override string GetUpgradeText()
     {   
-        // if we're at a level higher than 1 and the treeoflife is below level 2 we return requires tree of life level 2
         if(level < MAX_LEVEL) return $"Upgrade cost: {GetUpgradeCost()} bananas";
         else return "MAX LEVEL";
     }
 
     public void Upgrade()
     {   
-        Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or abvoe? max level!");
+        Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or above max level!");
+        ClearAllBuffs();
+        
         level++;
         
         BuildingSoundManager.instance.PlayUpgradeSound();
@@ -287,9 +284,11 @@ public class Beacon : BuildingBase
                 break;
         }
         
-        upgradeEffect.Play();
+        if (upgradeEffect != null) upgradeEffect.Play();
         
         UpdateRangeCircle();
+        UpdateBuffedBuildings();
+        
         if(level == MAX_LEVEL) canNeverBeUpgraded = true;
     }
 

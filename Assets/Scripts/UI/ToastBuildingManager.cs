@@ -9,10 +9,8 @@ public class ToastBuildingManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI toastText;
     [SerializeField] private GameObject toastPanel;
     [SerializeField] private CanvasGroup toastCanvasGroup;
-
     Queue<ToastData> toastQueue = new Queue<ToastData>();
-
-    private bool fading = false;
+    
     private bool isShowingToast = false;
     private bool waitingForInput = false;
     private bool currentToastShowsPrompt = false;
@@ -93,7 +91,7 @@ public class ToastBuildingManager : MonoBehaviour
             yield break;
         }
         isShowingToast = true;
-        currentToastShowsPrompt = data.showContinuePrompt; // Set for current toast
+        currentToastShowsPrompt = data.showContinuePrompt;
         toastText.text = data.message;
         toastPanel.SetActive(true);
 
@@ -140,8 +138,6 @@ public class ToastBuildingManager : MonoBehaviour
     
     IEnumerator FadeOutAndNext()
     {
-        fading = true;
-            
         float initialTime = Time.time;
         float progress = 0.0f;
         float quickFade = 0.2f;
@@ -157,6 +153,5 @@ public class ToastBuildingManager : MonoBehaviour
         toastPanel.SetActive(false);
         isShowingToast = false;
         currentToastShowsPrompt = false;
-        fading = false;
     }
 }

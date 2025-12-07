@@ -110,6 +110,25 @@ public class BuildingManager : MonoBehaviour
         return closest;
     }
 
+    public void HealAllToFull() 
+    {
+        foreach(BuildingBase b in buildings) 
+        { 
+            if(b.health.GetCurrentHealth() > 0) 
+                b.health.HealToFull(); 
+        }
+    }
+    
+    public void OnBuildingDestroyed(BuildingBase building)
+    {
+        if (building == null) return;
+        
+        if (BuildingGrid.instance != null)
+        {
+            BuildingGrid.instance.RemoveBuilding(building);
+        }
+    }
+
     public int GetDailyProduction() => buildings.Sum(b => b.bananasPerDay);
 
     public int GetBananaProduction() => buildings.OfType<BananaFarm>().Sum(b => b.bananasToProduce);

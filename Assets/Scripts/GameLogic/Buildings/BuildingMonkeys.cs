@@ -13,7 +13,6 @@ public class BuildingMonkeys
         this.capacity = capacity;
     }
 
-    // ADD THIS PROPERTY
     public int count => monkeys.Count;
 
     public bool CanAllocate()
@@ -45,13 +44,21 @@ public class BuildingMonkeys
 
     public void FreeMonkeys()
     {
-        // don't want to loop through monkeys while we're removing stuff from it
+        BuildingBase treeOfLife = BuildingManager.instance?.GetTreeOfLife();
+        if (treeOfLife == null)
+        {
+            monkeys.Clear();
+            return;
+        }
+
         List<MonkeyController> temp = new List<MonkeyController>(monkeys);
         foreach (MonkeyController m in temp)
         {
-            m.allocation.Unassign();
-            // run back to the tree of life
-            m.StartWalkingToBuilding(BuildingManager.instance.GetTreeOfLife());
+            if (m != null && m.allocation != null)
+            {
+                m.allocation.Unassign();
+                m.StartWalkingToBuilding(treeOfLife);
+            }
         }
         Assert.IsTrue(monkeys.Count == 0, "didn't properly free all monkeys!");
     }
