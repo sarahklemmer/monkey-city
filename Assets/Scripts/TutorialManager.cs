@@ -81,7 +81,7 @@ public class TutorialManager : MonoBehaviour
         StartCoroutine(BounceArrow(targetRect.anchoredPosition, step.bounceVertically));
         
         if (!string.IsNullOrEmpty(step.message)) {
-            ToastManager.Instance.RequestToast(step.message, 3f);
+            ToastManager.Instance.ReplaceToast(step.message, 3f);
         }
     }
 

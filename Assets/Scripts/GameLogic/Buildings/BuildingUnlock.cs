@@ -53,7 +53,7 @@ public class BuildingUnlock : MonoBehaviour
         if (unlocked.Contains(type)) return;
         unlocked.Add(type);
         Debug.Log($"Building unlocked: {type}");
-        ToastManager.Instance.RequestToast(type.ToString() + " unlocked!");
+        ToastBuildingManager.Instance.RequestToast(type.ToString() + " unlocked!");
     }
     
     public static void Disable(BuildingType type) 
