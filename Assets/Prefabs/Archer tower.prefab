@@ -2163,7 +2163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   monkey1: {fileID: 8121618794645103145}
-  monkey2: {fileID: 2762466879571479478}
+  monkey2: {fileID: 0}
 --- !u!114 &-4484889191604978221
 MonoBehaviour:
   m_ObjectHideFlags: 0
