@@ -16308,7 +16308,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   uiSafeArea: {fileID: 0}
-  tutorialManager: {fileID: 0}
+  tutorialManager: {fileID: 2060301467}
   uiSafeAreas:
   - {fileID: 910032207}
 --- !u!114 &1352258251
