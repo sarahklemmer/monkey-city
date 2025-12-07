@@ -16308,7 +16308,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   uiSafeArea: {fileID: 0}
-  tutorialManager: {fileID: 2060301467}
+  tutorialManager: {fileID: 0}
   uiSafeAreas:
   - {fileID: 910032207}
 --- !u!114 &1352258251
@@ -23991,23 +23991,23 @@ MonoBehaviour:
     message: 'Congratulations! You have placed your first building - the Tree of
       Life! This is your base: protect at all costs! Now add a banana farm!'
     buttonName: 
-    rotation: 180
+    rotation: 0
     bounceVertically: 0
   - targetPosition: {fileID: 1689602880}
     message: 
     buttonName: 
-    rotation: 180
+    rotation: 0
     bounceVertically: 0
   - targetPosition: {fileID: 1931218633}
     message: Now assign your first monkey to work at the banana farm! Make sure to
       strategically place your monkeys where your city needs them the most!
     buttonName: 
-    rotation: 180
-    bounceVertically: 1
+    rotation: 0
+    bounceVertically: 0
   - targetPosition: {fileID: 1519200080}
     message: Click on a building to assign your monkey to work there.
     buttonName: 
-    rotation: 180
+    rotation: 0
     bounceVertically: 0
   arrow: {fileID: 1020620145}
   currentStepIndex: 0

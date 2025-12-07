@@ -116,23 +116,12 @@ public class ArcherTower : BuildingBase
     {
         float baseCooldown = attackCooldown;
         
-        // Check for nearby beacons
-        Beacon[] beacons = FindObjectsByType<Beacon>(FindObjectsSortMode.None);
-        float bestBonus = 0f;
-        
-        foreach (var beacon in beacons)
-        {
-            if (beacon.GetMonkeyCount() <= 0) continue;
-            
-            float distance = Vector3.Distance(transform.position, beacon.transform.position);
-            if (distance <= beacon.GetBuffRadius())
-            {
-                bestBonus = Mathf.Max(bestBonus, beacon.GetAttackSpeedBonus());
-            }
-        }
+        // Get bonus from tracked beacon buffs
+        float attackSpeedBonus = GetTotalAttackSpeedBonus();
         
         // Apply bonus (reduce cooldown = faster attacks)
-        return baseCooldown * (1f - bestBonus);
+        // Higher bonus = lower cooldown = faster shooting
+        return baseCooldown * (1f - attackSpeedBonus);
     }
 
     void Update()
@@ -345,12 +334,28 @@ public class ArcherTower : BuildingBase
     public bool IsMaxLevel() => level >= MAX_LEVEL;
     public float GetAttackRange() => attackRange;
     public float GetAttackCooldown() => attackCooldown;
-    public override string GetDescription() =>                     
-                    $"Level: {GetLevel()}\n" +
-                    $"Range: {GetAttackRange():F1}m\n" +
-                    $"Damage: {AllArcherTowerInfo.instance.GetDamagePerAttack():F1}\n" +
-                    $"Attack Speed: {GetAttackCooldown():F2}s\n" +
-                    $"Monkeys: {GetMonkeyCount()}/{GetMonkeyCapacity()}";
+    
+    public override string GetDescription()
+    {
+        // Calculate base cooldown
+        float baseCooldown = attackCooldown;
+        
+        // Get total bonus percentage
+        float bonusPercent = GetTotalAttackSpeedBonus() * 100f;
+        
+        // Show effective attack speed if buffed
+        string attackSpeedText = $"Attack Speed: {GetEffectiveAttackCooldown():F2}s";
+        if (bonusPercent > 0)
+        {
+            attackSpeedText += $" <color=green>(-{bonusPercent:F0}%)</color>";
+        }
+        
+        return $"Level: {GetLevel()}\n" +
+               $"Range: {GetAttackRange():F1}m\n" +
+               $"Damage: {AllArcherTowerInfo.instance.GetDamagePerAttack():F1}\n" +
+               attackSpeedText + "\n" +
+               $"Monkeys: {GetMonkeyCount()}/{GetMonkeyCapacity()}";
+    }
 
     public override void OnDayCycle() {}
     public override void OnDestroy() => monkeys.FreeMonkeys();

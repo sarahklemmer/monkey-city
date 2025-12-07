@@ -30,7 +30,6 @@ public class BananaFarm : BuildingBase
     {
         base.OnEnable();
         
-        // Play building placement sound when enabled
         if (BuildingSoundManager.instance != null)
         {
             BuildingSoundManager.instance.PlayBuildingPlacedSound();
@@ -40,7 +39,10 @@ public class BananaFarm : BuildingBase
     void Update()
     {
         base.UpdateBehavior();
-        bananasToProduce = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count() * buildingLevel;
+        
+        int baseProduction = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count() * buildingLevel;
+        float productionBonus = GetTotalProductionBonus();
+        bananasToProduce = Mathf.RoundToInt(baseProduction * (1f + productionBonus));
     }
 
     public override void OnDayCycle()
@@ -48,9 +50,8 @@ public class BananaFarm : BuildingBase
     }
 
     public void ProduceBananas()
-    {   
+    {
         BananaManager.instance.AddBananas(bananasToProduce);
-        // spawn visualizer
         BananaVisualization.SpawnAtPosition(transform, bananasToProduce);
     }
 
@@ -58,12 +59,12 @@ public class BananaFarm : BuildingBase
     {
         TreeOfLife tree = BuildingManager.instance.GetTreeOfLife() as TreeOfLife;
         if (tree == null) return false;
-
+        
         if (canNeverBeUpgraded) return false;
         if (BananaManager.instance.GetBananas() < GetUpgradeCost()) return false;
-
+        
         if (level >= 2 && tree.GetLevel() < 2) return false;
-
+        
         return true;
     }
 
@@ -82,7 +83,7 @@ public class BananaFarm : BuildingBase
     }
 
     void Upgrade()
-    {   
+    {
         Assert.IsFalse(level >= MAX_LEVEL, "upgrading when we're already at or above? max level!");
         level++;
         BuildingSoundManager.instance.PlayUpgradeSound();
@@ -103,7 +104,7 @@ public class BananaFarm : BuildingBase
                 buildingLevel = 5;
                 break;
         }
-
+        
         if(level >= MAX_LEVEL) {
             canNeverBeUpgraded = true;
             growEffect.GrowTreetop();
@@ -115,8 +116,7 @@ public class BananaFarm : BuildingBase
     }
 
     public override string GetUpgradeText()
-    {   
-        // if we're at a level higher than 1 and the treeoflife is below level 2 we return requires tree of life level 2
+    {
         if(level < MAX_LEVEL) return 
             level <= 1 || (BuildingManager.instance.GetTreeOfLife() as TreeOfLife).GetLevel() >= 2 ? 
             $"Upgrade Cost: {GetUpgradeCost()} Bananas\nNext Upgrade: {GetLevel() + 1}x production" : 
@@ -128,11 +128,26 @@ public class BananaFarm : BuildingBase
     public bool IsMaxLevel() => level >= MAX_LEVEL;
     public int GetBananasPerDay() => baseBananaProduction;
 
-    public override string GetDescription() =>                     
-                    $"Level: {GetLevel()}\n" +
-                    $"Production: {bananasToProduce * 3} Bananas/day\n" +
-                    $"Per Monkey: {(GetMonkeyCount() == 0 ? 0 : (bananasToProduce / GetMonkeyCount()) * 3)} Bananas/day\n" +
-                    $"Monkeys: {GetMonkeyCount()}/{GetMonkeyCapacity()}";
+    public override string GetDescription()
+    {
+        // Calculate base production without buffs
+        int baseProduction = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count() * buildingLevel * 3;
+        
+        // Get total bonus percentage
+        float bonusPercent = GetTotalProductionBonus() * 100f;
+        
+        // Show buffed production if there are active beacons
+        string productionText = $"Production: {bananasToProduce * 3} Bananas/day";
+        if (bonusPercent > 0)
+        {
+            productionText += $" <color=green>(+{bonusPercent:F0}%)</color>";
+        }
+        
+        return $"Level: {GetLevel()}\n" +
+               productionText + "\n" +
+               $"Per Monkey: {(GetMonkeyCount() == 0 ? 0 : (bananasToProduce / GetMonkeyCount()) * 3)} Bananas/day\n" +
+               $"Monkeys: {GetMonkeyCount()}/{GetMonkeyCapacity()}";
+    }
 
     public override void OnDestroy()
     {
@@ -166,5 +181,4 @@ public class BananaFarm : BuildingBase
         }
         return bonus;
     }
-
 }

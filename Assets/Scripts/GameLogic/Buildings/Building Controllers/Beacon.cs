@@ -45,12 +45,15 @@ public class Beacon : BuildingBase
         if (beaconAuraEffect != null) beaconAuraEffect.Play();
         Assert.IsNotNull(rangeIndicator, "rangeindicator is null in beacon");
         rangeIndicator.enabled = false;
+        
+        Debug.Log($"[Beacon] Started with radius {buffRadius}, attack bonus {attackSpeedBonus * 100}%, production bonus {productionBonus * 100}%");
     }
 
     void Update()
     {
         base.UpdateBehavior();
         bananasPerDay = -2 * GetMonkeyCount() * level;
+        
         if (GetMonkeyCount() > 0)
         {
             UpdateBuffedBuildings();
@@ -116,6 +119,9 @@ public class Beacon : BuildingBase
         HashSet<ArcherTower> currentArchers = new HashSet<ArcherTower>();
         HashSet<BananaFarm> currentFarms = new HashSet<BananaFarm>();
         
+        int towersInRange = 0;
+        int farmsInRange = 0;
+        
         foreach (var building in allBuildings)
         {
             if (building == this) continue;
@@ -126,28 +132,41 @@ public class Beacon : BuildingBase
             {
                 if (building is ArcherTower archer)
                 {
+                    towersInRange++;
                     currentArchers.Add(archer);
                     if (!buffedArchers.Contains(archer))
                     {
+                        Debug.Log($"[Beacon] Adding buff to ArcherTower at distance {distance:F2}. Bonus: {attackSpeedBonus * 100}%");
                         ApplyArcherBuff(archer);
                     }
                 }
                 else if (building is BananaFarm farm)
                 {
+                    farmsInRange++;
                     currentFarms.Add(farm);
                     if (!buffedFarms.Contains(farm))
                     {
+                        Debug.Log($"[Beacon] Adding buff to BananaFarm at distance {distance:F2}. Bonus: {productionBonus * 100}%");
                         ApplyFarmBuff(farm);
                     }
                 }
             }
         }
         
+        if (Time.frameCount % 300 == 0) // Log every ~5 seconds
+        {
+            Debug.Log($"[Beacon] Currently buffing {buffedArchers.Count} towers and {buffedFarms.Count} farms. In range: {towersInRange} towers, {farmsInRange} farms. Monkey count: {GetMonkeyCount()}");
+        }
+        
         buffedArchers.RemoveWhere(archer => 
         {
             if (!currentArchers.Contains(archer) || archer == null)
             {
-                if (archer != null) RemoveArcherBuff(archer);
+                if (archer != null) 
+                {
+                    Debug.Log($"[Beacon] Removing buff from ArcherTower (out of range or destroyed)");
+                    RemoveArcherBuff(archer);
+                }
                 return true;
             }
             return false;
@@ -157,7 +176,11 @@ public class Beacon : BuildingBase
         {
             if (!currentFarms.Contains(farm) || farm == null)
             {
-                if (farm != null) RemoveFarmBuff(farm);
+                if (farm != null) 
+                {
+                    Debug.Log($"[Beacon] Removing buff from BananaFarm (out of range or destroyed)");
+                    RemoveFarmBuff(farm);
+                }
                 return true;
             }
             return false;
@@ -167,6 +190,7 @@ public class Beacon : BuildingBase
     private void ApplyArcherBuff(ArcherTower archer)
     {
         archer.AddBeaconBuff(this);
+        Debug.Log($"[Beacon] ApplyArcherBuff called. Archer now has {archer.GetTotalAttackSpeedBonus() * 100}% bonus");
     }
 
     private void RemoveArcherBuff(ArcherTower archer)
@@ -177,6 +201,7 @@ public class Beacon : BuildingBase
     private void ApplyFarmBuff(BananaFarm farm)
     {
         farm.AddBeaconBuff(this);
+        Debug.Log($"[Beacon] ApplyFarmBuff called. Farm now has {farm.GetTotalProductionBonus() * 100}% bonus");
     }
 
     private void RemoveFarmBuff(BananaFarm farm)
@@ -186,6 +211,11 @@ public class Beacon : BuildingBase
 
     private void ClearAllBuffs()
     {
+        if (buffedArchers.Count > 0 || buffedFarms.Count > 0)
+        {
+            Debug.Log($"[Beacon] Clearing all buffs (no monkey assigned)");
+        }
+        
         foreach (var archer in buffedArchers)
         {
             if (archer != null) RemoveArcherBuff(archer);
@@ -283,6 +313,8 @@ public class Beacon : BuildingBase
                 productionBonus = 0.50f;
                 break;
         }
+        
+        Debug.Log($"[Beacon] Upgraded to level {level}. New radius: {buffRadius}, attack bonus: {attackSpeedBonus * 100}%, production bonus: {productionBonus * 100}%");
         
         if (upgradeEffect != null) upgradeEffect.Play();
         
