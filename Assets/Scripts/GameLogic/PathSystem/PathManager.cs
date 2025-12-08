@@ -138,7 +138,7 @@ public class PathManager : MonoBehaviour
         // Debug.Log($"Warrior path upgraded to level {warriorPathLevel}!");
         // if (warriorPathLevel % 2 == 1)
         // {
-        AllArcherTowerInfo.instance.IncreaseDamagePerAttack(5);
+        AllArcherTowerInfo.instance.IncreaseDamagePerAttack(8);
         ToastManager.Instance?.RequestToast("Warrior path upgraded to level " + warriorPathLevel + "!", 1f);
         // }
         // else

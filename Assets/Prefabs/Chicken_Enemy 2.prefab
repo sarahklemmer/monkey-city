@@ -427,7 +427,7 @@ GameObject:
   - component: {fileID: 1978681047954953584}
   - component: {fileID: 5981358671801115867}
   m_Layer: 0
-  m_Name: Chicken_Enemy
+  m_Name: Chicken_Enemy 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -569,8 +569,8 @@ MonoBehaviour:
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   healthBar: {fileID: 0}
   chickenMoveSpeed: 18
-  chickenMaxHealth: 20
-  chickenAttackDamage: 5
+  chickenMaxHealth: 30
+  chickenAttackDamage: 7
   chickenAttackCooldown: 0.8
 --- !u!1 &3819321958678478062
 GameObject:
