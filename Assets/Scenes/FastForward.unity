@@ -16005,7 +16005,7 @@ MonoBehaviour:
   - key: 6
     values:
       prefab: {fileID: 6038815680688189344, guid: 8558849902cf3420db4cf1352970fef8, type: 3}
-      icon: {fileID: 21300000, guid: 7986b7243679b46abb77c95650b7e272, type: 3}
+      icon: {fileID: 21300000, guid: a2b54c207b1b64f22b3ea7f3bdd8cbe1, type: 3}
 --- !u!114 &1352258249
 MonoBehaviour:
   m_ObjectHideFlags: 0
