@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Assertions;
-
 public class TreeOfLife : BuildingBase
 {
     private int level = 1;
@@ -9,7 +8,8 @@ public class TreeOfLife : BuildingBase
     [SerializeField] ParticleSystem upgradeEffect; 
     
     public static event System.Action OnTreePlaced;
-    [SerializeField] private bool titleScreenOn = false;
+    
+    private static bool hasCompletedTutorial = false;
     
     void Awake()
     {
@@ -23,30 +23,38 @@ public class TreeOfLife : BuildingBase
     {
         NotifyTreePlaced();
         
-        // Play building placement sound
         if (BuildingSoundManager.instance != null)
         {
             BuildingSoundManager.instance.PlayBuildingPlacedSound();
         }
-
-        if (PopulationManager.instance != null)
-        {
-            PopulationManager.instance.AddToPopulation(1);
-        }
-        if (Soundtrack.instance != null)
-        {
-            Soundtrack.instance.PlaySoundtrack();
-        }
+        PopulationManager.instance.AddToPopulation(1);
+        Soundtrack.instance.PlaySoundtrack();
     }
     
     public void NotifyTreePlaced()
     {
         OnTreePlaced?.Invoke();
     }
-
-
-    public override bool CanUpgrade() => BananaManager.instance != null && GetUpgradeCost() <= BananaManager.instance.GetBananas() && !canNeverBeUpgraded;
-
+    
+    public static bool ShouldPlayTutorial()
+    {
+        return !hasCompletedTutorial;
+    }
+    
+    public static void MarkTutorialComplete()
+    {
+        hasCompletedTutorial = true;
+        Debug.Log("[TreeOfLife] Tutorial marked as complete - will not play again");
+    }
+    
+    public static void ResetTutorialFlag()
+    {
+        hasCompletedTutorial = false;
+        Debug.Log("[TreeOfLife] Tutorial flag reset");
+    }
+    
+    public override bool CanUpgrade() => GetUpgradeCost() <= BananaManager.instance.GetBananas() && !canNeverBeUpgraded;
+    
     public override bool AttemptUpgrade()
     {
         if(!CanUpgrade()) return false;
@@ -71,16 +79,14 @@ public class TreeOfLife : BuildingBase
         TreeOfLifeUpgradeEffects modelUpgradeEffect = GetComponent<TreeOfLifeUpgradeEffects>();
         Assert.IsNotNull(modelUpgradeEffect, "TreeOfLifeUpgradeEffects not attached to prefab");
         modelUpgradeEffect.Upgrade();
-
         if(level == MAX_LEVEL) canNeverBeUpgraded = true;
     }
-
+    
     public override string GetUpgradeText() => 
         level == MAX_LEVEL ? 
         "Max Level" : 
         "Upgrade Cost: 100 Bananas\nUnlocks higher building levels";
-
-    // D:
+    
     public override string GetDescription() => 
                     $"Level: {GetLevel()}\n" +
                     "Your base - Protect at all costs!\n" +
@@ -88,20 +94,49 @@ public class TreeOfLife : BuildingBase
     
     public int GetLevel() => level;
     public bool IsMaxLevel() => level >= MAX_LEVEL;
-
+    
     public override void OnDayCycle()
     {   
         /* do nothing */
     }
-
-    public override void OnDestroy()
+    
+    public override void Die()
     {
-        TimeController.instance.StopTicking();
-        if (!titleScreenOn)
+        Debug.Log("[TreeOfLife] Die() called - Triggering game over");
+        
+        if (TimeController.instance != null)
         {
+            Debug.Log("[TreeOfLife] Stopping TimeController");
+            TimeController.instance.StopTicking();
+        }
+        
+        if (BananaProductionTimer.instance != null)
+        {
+            Debug.Log("[TreeOfLife] Stopping BananaProductionTimer");
             BananaProductionTimer.instance.StopProduction();
+        }
+        
+        if (WaveSpawner.instance != null)
+        {
+            Debug.Log("[TreeOfLife] Pausing WaveSpawner");
             WaveSpawner.instance.PauseSpawning();
+        }
+        
+        if (DeathScreen.instance != null)
+        {
+            Debug.Log("[TreeOfLife] Showing DeathScreen");
             DeathScreen.instance.ShowDeathScreen();
         }
+        else
+        {
+            Debug.LogError("[TreeOfLife] DeathScreen.instance is NULL!");
+        }
+        
+        base.Die();
+    }
+    
+    public override void OnDestroy()
+    {
+        Debug.Log("[TreeOfLife] OnDestroy called");
     }
 }

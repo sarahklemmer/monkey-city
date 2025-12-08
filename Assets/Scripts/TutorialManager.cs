@@ -11,7 +11,7 @@ public class TutorialManager : MonoBehaviour
         public string message;            // Toast message (optional)
         public string buttonName;         // Name of button to wait for (optional)
         public float rotation;            // Arrow rotation in degrees
-        public bool bounceVertically = false; 
+        public bool bounceVertically = false;
     }
 
     public bool isActive = true;
@@ -30,16 +30,25 @@ public class TutorialManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         instance = this;
     }
 
    void Start()
     {
+        // Check if tutorial has already been completed
+        if (!TreeOfLife.ShouldPlayTutorial())
+        {
+            Debug.Log("Tutorial already completed - skipping");
+            arrow.SetActive(false);
+            isActive = false;
+            gameObject.SetActive(false);
+            return;
+        }
+        
         Debug.Log("TutorialManager Start() called!");
         Debug.Log($"Arrow is: {arrow}");
         Debug.Log($"Steps count: {steps.Length}");
-        
+
         arrow.SetActive(true);
         isActive = true;
         StartNextStep();
@@ -48,30 +57,36 @@ public class TutorialManager : MonoBehaviour
     void Update()
     {
         List<BuildingBase> farms = BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm);
-        if(farms.Count > 0 && farms[0].GetMonkeyCount() >= 1)
+        if (farms.Count > 0 && farms[0].GetMonkeyCount() >= 1)
         {
             if (currentStepIndex == 5 && isActive)
             {
                 disableArrow();
-                ToastManager.Instance.RequestToast("You can move monkeys between any two buildings this way.\n(Hint: you'll need to do this soon!)", 5f);
+                ToastManager.Instance.RequestToast(
+                    "You can move monkeys between any two buildings this way.\n(Hint: you'll need to do this soon!)",
+                    5f);
+                
+                // Mark tutorial as complete
+                OnTutorialComplete();
             }
         }
     }
 
     public void OnStepCompleted() {
         Debug.Log($"Completed step {currentStepIndex}: {steps[currentStepIndex].message}");
-        
+
         StopAllCoroutines();
         currentStepIndex++;
-        
+
         Debug.Log($"Moving to step {currentStepIndex}");
-        
+
         // CHECK if there are more steps before accessing
         if (currentStepIndex == steps.Length - 1)
         {
             // 1. Get World Position of the farm
-            Vector3 worldPos = BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm)[0].transform.position;
-            
+            Vector3 worldPos = BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm)[0].transform
+                .position;
+
             // 2. Convert World Position -> Screen Space
             Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPos);
 
@@ -79,32 +94,45 @@ public class TutorialManager : MonoBehaviour
             // We need the arrow's parent to determine local coordinates correctly
             RectTransform canvasRect = arrow.transform.parent as RectTransform;
             Vector2 localPos;
-            
+
             // Note: Pass 'null' for the camera if your Canvas Render Mode is "Screen Space - Overlay".
             // If it is "Screen Space - Camera", pass 'Camera.main'.
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvasRect, 
-                screenPos, 
-                null, 
+                canvasRect,
+                screenPos,
+                null,
                 out localPos
             );
 
             localPos.x += 80;
             // 4. Pass the calculated Vector2 to the helper function
             StartNextStep(localPos);
-        } else if (currentStepIndex < steps.Length) {
+        }
+        else if (currentStepIndex < steps.Length)
+        {
             Debug.Log($"Next step target: {steps[currentStepIndex].targetPosition.name}");
             StartNextStep();
-        } else {
+        }
+        else
+        {
             Debug.Log("No more steps, tutorial complete");
             arrow.SetActive(false);
             isActive = false;
+            
+            // Mark tutorial as complete
+            OnTutorialComplete();
         }
+    }
+    
+    // Called when tutorial is fully completed
+    void OnTutorialComplete()
+    {
+        TreeOfLife.MarkTutorialComplete();
+        Debug.Log("Tutorial completed and marked - will not play again on restart");
     }
 
     // Change parameter to Vector2? to accept coordinate overrides
     void StartNextStep(Vector2? overridePos = null) {
-
         TutorialStep step = steps[currentStepIndex];
         
         Debug.Log($"Starting step {currentStepIndex}: Message = {step.message}");
