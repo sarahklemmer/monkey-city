@@ -17,7 +17,7 @@ public class TitleScreenManager : MonoBehaviour
     
     [Header("Title")]
     [SerializeField] private CanvasGroup titleImage;
-    [SerializeField] private CanvasGroup subtitleImage;
+    //[SerializeField] private CanvasGroup subtitleImage;
     [SerializeField] private float titleFadeDelay = 0f;
     [SerializeField] private float titleFadeDuration = 1f;
     
@@ -102,8 +102,8 @@ public class TitleScreenManager : MonoBehaviour
         if (titleImage != null)
             titleImage.alpha = 0;
         
-        if (subtitleImage != null)
-            subtitleImage.alpha = 0;
+        // if (subtitleImage != null)
+        //     subtitleImage.alpha = 0;
         
         if (playButtonGroup != null)
         {
@@ -229,12 +229,12 @@ public class TitleScreenManager : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             titleImage.alpha = Mathf.Lerp(0, 1, elapsed / titleFadeDuration);
-            subtitleImage.alpha = Mathf.Lerp(0, 1, elapsed / titleFadeDuration);
+            //subtitleImage.alpha = Mathf.Lerp(0, 1, elapsed / titleFadeDuration);
             yield return null;
         }
         
         titleImage.alpha = 1;
-        subtitleImage.alpha = 1;
+        //subtitleImage.alpha = 1;
     }
 
     private IEnumerator FadeInPlayButton()

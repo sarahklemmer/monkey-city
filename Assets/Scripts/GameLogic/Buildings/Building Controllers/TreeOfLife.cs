@@ -9,6 +9,7 @@ public class TreeOfLife : BuildingBase
     [SerializeField] ParticleSystem upgradeEffect; 
     
     public static event System.Action OnTreePlaced;
+    [SerializeField] private bool titleScreenOn = false;
     
     void Awake()
     {
@@ -28,8 +29,14 @@ public class TreeOfLife : BuildingBase
             BuildingSoundManager.instance.PlayBuildingPlacedSound();
         }
 
-        PopulationManager.instance.AddToPopulation(1);
-        Soundtrack.instance.PlaySoundtrack();
+        if (PopulationManager.instance != null)
+        {
+            PopulationManager.instance.AddToPopulation(1);
+        }
+        if (Soundtrack.instance != null)
+        {
+            Soundtrack.instance.PlaySoundtrack();
+        }
     }
     
     public void NotifyTreePlaced()
@@ -38,7 +45,7 @@ public class TreeOfLife : BuildingBase
     }
 
 
-    public override bool CanUpgrade() => GetUpgradeCost() <= BananaManager.instance.GetBananas() && !canNeverBeUpgraded;
+    public override bool CanUpgrade() => BananaManager.instance != null && GetUpgradeCost() <= BananaManager.instance.GetBananas() && !canNeverBeUpgraded;
 
     public override bool AttemptUpgrade()
     {
@@ -90,8 +97,11 @@ public class TreeOfLife : BuildingBase
     public override void OnDestroy()
     {
         TimeController.instance.StopTicking();
-        BananaProductionTimer.instance.StopProduction();
-        WaveSpawner.instance.PauseSpawning();
-        DeathScreen.instance.ShowDeathScreen();
+        if (!titleScreenOn)
+        {
+            BananaProductionTimer.instance.StopProduction();
+            WaveSpawner.instance.PauseSpawning();
+            DeathScreen.instance.ShowDeathScreen();
+        }
     }
 }

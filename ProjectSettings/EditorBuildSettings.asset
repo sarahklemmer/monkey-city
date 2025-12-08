@@ -11,12 +11,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/TutorialPlus.unity
     guid: 3d5e4f79e8b9d4e1e91d055016a91ad7
-  - enabled: 1
-    path: Assets/Scenes/TitleScreen.unity
-    guid: 0fbd7ed73f52b4bcf91a81ac45101172
   - enabled: 0
     path: Assets/Scenes/TreeButtons.unity
     guid: 1f7072a778c6640e6bdf6cce3235370c
+  - enabled: 1
+    path: Assets/Scenes/TitleScreen.unity
+    guid: 0fbd7ed73f52b4bcf91a81ac45101172
   - enabled: 1
     path: Assets/Scenes/FastForward.unity
     guid: eee856201d758429da259652a34e0a29

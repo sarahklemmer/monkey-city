@@ -35,8 +35,15 @@ public class DayNightToggle : MonoBehaviour
 
     void Start()
     {
-        RenderSettings.sun = sun;
-        SetNightImmediate(false);
+        if (sun != null)
+        {
+            RenderSettings.sun = sun;
+            SetNightImmediate(false);
+        }
+        else
+        {
+            Debug.LogWarning("DayNightToggle: Sun light is not assigned in the Inspector!");
+        }
     }
 
     public void Toggle()
@@ -73,6 +80,8 @@ public class DayNightToggle : MonoBehaviour
 
     private void ApplyStateImmediate(bool night)
     {
+        if (sun == null) return;
+        
         sun.color = night ? nightSunColor : daySunColor;
         sun.intensity = night ? nightSunIntensity : daySunIntensity;
         sun.shadows = LightShadows.Soft;
@@ -93,6 +102,8 @@ public class DayNightToggle : MonoBehaviour
 
     private IEnumerator TransitionToState(bool toNight)
     {
+        if (sun == null) yield break;
+        
         float elapsed = 0f;
 
         Color startSunColor = sun.color;

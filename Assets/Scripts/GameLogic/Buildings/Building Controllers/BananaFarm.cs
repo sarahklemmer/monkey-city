@@ -39,9 +39,16 @@ public class BananaFarm : BuildingBase
     {
         base.UpdateBehavior();
         
-        int baseProduction = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count() * buildingLevel;
-        float productionBonus = GetTotalProductionBonus();
-        bananasToProduce = Mathf.RoundToInt(baseProduction * (1f + productionBonus));
+        if (AllBananaFarmInfo.instance != null)
+        {
+            int baseProduction = AllBananaFarmInfo.instance.GetBananasPerDay() * monkeys.Count() * buildingLevel;
+            float productionBonus = GetTotalProductionBonus();
+            bananasToProduce = Mathf.RoundToInt(baseProduction * (1f + productionBonus));
+        }
+        else
+        {
+            bananasToProduce = 0;
+        }
     }
 
     public override void OnDayCycle()
@@ -50,7 +57,10 @@ public class BananaFarm : BuildingBase
 
     public void ProduceBananas()
     {
-        BananaManager.instance.AddBananas(bananasToProduce);
+        if (BananaManager.instance != null)
+        {
+            BananaManager.instance.AddBananas(bananasToProduce);
+        }
         BananaVisualization.SpawnAtPosition(transform, bananasToProduce);
     }
 
@@ -60,7 +70,7 @@ public class BananaFarm : BuildingBase
         if (tree == null) return false;
         
         if (canNeverBeUpgraded) return false;
-        if (BananaManager.instance.GetBananas() < GetUpgradeCost()) return false;
+        if (BananaManager.instance == null || BananaManager.instance.GetBananas() < GetUpgradeCost()) return false;
         
         if (level >= 2 && tree.GetLevel() < 2) return false;
         
@@ -70,7 +80,10 @@ public class BananaFarm : BuildingBase
     public override bool AttemptUpgrade()
     {
         if(!CanUpgrade()) return false;
-        BananaManager.instance.AddBananas(-GetUpgradeCost());
+        if (BananaManager.instance != null)
+        {
+            BananaManager.instance.AddBananas(-GetUpgradeCost());
+        }
         Upgrade();
         return true;
     }
