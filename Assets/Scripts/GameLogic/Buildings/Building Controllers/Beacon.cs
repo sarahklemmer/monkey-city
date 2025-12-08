@@ -28,12 +28,16 @@ public class Beacon : BuildingBase
     
     private static readonly int[] upgradeCosts = { 0, 75, 150, 250 };
 
+    private BeaconUpgradeEffects upgradeEffects;
+
     void Awake()
     {
         base.SharedAwakeBehavior();
         type = BuildingType.Beacon;
         canNeverBeUpgraded = false;
         monkeys = new(1);
+        
+        upgradeEffects = GetComponent<BeaconUpgradeEffects>();
         
         CreateRangeIndicator();
     }
@@ -312,6 +316,12 @@ public class Beacon : BuildingBase
                 attackSpeedBonus = 0.50f;
                 productionBonus = 0.50f;
                 break;
+        }
+        
+        // Update visual model
+        if (upgradeEffects != null)
+        {
+            upgradeEffects.Upgrade(level);
         }
         
         Debug.Log($"[Beacon] Upgraded to level {level}. New radius: {buffRadius}, attack bonus: {attackSpeedBonus * 100}%, production bonus: {productionBonus * 100}%");
