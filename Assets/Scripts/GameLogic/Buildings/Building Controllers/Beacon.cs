@@ -246,15 +246,15 @@ public class Beacon : BuildingBase
         
         string statsText = $"<size=14><b>Beacon</b> Lv{level}/{MAX_LEVEL} - {monkeyStatus}\n" +
                           $"Buffing: {buffedCount} buildings\n" +
-                          $"Range: {buffRadius}m\n\n" +
-                          $"<b>Buffs:</b>\n" +
+                          $"Range: {buffRadius}m\n" +
+                          $"<b>Buffs:</b>" +
                           $"Towers: +{attackSpeedBonus * 100:F0}% speed\n" +
                           $"Farms: +{productionBonus * 100:F0}% production\n" +
                           $"Upkeep: {Mathf.Abs(bananasPerDay)}/day";
         
         if (level < MAX_LEVEL)
         {
-            statsText += $"\n\n<b>Next:</b> ";
+            statsText += $"\n<b>Next:</b> ";
             switch (level)
             {
                 case 1:
@@ -270,8 +270,23 @@ public class Beacon : BuildingBase
         return statsText;
     }
 
-    public override void OnSelectOrView() => rangeIndicator.enabled = true;
-    public override void OnDeslectOrStopViewing() => rangeIndicator.enabled = false; 
+    public override void OnSelectOrView() 
+    {
+        rangeIndicator.enabled = true;
+        if (upgradeEffects != null)
+        {
+            upgradeEffects.ShowSelectionIndicator();
+        }
+    }
+
+    public override void OnDeslectOrStopViewing() 
+    {
+        rangeIndicator.enabled = false;
+        if (upgradeEffects != null)
+        {
+            upgradeEffects.HideSelectionIndicator();
+        }
+    }
 
     public override bool CanUpgrade() => GetUpgradeCost() <= BananaManager.instance.GetBananas() && !canNeverBeUpgraded;
 
@@ -318,13 +333,10 @@ public class Beacon : BuildingBase
                 break;
         }
         
-        // Update visual model
         if (upgradeEffects != null)
         {
             upgradeEffects.Upgrade(level);
         }
-        
-        Debug.Log($"[Beacon] Upgraded to level {level}. New radius: {buffRadius}, attack bonus: {attackSpeedBonus * 100}%, production bonus: {productionBonus * 100}%");
         
         if (upgradeEffect != null) upgradeEffect.Play();
         
