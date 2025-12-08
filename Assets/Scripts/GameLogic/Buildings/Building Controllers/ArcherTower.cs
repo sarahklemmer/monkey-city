@@ -310,6 +310,11 @@ public class ArcherTower : BuildingBase
         {
             attackRange /= 2;
             attackCooldown = 0.7f;
+            rangeIndicator.transform.position = new Vector3(
+                rangeIndicator.transform.position.x,
+                rangeIndicator.transform.position.y + 1f,
+                rangeIndicator.transform.position.z
+            );
         } else attackCooldown -= 0.15f;
         
         if(attackCooldown <= 0) attackCooldown = 0.1f;
