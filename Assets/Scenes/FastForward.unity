@@ -1712,7 +1712,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &177652171
@@ -2578,7 +2578,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 171.30743}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &263941542
@@ -15706,7 +15706,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 215.40544}
+  m_margin: {x: 0, y: 0, z: 0, w: 282.34598}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -17680,7 +17680,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 279.75305}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1553553765
@@ -19313,7 +19313,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   daysBetweenWaves: 4
   baseEnemiesPerWave: 3
-  waveScalingFactor: 1.2
+  waveScalingFactor: 1.4
   enemyTypes:
   - enemyPrefab: {fileID: 2707234809516472809, guid: 047f2f983af6e4a59b64a5a540fe8d67, type: 3}
     bananaThreshold: 5
@@ -19630,7 +19630,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1763306902
@@ -21385,7 +21385,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1880911270
@@ -22325,8 +22325,6 @@ RectTransform:
   - {fileID: 317832329}
   - {fileID: 1200201168}
   - {fileID: 745078695}
-  - {fileID: 1085618503}
-  - {fileID: 500177817}
   - {fileID: 1993090717}
   - {fileID: 2070733919}
   - {fileID: 692722307}
@@ -22334,6 +22332,8 @@ RectTransform:
   - {fileID: 1913815787}
   - {fileID: 1546300742}
   - {fileID: 1020620148}
+  - {fileID: 500177817}
+  - {fileID: 1085618503}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
