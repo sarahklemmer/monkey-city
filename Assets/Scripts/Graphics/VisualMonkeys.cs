@@ -6,6 +6,7 @@ public class VisualMonkeys : MonoBehaviour
     [SerializeField] private GameObject monkey1;
     [SerializeField] private GameObject monkey2;
     [SerializeField] private GameObject[] extraMonkeys; // additional monkey visuals beyond the first two
+    [SerializeField] private float lift = 0.2f;
 
     private Renderer[] rs1;
     private Renderer[] rs2;
@@ -64,5 +65,19 @@ public class VisualMonkeys : MonoBehaviour
     { 
         if (rs == null) return;
         foreach (var r in rs) r.enabled = enabled; 
+    }
+
+    public void raiseMonkeys()
+    {
+        if(monkey1 != null) monkey1.transform.position = new Vector3(
+            monkey1.transform.position.x,
+            monkey1.transform.position.y + lift,
+            monkey1.transform.position.z
+        );
+        if(monkey2 != null) monkey2.transform.position = new Vector3(
+            monkey2.transform.position.x,
+            monkey2.transform.position.y + lift,
+            monkey2.transform.position.z
+        );
     }
 }

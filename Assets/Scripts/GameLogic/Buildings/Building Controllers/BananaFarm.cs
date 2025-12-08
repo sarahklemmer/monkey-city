@@ -10,7 +10,6 @@ public class BananaFarm : BuildingBase
     public int bananasToProduce = 0;
     public int buildingLevel = 1;
     private static readonly int[] upgradeCosts = { 0, 5, 40, 100, 200 };
-    bool nextUpgradeIndicatorSpawned = false;
 
     BananaGrow growEffect;
     
@@ -108,9 +107,7 @@ public class BananaFarm : BuildingBase
         if(level >= MAX_LEVEL) {
             canNeverBeUpgraded = true;
             growEffect.GrowTreetop();
-        } else
-        {
-            nextUpgradeIndicatorSpawned = false;
+            monkeyVisualizer.raiseMonkeys();
         }
         upgradeEffect.Play();
     }

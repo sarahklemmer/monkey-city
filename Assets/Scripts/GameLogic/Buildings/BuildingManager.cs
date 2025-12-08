@@ -134,6 +134,10 @@ public class BuildingManager : MonoBehaviour
     public int GetBananaProduction() => buildings.OfType<BananaFarm>().Sum(b => b.bananasToProduce);
 
     public List<BuildingBase> GetBuildingsOfType(BuildingType ty) => buildings.Where(b => b.GetBuildingType() == ty).ToList();
+    public void KillBuildingsOfType(BuildingType ty)
+    {
+        foreach(BuildingBase b in buildings) { if(b.type == ty) b.Die(); }
+    }
 
     // - 1 for TreeOfLife
     public int NumBuildings() => buildings.Count - 1;

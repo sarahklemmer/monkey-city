@@ -235,6 +235,7 @@ public class WaveSpawner : MonoBehaviour
                 
                 waveActive = false;
                 BuildingManager.instance.HealAllToFull();
+                BuildingManager.instance.KillBuildingsOfType(BuildingType.SpikeTrap);
 
                 if (currentWave == 1)
                 {

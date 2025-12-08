@@ -287,13 +287,11 @@ public class ArcherTower : BuildingBase
         Assert.IsTrue(level >= CHOOSE_PATH_LEVEL, "upgrading sniper monkey too early");
         if(level == CHOOSE_PATH_LEVEL)
         {
-            attackRange *= 2;
-            attackCooldown *= 3;
-            attackMultiplier += 4f;
-        } else {
-            attackRange += 1;
-            attackMultiplier += 1f;
+            attackRange += 2;
+            attackCooldown *= 4;
         }
+        attackRange += 1;
+        attackMultiplier += 1f;
     }
 
     void UpgradeTackSprayer()
@@ -302,8 +300,10 @@ public class ArcherTower : BuildingBase
         if(level == CHOOSE_PATH_LEVEL)
         {
             attackRange /= 2;
-            attackCooldown /= 3;
-        } else attackCooldown /= 2;
+            attackCooldown = 0.7f;
+        } else attackCooldown -= 0.15f;
+        
+        if(attackCooldown <= 0) attackCooldown = 0.1f;
 
         attackMultiplier += 0.5f;
     }

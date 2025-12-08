@@ -7,7 +7,6 @@ public class PickArcherTowerType : MonoBehaviour
     [SerializeField] Button sprayer;
     [SerializeField] Button sniper;
     static PickArcherTowerType instance;
-    ArcherTower activeBuilding = null;
 
     void Awake()
     {
@@ -20,13 +19,6 @@ public class PickArcherTowerType : MonoBehaviour
         instance = this;
     }
 
-    void Update()
-    {
-        if(activeBuilding == null) return;
-        instance.sniper.enabled = instance.activeBuilding.NeedToSetType() && BananaManager.instance.GetBananas() >= activeBuilding.GetUpgradeCost();
-        instance.sprayer.enabled = instance.activeBuilding.NeedToSetType() && BananaManager.instance.GetBananas() >= activeBuilding.GetUpgradeCost();
-    }
-
     void Start()
     {
         Hide();
@@ -34,25 +26,22 @@ public class PickArcherTowerType : MonoBehaviour
 
     public static void Show(ArcherTower archer)
     {
-        instance.activeBuilding = archer;
         instance.parent.SetActive(true);
+ 
         instance.sprayer.onClick.RemoveAllListeners();
         instance.sprayer.onClick.AddListener(() => {
             archer.SelectType(ArcherTowerType.TackSprayer);
-            archer.AttemptUpgrade();
             Hide();    
         });
 
         instance.sniper.onClick.RemoveAllListeners();
         instance.sniper.onClick.AddListener(() => {
             archer.SelectType(ArcherTowerType.SniperMonkey);
-            archer.AttemptUpgrade();
             Hide();    
         });
     }
 
     public static void Hide() { 
-        instance.activeBuilding = null;
         instance.parent.SetActive(false); 
     }
 }
