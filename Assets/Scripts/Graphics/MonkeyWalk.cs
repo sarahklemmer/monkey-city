@@ -18,7 +18,12 @@ public class MonkeyWalk : MonoBehaviour
 
     void Update()
     {   
-        walkSpeed = AllMonkeyInfo.instance.GetMonkeySpeed() <= 5.2f ? 3f : 6f;
+        // Check if AllMonkeyInfo exists, use default speed if not
+        if (AllMonkeyInfo.instance != null)
+        {
+            walkSpeed = AllMonkeyInfo.instance.GetMonkeySpeed() <= 5.2f ? 3f : 6f;
+        }
+        
         theta += direction * walkSpeed * Time.deltaTime;
         transform.localPosition = new Vector3(Mathf.Cos(theta + offset) * radius, Mathf.Sin(theta + offset) * radius, 0);
 
