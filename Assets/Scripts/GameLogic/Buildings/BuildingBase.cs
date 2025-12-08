@@ -71,7 +71,10 @@ public abstract class BuildingBase : MonoBehaviour
 
     protected void UpdateBehavior()
     {
-        if(CanUpgrade() && !anyUpgradeUnlocked) ToastManager.Instance.RequestToast("An upgrade is available, right click on a building to upgrade it", 5f);
+        if(CanUpgrade() && !anyUpgradeUnlocked) {
+            anyUpgradeUnlocked = true;
+            ToastManager.Instance.RequestToast("An upgrade is available, right click on a building to upgrade it", 5f);
+        }
         if(upgradeIndicator != null) upgradeIndicator.SetActive(CanUpgrade());
     }
 

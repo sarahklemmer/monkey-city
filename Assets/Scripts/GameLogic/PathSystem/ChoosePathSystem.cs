@@ -49,8 +49,7 @@ public class ChoosePathSystem : MonoBehaviour
         }
 
         ToastManager.Instance?.ForceEndCurrentToast();
-
-        ToastManager.Instance?.RequestToast("Remember to upgrade path levels in the tree of life!", 2f);
+        ToastManager.Instance?.RequestToast("Remember to upgrade path levels using the button on the bottom right!", 3f);
     }
 
     public void ChooseFarmerPath()

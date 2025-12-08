@@ -20,7 +20,19 @@ public class TutorialManager : MonoBehaviour
     public GameObject arrow;  // Your arrow GameObject
     
     public int currentStepIndex = 0;
+    public static TutorialManager instance;
 
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Debug.LogError("duplicate TutorialManager on " + gameObject.name + " destroying.");
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+    }
 
    void Start()
     {
@@ -55,7 +67,32 @@ public class TutorialManager : MonoBehaviour
         Debug.Log($"Moving to step {currentStepIndex}");
         
         // CHECK if there are more steps before accessing
-        if (currentStepIndex < steps.Length) {
+        if (currentStepIndex == steps.Length - 1)
+        {
+            // 1. Get World Position of the farm
+            Vector3 worldPos = BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm)[0].transform.position;
+            
+            // 2. Convert World Position -> Screen Space
+            Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPos);
+
+            // 3. Convert Screen Space -> UI Canvas Local Space
+            // We need the arrow's parent to determine local coordinates correctly
+            RectTransform canvasRect = arrow.transform.parent as RectTransform;
+            Vector2 localPos;
+            
+            // Note: Pass 'null' for the camera if your Canvas Render Mode is "Screen Space - Overlay".
+            // If it is "Screen Space - Camera", pass 'Camera.main'.
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                canvasRect, 
+                screenPos, 
+                null, 
+                out localPos
+            );
+
+            localPos.x += 80;
+            // 4. Pass the calculated Vector2 to the helper function
+            StartNextStep(localPos);
+        } else if (currentStepIndex < steps.Length) {
             Debug.Log($"Next step target: {steps[currentStepIndex].targetPosition.name}");
             StartNextStep();
         } else {
@@ -65,20 +102,35 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    void StartNextStep() {
+    // Change parameter to Vector2? to accept coordinate overrides
+    void StartNextStep(Vector2? overridePos = null) {
 
         TutorialStep step = steps[currentStepIndex];
         
-        Debug.Log($"Starting step {currentStepIndex}: Target = {step.targetPosition.name}, Message = {step.message}");
+        Debug.Log($"Starting step {currentStepIndex}: Message = {step.message}");
         
         RectTransform arrowRect = arrow.GetComponent<RectTransform>();
-        RectTransform targetRect = step.targetPosition.GetComponent<RectTransform>();
+        Vector2 targetPos;
+
+        // LOGIC: If we provided a manual position (from the 3D farm), use it.
+        // Otherwise, get the position from the UI target in the step array.
+        if (overridePos.HasValue)
+        {
+            targetPos = overridePos.Value;
+            // Optional: Reset rotation for 3D objects if needed, or keep previous
+            arrow.transform.rotation = Quaternion.identity; 
+        }
+        else
+        {
+            RectTransform targetRect = step.targetPosition.GetComponent<RectTransform>();
+            targetPos = targetRect.anchoredPosition;
+            arrow.transform.rotation = step.targetPosition.rotation;
+        }
         
-        arrowRect.anchoredPosition = targetRect.anchoredPosition;
-        arrow.transform.rotation = step.targetPosition.rotation;
+        arrowRect.anchoredPosition = targetPos;
         
         // Pass the direction to the coroutine
-        StartCoroutine(BounceArrow(targetRect.anchoredPosition, step.bounceVertically));
+        StartCoroutine(BounceArrow(targetPos, step.bounceVertically));
         
         if (!string.IsNullOrEmpty(step.message)) {
             ToastManager.Instance.ReplaceToast(step.message, 3f);

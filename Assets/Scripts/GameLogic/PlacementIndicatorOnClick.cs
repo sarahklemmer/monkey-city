@@ -13,6 +13,11 @@ public class PlacementIndicatorOnClick : MonoBehaviour
 
     private TutorialManager tutorialManager;
 
+    void Start()
+    {
+        tutorialManager = TutorialManager.instance;
+    }
+
     public void Initialize(BuildingType type, int grid_x, int grid_y, bool isTreeOfLifeIndicator = false)
     {
         this.type = type;

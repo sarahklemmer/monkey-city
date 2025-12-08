@@ -6,12 +6,10 @@ public class BuildingSelector : MonoBehaviour
     public static BuildingSelector instance;
     [SerializeField] LayerMask buildingMask;
     [SerializeField] RectTransform uiSafeArea;
-    [SerializeField] private TutorialManager tutorialManager;
 
     [SerializeField] List<RectTransform> uiSafeAreas;
     private bool selectionDisabled = false;
     private bool selectionDisabledForFrame = false;
-    private bool lastStep = false;
 
     public BuildingBase currentlySelected {get; private set;} = null;
     public BuildingBase currentlyViewing {get; private set;} = null;
@@ -110,12 +108,12 @@ public class BuildingSelector : MonoBehaviour
             selectedMonkey = currentlySelected.monkeys.MonkeyToDeallocate();
         }
         
-        if (tutorialManager.isActive && tutorialManager.currentStepIndex == 4)
+        if (TutorialManager.instance.isActive && TutorialManager.instance.currentStepIndex == 4)
         {
-            Debug.Log($"Tutorial active, completing step {tutorialManager.currentStepIndex}");
-            tutorialManager.OnStepCompleted();
+            Debug.Log($"Tutorial active, completing step {TutorialManager.instance.currentStepIndex}");
+            TutorialManager.instance.OnStepCompleted();
         }
-        Debug.Log($"isActive: {tutorialManager.isActive}, currentStepIndex: {tutorialManager.currentStepIndex}");
+        Debug.Log($"isActive: {TutorialManager.instance.isActive}, currentStepIndex: {TutorialManager.instance.currentStepIndex}");
     }
 
     public void Deselect()

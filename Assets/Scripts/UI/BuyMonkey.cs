@@ -40,7 +40,7 @@ public class BuyMonkey : MonoBehaviour
 
     void Update()
     {
-        priceText.text = "$" + price;
+        priceText.text = price.ToString() + " bananas";
         bool interactable = BananaManager.instance.GetBananas() >= price && BuildingManager.instance.GetBuildingsOfType(BuildingType.BananaFarm).Count > 0;
         GetComponent<Button>().interactable = interactable;
         var c = monkeyIcon.color;

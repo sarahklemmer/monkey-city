@@ -6,13 +6,6 @@ public class ResourceBar : MonoBehaviour
     [SerializeField] TMP_Text bananaCount;
     [SerializeField] TMP_Text playerPointCount;
     [SerializeField] TMP_Text bananaProduction;
-    [SerializeField] TMP_Text populationCount;
-    BuildingBase treeOfLife;
-
-    void Start()
-    {
-        populationCount.text = "0";
-    }
 
     void Update()
     {
@@ -22,7 +15,5 @@ public class ResourceBar : MonoBehaviour
         // if negative it'll have the '-' in the string, otherwise have to add a plus
         bananaProduction.text = production < 0 ? production.ToString() : "+" + production;
         bananaProduction.color = production == 0 ? Color.black : (production < 0 ? Color.red : Color.green);
-        if(treeOfLife == null) treeOfLife = BuildingManager.instance.GetTreeOfLife();
-        else populationCount.text = treeOfLife.GetMonkeyCount().ToString();
     }
 }

@@ -8,6 +8,11 @@ public class PlaceBuildingButton : MonoBehaviour
 
     [SerializeField] private TutorialManager tutorialManager;
 
+    void Start()
+    {
+        tutorialManager = TutorialManager.instance;
+    }
+
     public void Initialize(BuildingType type)
     {
         this.type = type;
