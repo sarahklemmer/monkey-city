@@ -1,11 +1,2 @@
-Portfolios:
-https://kylecorn.github.io/
-https://elliotmiller18.github.io/
-https://anoushk-a.github.io/anoushka.github.io/
-https://sarahklemmer.com/
-
 Devblog:
 https://elliotmiller18.github.io/494links.html
-
-Game website:
-https://kjcornell.itch.io/monkeytopia
