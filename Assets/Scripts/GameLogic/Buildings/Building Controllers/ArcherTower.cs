@@ -61,8 +61,14 @@ public class ArcherTower : BuildingBase
 
     void Start()
     {
-        BuildingSoundManager.instance.PlayBuildingPlacedSound();
-        WaveSpawner.instance.OnFirstTowerPlaced(this);
+        if (BuildingSoundManager.instance != null)
+        {
+            BuildingSoundManager.instance.PlayBuildingPlacedSound();
+        }
+        if (WaveSpawner.instance != null)
+        {
+            WaveSpawner.instance.OnFirstTowerPlaced(this);
+        }
     }
 
     private void CreateRangeIndicator()
@@ -222,7 +228,7 @@ public class ArcherTower : BuildingBase
         if (tree == null) return false;
 
         if (canNeverBeUpgraded) return false;
-        if (BananaManager.instance.GetBananas() < GetUpgradeCost()) return false;
+        if (BananaManager.instance == null || BananaManager.instance.GetBananas() < GetUpgradeCost()) return false;
 
         if (level >= 2 && tree.GetLevel() < 2) return false;
         if (NeedToSetType()) return false;
@@ -233,7 +239,10 @@ public class ArcherTower : BuildingBase
     public override bool AttemptUpgrade()
     {
         if(!CanUpgrade()) return false;
-        BananaManager.instance.AddBananas(-GetUpgradeCost());
+        if (BananaManager.instance != null)
+        {
+            BananaManager.instance.AddBananas(-GetUpgradeCost());
+        }
         Upgrade();
         return true;
     }

@@ -9,7 +9,10 @@ public class VisualMonkeys : MonoBehaviour
     private Renderer[] rs1;
     private Renderer[] rs2;
 
-    void Awake() { 
+    [SerializeField] private bool tutorialMode = false;
+
+    void Awake() {
+        if (tutorialMode) return;
         Assert.IsNotNull(monkey1, "no visual monkeys assigned in " + gameObject.name);
         rs1 = monkey1.GetComponentsInChildren<Renderer>();
         if(monkey2 != null) rs2 = monkey2.GetComponentsInChildren<Renderer>();
@@ -17,11 +20,13 @@ public class VisualMonkeys : MonoBehaviour
 
     void Start()
     {
+        if (tutorialMode) return;
         SetMonkeyCount(0); 
     } 
 
     public void SetMonkeyCount(int count)
     {  
+        if (tutorialMode) return;
         Assert.IsTrue(0 <= count && count <= 2, "setting monkey count too high in visualmonkeys!");
         SetEnabled(rs1, count >= 1);
         if(monkey2 != null) SetEnabled(rs2, count >= 2);

@@ -35,15 +35,27 @@ public abstract class BuildingBase : MonoBehaviour
     // basically RAII for the BuildingManager, super handy
     protected virtual void OnEnable()
     {
-        BuildingManager.instance.AddBuilding(this);
+        if (BuildingManager.instance != null)
+        {
+            BuildingManager.instance.AddBuilding(this);
+        }
         if(health == null) health = GetComponent<BuildingHealth>();
-        health.SetBuilding(this);
+        if(health != null)
+        {
+            health.SetBuilding(this);
+        }
     }
 
     protected virtual void OnDisable()
     {
-        BuildingManager.instance.RemoveBuilding(this);
-        BuildingGrid.instance.RemoveBuilding(this);
+        if (BuildingManager.instance != null)
+        {
+            BuildingManager.instance.RemoveBuilding(this);
+        }
+        if (BuildingGrid.instance != null)
+        {
+            BuildingGrid.instance.RemoveBuilding(this);
+        }
     }
 
     public virtual void OnTakeDamage()
