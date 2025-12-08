@@ -27,8 +27,8 @@ public class TreeOfLife : BuildingBase
         {
             BuildingSoundManager.instance.PlayBuildingPlacedSound();
         }
-        PopulationManager.instance.AddToPopulation(1);
-        Soundtrack.instance.PlaySoundtrack();
+        if(PopulationManager.instance != null) PopulationManager.instance.AddToPopulation(1);
+        if(Soundtrack.instance != null) Soundtrack.instance.PlaySoundtrack();
     }
     
     public void NotifyTreePlaced()
@@ -53,7 +53,12 @@ public class TreeOfLife : BuildingBase
         Debug.Log("[TreeOfLife] Tutorial flag reset");
     }
     
-    public override bool CanUpgrade() => GetUpgradeCost() <= BananaManager.instance.GetBananas() && !canNeverBeUpgraded;
+    public override bool CanUpgrade()
+    {
+        if(BananaManager.instance == null) return false;
+        return GetUpgradeCost() <= BananaManager.instance.GetBananas() && !canNeverBeUpgraded;
+    } 
+        
     
     public override bool AttemptUpgrade()
     {
