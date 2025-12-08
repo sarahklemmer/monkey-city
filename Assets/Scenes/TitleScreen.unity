@@ -4755,7 +4755,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7510448052551022140, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.71
+      value: 0.78
       objectReference: {fileID: 0}
     - target: {fileID: 7510448052551022140, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4763,7 +4763,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7510448052551022140, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.84
+      value: -2.54
       objectReference: {fileID: 0}
     - target: {fileID: 7510448052551022140, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5310,7 +5310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7510448052551022140, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.83
+      value: -2.98
       objectReference: {fileID: 0}
     - target: {fileID: 7510448052551022140, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5318,7 +5318,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7510448052551022140, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.8
+      value: 2.12
       objectReference: {fileID: 0}
     - target: {fileID: 7510448052551022140, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6460,7 +6460,7 @@ MonoBehaviour:
   monkeyPrefab: {fileID: 5006477332581409323, guid: bcc8cb042dbe74aa498c4321e0127a1e, type: 3}
   enemySpawnInterval: 15
   enemiesPerWave: 2
-  enableFakeGameplay: 0
+  enableFakeGameplay: 1
   transitionOverlay: {fileID: 864659137}
   transitionDuration: 1
   transitionCurve:
@@ -10379,7 +10379,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7510448052551022140, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.35
+      value: 2.52
       objectReference: {fileID: 0}
     - target: {fileID: 7510448052551022140, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_LocalPosition.y
@@ -10387,7 +10387,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7510448052551022140, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.13
+      value: 2.96
       objectReference: {fileID: 0}
     - target: {fileID: 7510448052551022140, guid: 76b4a4aea8dbe4e4089c140035fdad29, type: 3}
       propertyPath: m_LocalRotation.w
@@ -13950,7 +13950,7 @@ Transform:
   m_GameObject: {fileID: 1545275148572795589}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -2.99, y: 0.56639796, z: -2.38}
+  m_LocalPosition: {x: -2.32, y: 0.56639796, z: -1.37}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -13983,7 +13983,7 @@ Transform:
   m_GameObject: {fileID: 1545275148574224347}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 4.07, y: 0.56639796, z: -0.03}
+  m_LocalPosition: {x: 3.57, y: 0.56639796, z: 0.08}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -15617,6 +15617,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monkey1: {fileID: 0}
   monkey2: {fileID: 0}
+  extraMonkeys: []
+  lift: 0.2
   tutorialMode: 1
 --- !u!114 &3243174611733319199
 MonoBehaviour:
@@ -15632,6 +15634,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monkey1: {fileID: 0}
   monkey2: {fileID: 0}
+  extraMonkeys: []
+  lift: 0.2
   tutorialMode: 1
 --- !u!114 &3243174611734807297
 MonoBehaviour:
@@ -15647,6 +15651,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monkey1: {fileID: 0}
   monkey2: {fileID: 0}
+  extraMonkeys: []
+  lift: 0.2
   tutorialMode: 1
 --- !u!23 &3418311738121633596
 MeshRenderer:
