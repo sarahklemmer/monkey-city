@@ -156,9 +156,9 @@ public class WaveSpawner : MonoBehaviour
                     BuildingManager.instance.HealAllToFull();
                     ChoosePathSystem.instance.ShowPathMenu();
                     
-                    // Make wave 2 spawn in 3 days
+                    // Make wave 2 spawn in 4 days (consistent timing)
                     attacksUnlocked = true;
-                    lastWaveDay = TimeController.instance.currentDay - (daysBetweenWaves - 3); // Wave 2 spawns in 3 days
+                    lastWaveDay = TimeController.instance.currentDay;
                 }
                 else
                 {
@@ -348,14 +348,12 @@ public class WaveSpawner : MonoBehaviour
         int bananas = BananaManager.instance.GetBananasGenerated();
         GameObject selectedPrefab;
         
-        // For tutorial wave, always spawn base enemy
         if (forceBaseEnemy)
         {
-            selectedPrefab = enemyTypes[0].enemyPrefab; // First enemy is base chimp
+            selectedPrefab = enemyTypes[0].enemyPrefab; 
         }
         else
         {
-            // Get available enemies based on banana threshold
             var availableEnemies = enemyTypes.Where(e => e.bananaThreshold <= bananas).ToList();
             
             if (availableEnemies.Count == 0)
@@ -364,7 +362,6 @@ public class WaveSpawner : MonoBehaviour
                 return;
             }
             
-            // Weighted random selection
             float totalWeight = availableEnemies.Sum(e => e.spawnWeight);
             float randomValue = Random.Range(0f, totalWeight);
             float cumulative = 0f;
@@ -390,7 +387,6 @@ public class WaveSpawner : MonoBehaviour
             enemiesAlive++;
             spawnedEnemy.AddComponent<EnemyDeathTracker>().Initialize(this);
             
-            // Tutorial wave targeting
             if (currentWave == 1 && firstArcherTower != null)
             {
                 attacker.SetPriorityTargetToFirstTower();
@@ -482,17 +478,7 @@ public class WaveSpawner : MonoBehaviour
 
     private int GetDaysBetweenWaves()
     {
-        int bananas = BananaManager.instance.GetBananasGenerated();
-        int dayReduction = 0;
-        
-        if (bananas >= bananaThreshold3)
-            dayReduction = dayReductionPerThreshold * 3;
-        else if (bananas >= bananaThreshold2)
-            dayReduction = dayReductionPerThreshold * 2;
-        else if (bananas >= bananaThreshold1)
-            dayReduction = dayReductionPerThreshold;
-        
-        return Mathf.Max(minimumDaysBetweenWaves, daysBetweenWaves - dayReduction);
+        return daysBetweenWaves;
     }
 
     private int GetCurrentThreshold(int bananas)
@@ -503,7 +489,6 @@ public class WaveSpawner : MonoBehaviour
         return 0;
     }
     
-    // Library Support Methods
     public void RegisterLibrary(Library library)
     {
         if (!registeredLibraries.Contains(library))
