@@ -1272,19 +1272,11 @@ MonoBehaviour:
   bossAttackCooldown: 1.5
   bossAttackRange: 3
   bossMoveSpeed: 3
-  bossMaxHealth: 500
-  leapDistance: 8
-  leapCooldown: 8
-  leapDuration: 0.8
-  leapDamage: 15
-  leapRadius: 3
+  bossMaxHealth: 3500
   regenAmount: 2
   regenInterval: 3
-  leapParticle: {fileID: 0}
   regenParticle: {fileID: 0}
-  leapSound: {fileID: 0}
   roarSound: {fileID: 0}
-  leapVolume: 1
   roarVolume: 1
 --- !u!1 &8292382288326069321
 GameObject:

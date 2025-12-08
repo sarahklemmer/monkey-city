@@ -10,7 +10,7 @@ public class EnemyAttacker : MonoBehaviour
     protected float moveSpeed = 2f;
     protected float recoilDistance = 1f;
     protected float recoilDuration = 0.2f;
-    protected float maxHealth = 40f;
+    protected float maxHealth = 50f;
 
     [Header("Animation")]
     protected Animator animator;
