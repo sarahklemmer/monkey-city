@@ -128,6 +128,15 @@ public class BuildingSelector : MonoBehaviour
         currentlySelected = null;
     }
 
+    public void AnnihilateBuilding(BuildingBase b)
+    {
+        DeselectSpecificBuilding(b);
+        if(currentlyViewing == b) {
+            BuildingInfoPopup.instance.Hide();
+            currentlyViewing = null;
+        }
+    }
+
     public void DeselectSpecificBuilding(BuildingBase b)
     {
         if(currentlySelected == b) Deselect();

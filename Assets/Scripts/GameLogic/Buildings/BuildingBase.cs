@@ -44,6 +44,7 @@ public abstract class BuildingBase : MonoBehaviour
     {
         BuildingManager.instance.RemoveBuilding(this);
         BuildingGrid.instance.RemoveBuilding(this);
+        BuildingSelector.instance.AnnihilateBuilding(this);
     }
 
     public virtual void OnTakeDamage()
